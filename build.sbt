@@ -10,9 +10,9 @@ libraryDependencies  ++= Seq(
   "org.scalanlp" %% "breeze-viz" % "0.13.2",
 //  "org.scalanlp" %% "nak" % "1.2.1"
 )
-libraryDependencies  += "be.botkop" %% "scorch" % "0.1.0"
+// libraryDependencies  += "be.botkop" %% "scorch" % "0.1.0"
 
-libraryDependencies += "com.github.transcendent-ai-labs.DynaML" % "dynaml-core_2.11" % "v1.5.3"
+// libraryDependencies += "com.github.transcendent-ai-labs.DynaML" % "dynaml-core_2.11" % "v1.5.3"
 
 libraryDependencies  += "com.github.fommil.netlib" % "all" % "1.1.2" pomOnly()
 
