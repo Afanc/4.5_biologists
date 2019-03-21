@@ -1,6 +1,13 @@
-install git as described here
+## Preparation
+
+## Recommended development software:
+
+* Install git as described here
 https://www.atlassian.com/git/tutorials/install-git
 
-install PyCharm or IntelliJ IDEA + Python & Scala plugins
+* Install PyCharm or IntelliJ IDEA + Python & Scala plugins
 
+* Install "GitHub Desktop" client application from here:
+https://desktop.github.com/
 
+* Configure your user account under "Preferences/Accounts" tab.
