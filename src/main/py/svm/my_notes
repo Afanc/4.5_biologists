@@ -3,3 +3,5 @@ $ cat train_sub.csv | cut -d',' -f1 | sort | uniq -c
 seems like a pretty good representation to me. I don't know why the model always predicts 77%.
 
 okay poly is worse ? wtf
+
+# test
