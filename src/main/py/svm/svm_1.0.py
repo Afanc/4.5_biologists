@@ -26,7 +26,7 @@ def train_and_test(model, train_data, test_data) :
     train(model, train_data)
     results = test(model, test_data)
 
-    print("model : ", model, "\nresults : ", results, "%")
+    print("model : ", model, "\nresults : ", 100*results, "%")
     
     return(results)
 
@@ -39,5 +39,5 @@ if __name__ == '__main__':
     linear_model = svm.SVC(kernel="linear", decision_function_shape="ovr")
     train_and_test(linear_model, train_data, test_data)
 
-    linear_model_better = svm.LinearSVC(penalty='l2',loss='squared_hinge', dual=False, tol=0.0001)
-    train_and_test(linear_model_better, train_data, test_data)
+    #linear_model_better = svm.LinearSVC(penalty='l2',loss='squared_hinge', dual=False, tol=0.0001)
+    #train_and_test(linear_model_better, train_data, test_data)
