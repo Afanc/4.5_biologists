@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 from sklearn import svm
+from sklearn.metrics import classification_report, confusion_matrix  
 import numpy as np
 
 def train(model, data) :
@@ -15,6 +16,8 @@ def test(model, data) :
 
     predictions = model.predict(test_samples)
     results = sum(predictions == test_labels)/len(test_labels)
+
+    print("report : \n", classification_report(test_labels, predictions))
     
     return(results)
 
@@ -31,7 +34,8 @@ if __name__ == '__main__':
     test_data = np.loadtxt(open("data/test_sub.csv", "rb"), delimiter=",", skiprows=0, dtype = np.uint16)
     #in case the symlink doesn't work for you, you might have to use this... How stupid does this path look EH ?
     #train = np.loadtxt(open("../../../../data/train_sub.csv", "rb"), delimiter=",", skiprows=0, dtype = np.uint16)     
+    
+    np.random.shuffle(train_data)
 
-    linear_model = svm.SVC(kernel="linear", decision_function_shape="ovr") #max_iter
+    linear_model = svm.SVC(kernel="linear", decision_function_shape="ovr")
     train_and_test(linear_model, train_data, test_data)
-
