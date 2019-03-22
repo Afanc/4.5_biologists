@@ -11,3 +11,11 @@ https://www.atlassian.com/git/tutorials/install-git
 https://desktop.github.com/
 
 * Configure your user account under "Preferences/Accounts" tab.
+
+##how to do shit with it
+
+-- git pull
+-- git add/rm my_files
+-- git commit // git commit -m 'my comments'
+-- merge if necessary
+-- git push
