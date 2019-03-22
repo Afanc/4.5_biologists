@@ -15,6 +15,7 @@ def test(model, data) :
     test_samples = data[:,1:]
 
     predictions = model.predict(test_samples)
+
     results = sum(predictions == test_labels)/len(test_labels)
 
     print("report : \n", classification_report(test_labels, predictions))
@@ -35,11 +36,8 @@ if __name__ == '__main__':
     #in case the symlink doesn't work for you, you might have to use this... How stupid does this path look EH ?
     #train = np.loadtxt(open("../../../../data/train_sub.csv", "rb"), delimiter=",", skiprows=0, dtype = np.uint16)     
     
-    np.random.shuffle(train_data)
-
     linear_model = svm.SVC(kernel="linear", decision_function_shape="ovr")
     train_and_test(linear_model, train_data, test_data)
 
-    poly_model = svm.SVC(kernel="poly", gamma="scale", degree=6, C=10, decision_function_shape="ovr")
-    train_and_test(poly_model, train_data, test_data)
-
+    linear_model_better = svm.LinearSVC(penalty='l2',loss='squared_hinge', dual=False, tol=0.0001)
+    train_and_test(linear_model_better, train_data, test_data)
