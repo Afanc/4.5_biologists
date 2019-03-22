@@ -1,4 +1,5 @@
 $ cat train_sub.csv | cut -d',' -f1 | sort | uniq -c
 
 seems like a pretty good representation to me. I don't know why the model always predicts 77%.
-at some point tuning changed this value and suddenly I did something and always get 77% wtf.
+
+okay poly is worse ? wtf

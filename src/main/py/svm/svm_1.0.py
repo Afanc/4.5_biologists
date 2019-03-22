@@ -22,8 +22,8 @@ def test(model, data) :
     return(results)
 
 def train_and_test(model, train_data, test_data) :
-    train(linear_model, train_data)
-    results = test(linear_model, test_data)
+    train(model, train_data)
+    results = test(model, test_data)
 
     print("model : ", model, "\nresults : ", results, "%")
     
@@ -39,3 +39,7 @@ if __name__ == '__main__':
 
     linear_model = svm.SVC(kernel="linear", decision_function_shape="ovr")
     train_and_test(linear_model, train_data, test_data)
+
+    poly_model = svm.SVC(kernel="poly", gamma="scale", degree=6, C=10, decision_function_shape="ovr")
+    train_and_test(poly_model, train_data, test_data)
+
