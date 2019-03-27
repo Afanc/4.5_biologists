@@ -90,7 +90,9 @@ def train(model, train_loader, optimizer, loss_function) :
             print("Training iteration ", iteration, "out of ", len(train_loader.dataset)/args.batch_size, "loss = ", losses[-1])
 
     average_loss = np.mean(losses)
-    average_accuracy = accuracies / len(test_loader.dataset)
+    average_accuracy = accuracies / len(train_dataset)
+
+    print(100*average_accuracy, "%")
 
     return((average_loss, average_accuracy))
 
