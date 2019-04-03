@@ -102,6 +102,9 @@ def test(model, test_loader, optimizer, loss_function) :
     #no dropout
     model.eval()
 
+    losses = []
+    accuracies = 0
+
     for iteration, (images, labels) in enumerate(test_loader) :
 
         #get the output
@@ -110,12 +113,21 @@ def test(model, test_loader, optimizer, loss_function) :
         #calculate the loss and backpropagate
         loss = loss_function(out, labels)
 
+        losses.append(loss.item())
+        accuracies += (np.argmax(out.detach(), axis=1) == labels).sum().item()
+
         if iteration % 100 == 0 :
             print("Testing iteration ", iteration, "out of ", len(test_loader.dataset)/args.batch_size, "loss = ", loss.item())
 
 
-    #same shit, loss, accuracy...
+    # output loss and accuracy
 
+    average_loss = np.mean(losses)
+    average_accuracy = accuracies / len(train_dataset)
+
+    print(100*average_accuracy, "%")
+
+    return((average_loss, average_accuracy))
 
 if __name__ == '__main__' :
 
