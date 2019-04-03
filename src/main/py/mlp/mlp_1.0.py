@@ -87,7 +87,7 @@ def train(model, train_loader, optimizer, loss_function) :
         accuracies += (np.argmax(out.detach(), axis=1) == labels).sum().item()
 
         if iteration % 100 == 0 :
-            print("Training iteration ", iteration, "out of ", len(train_loader.dataset)/args.batch_size, "loss = ", losses[-1], "accuracie = ", 100*accuracies/((iteration+1)*args.batch_size), "%")
+            print("Training iteration ", iteration, "out of ", len(train_loader.dataset)/args.batch_size, "loss = ", losses[-1], "accuracy = ", 100*accuracies/((iteration+1)*args.batch_size), "%")
 
     average_loss = np.mean(losses)
     average_accuracy = accuracies / len(train_dataset)
@@ -117,7 +117,7 @@ def test(model, test_loader, optimizer, loss_function) :
         accuracies += (np.argmax(out.detach(), axis=1) == labels).sum().item()
 
         if iteration % 100 == 0 :
-            print("Testing iteration ", iteration, "out of ", len(test_loader.dataset)/args.batch_size, "loss = ", loss.item(), "accuracie = ", 100*accuracies/((iteration+1)*args.batch_size), "%")
+            print("Testing iteration ", iteration, "out of ", len(test_loader.dataset)/args.batch_size, "loss = ", loss.item(), "accuracy = ", 100*accuracies/((iteration+1)*args.batch_size), "%")
 
     # output loss and accuracy
 
