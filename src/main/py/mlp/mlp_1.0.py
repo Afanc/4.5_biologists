@@ -7,6 +7,7 @@ from torch.utils.data import DataLoader
 from torchvision.datasets import MNIST
 from torchvision.transforms import Compose, ToTensor, Normalize, RandomRotation, RandomCrop
 import numpy as np
+import sys
 import matplotlib.pyplot as plt
 
 """
@@ -29,7 +30,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--batch_size', default=32, type=int)
 parser.add_argument('--learning_rate', default=0.001, type=float)
 parser.add_argument('--hidden_width', default=512, type=int)
-parser.add_argument('--n_epochs', default=10, type=int)
+parser.add_argument('--n_epochs', default=1, type=int)
 parser.add_argument('--dropout', default=0.95, type=float)
 args = parser.parse_args()
 
@@ -93,13 +94,13 @@ def train(model, train_loader, optimizer, loss_function) :
         losses.append(loss.item())
         accuracies += (np.argmax(out.detach(), axis=1) == labels).sum().item()
 
-        if iteration % 100 == 0 :
-            print("Training iteration ", iteration, "out of ", len(train_loader.dataset)/args.batch_size, "loss = ", round(losses[-1], 2), "accuracy = ", round(100*accuracies/((iteration+1)*args.batch_size), 2), "%")
+        # if iteration % 100 == 0 :
+        #     print("Training iteration ", iteration, "out of ", len(train_loader.dataset)/args.batch_size, "loss = ", round(losses[-1], 2), "accuracy = ", round(100*accuracies/((iteration+1)*args.batch_size), 2), "%")
 
     average_loss = np.mean(losses)
     average_accuracy = accuracies / len(train_dataset)
 
-    print(100*average_accuracy, "%")
+    # print(100*average_accuracy, "%")
 
     return((average_loss, average_accuracy))
 
@@ -123,15 +124,15 @@ def test(model, test_loader, optimizer, loss_function) :
         losses.append(loss.item())
         accuracies += (np.argmax(out.detach(), axis=1) == labels).sum().item()
 
-        if iteration % 100 == 0 :
-            print("Testing iteration ", iteration, "out of ", len(test_loader.dataset)/args.batch_size, "loss = ", round(loss.item(), 2), "accuracy = ", round(100*accuracies/((iteration+1)*args.batch_size), 2), "%")
+        # if iteration % 100 == 0 :
+            # print("Testing iteration ", iteration, "out of ", len(test_loader.dataset)/args.batch_size, "loss = ", round(loss.item(), 2), "accuracy = ", round(100*accuracies/((iteration+1)*args.batch_size), 2), "%")
 
     # output loss and accuracy
 
     average_loss = np.mean(losses)
     average_accuracy = accuracies / len(test_loader)
 
-    print(100*average_accuracy, "%")
+    # print(100*average_accuracy, "%")
 
     return((average_loss, average_accuracy))
 
@@ -154,7 +155,7 @@ if __name__ == '__main__' :
 
     #train and test
     for epoch in range(args.n_epochs) :
-        print("Epoch ", epoch)
+        # print("Epoch ", epoch)
 
         training_results = train(model, train_loader, optimizer, loss_function)
         training_losses.append(training_results[0])
@@ -163,23 +164,23 @@ if __name__ == '__main__' :
         testing_results = test(model, train_loader, optimizer, loss_function)
         testing_losses.append(testing_results[0])
         testing_accuracies.append(testing_results[1])
-
-
-    plt.figure(figsize=(10,5))
-    plt.subplot(1,2,1)
-    plt.plot(np.arange(args.n_epochs), training_losses, color="blue", label="training set loss")
-    plt.plot(np.arange(args.n_epochs), testing_losses, color="red", label="test set loss")
-    plt.xlabel("training epoch")
-    plt.ylabel("loss")
-    plt.legend(loc='upper right')
-
-    plt.subplot(1,2,2)
-    plt.plot(np.arange(args.n_epochs), training_accuracies, color="blue", label="training set acc")
-    plt.plot(np.arange(args.n_epochs), testing_accuracies, color="red", label="test set acc")
-    plt.xlabel("training epoch")
-    plt.ylabel("accuracy")
-    plt.legend(loc='upper right')
-
-    plt.tight_layout()
-    plt.savefig("MLP_4.5_Biologists.png")
-    plt.show()
+    print(round(testing_accuracies[-1], 2), end='')
+    # plotting disabled for run on cluster
+    # plt.figure(figsize=(10,5))
+    # plt.subplot(1,2,1)
+    # plt.plot(np.arange(args.n_epochs), training_losses, color="blue", label="training set loss")
+    # plt.plot(np.arange(args.n_epochs), testing_losses, color="red", label="test set loss")
+    # plt.xlabel("training epoch")
+    # plt.ylabel("loss")
+    # plt.legend(loc='upper right')
+    #
+    # plt.subplot(1,2,2)
+    # plt.plot(np.arange(args.n_epochs), training_accuracies, color="blue", label="training set acc")
+    # plt.plot(np.arange(args.n_epochs), testing_accuracies, color="red", label="test set acc")
+    # plt.xlabel("training epoch")
+    # plt.ylabel("accuracy")
+    # plt.legend(loc='upper right')
+    #
+    # plt.tight_layout()
+    # plt.savefig("MLP_4.5_Biologists.png")
+    # plt.show()
