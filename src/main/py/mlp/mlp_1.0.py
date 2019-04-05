@@ -161,14 +161,19 @@ if __name__ == '__main__' :
 
     plt.figure(figsize=(10,5))
     plt.subplot(1,2,1)
-    plt.plot(np.arange(args.n_epochs), training_losses, color="blue", label="train loss")
-    plt.plot(np.arange(args.n_epochs), testing_losses, color="red", label="test loss")
+    plt.plot(np.arange(args.n_epochs), training_losses, color="blue", label="training set loss")
+    plt.plot(np.arange(args.n_epochs), testing_losses, color="red", label="test set loss")
+    plt.xlabel("training epoch")
+    plt.ylabel("loss")
     plt.legend(loc='upper right')
 
     plt.subplot(1,2,2)
-    plt.plot(np.arange(args.n_epochs), training_accuracies, color="blue", label="train acc")
-    plt.plot(np.arange(args.n_epochs), testing_accuracies, color="red", label="test acc")
+    plt.plot(np.arange(args.n_epochs), training_accuracies, color="blue", label="training set acc")
+    plt.plot(np.arange(args.n_epochs), testing_accuracies, color="red", label="test set acc")
+    plt.xlabel("training epoch")
+    plt.ylabel("accuracy")
     plt.legend(loc='upper right')
 
     plt.tight_layout()
+    plt.savefig("MLP_4.5_Biologists.png")
     plt.show()
