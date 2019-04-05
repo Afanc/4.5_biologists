@@ -1,3 +1,3 @@
 from .permutMNIST import ImageClassification
 
-__all__ = ['ImageClassification']
+__all__ = ['PermutMNIST']
