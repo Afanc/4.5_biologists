@@ -7,6 +7,7 @@ from torch.utils.data import DataLoader
 from torchvision.datasets import MNIST
 from torchvision.transforms import Compose, ToTensor, Normalize
 import numpy as np
+import matplotlib.pyplot as plt
 
 """
 TODO :
@@ -28,7 +29,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--batch_size', default=32, type=int)
 parser.add_argument('--learning_rate', default=0.001, type=float)
 parser.add_argument('--hidden_width', default=128, type=int)
-parser.add_argument('--n_epochs', default=1, type=int)
+parser.add_argument('--n_epochs', default=10, type=int)
 args = parser.parse_args()
 
 #gpu if possible
@@ -138,8 +139,36 @@ if __name__ == '__main__' :
     loss_function = nn.CrossEntropyLoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=args.learning_rate)
 
+    training_losses = []
+    training_accuracies = []
+
+    testing_losses = []
+    testing_accuracies = []
+
+
     #train and test
     for epoch in range(args.n_epochs) :
         print("Epoch ", epoch)
-        train(model, train_loader, optimizer, loss_function)
-        test(model, train_loader, optimizer, loss_function)
+
+        training_results = train(model, train_loader, optimizer, loss_function)
+        training_losses.append(training_results[0])
+        training_accuracies.append(training_results[1])
+
+        testing_results = test(model, train_loader, optimizer, loss_function)
+        testing_losses.append(testing_results[0])
+        testing_accuracies.append(testing_results[1])
+
+
+    plt.figure(figsize=(10,5))
+    plt.subplot(1,2,1)
+    plt.plot(np.arange(args.n_epochs), training_losses, color="blue", label="train loss")
+    plt.plot(np.arange(args.n_epochs), testing_losses, color="red", label="test loss")
+    plt.legend(loc='upper right')
+
+    plt.subplot(1,2,2)
+    plt.plot(np.arange(args.n_epochs), training_accuracies, color="blue", label="train acc")
+    plt.plot(np.arange(args.n_epochs), testing_accuracies, color="red", label="test acc")
+    plt.legend(loc='upper right')
+
+    plt.tight_layout()
+    plt.show()
