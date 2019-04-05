@@ -30,6 +30,7 @@ parser.add_argument('--batch_size', default=32, type=int)
 parser.add_argument('--learning_rate', default=0.001, type=float)
 parser.add_argument('--hidden_width', default=128, type=int)
 parser.add_argument('--n_epochs', default=10, type=int)
+parser.add_argument('--dropout', default=0.95, type=float)
 args = parser.parse_args()
 
 #gpu if possible
@@ -53,6 +54,7 @@ class simple_MLP(nn.Module):
         super(simple_MLP, self).__init__()
         self.main = nn.Sequential(nn.Linear(28*28, args.hidden_width),   #input layer
                                   nn.ReLU(),              #activation function
+                                  nn.Dropout(args.dropout),
                                   nn.Linear(args.hidden_width, 10))     #first hidden layer
 
     #what does it do
