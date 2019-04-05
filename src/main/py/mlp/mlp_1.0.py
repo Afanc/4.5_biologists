@@ -5,7 +5,7 @@ import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
 from torchvision.datasets import MNIST
-from torchvision.transforms import Compose, ToTensor, Normalize
+from torchvision.transforms import Compose, ToTensor, Normalize, RandomRotation, RandomCrop
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -94,7 +94,7 @@ def train(model, train_loader, optimizer, loss_function) :
         accuracies += (np.argmax(out.detach(), axis=1) == labels).sum().item()
 
         if iteration % 100 == 0 :
-            print("Training iteration ", iteration, "out of ", len(train_loader.dataset)/args.batch_size, "loss = ", losses[-1], "accuracy = ", 100*accuracies/((iteration+1)*args.batch_size), "%")
+            print("Training iteration ", iteration, "out of ", len(train_loader.dataset)/args.batch_size, "loss = ", round(losses[-1], 2), "accuracy = ", round(100*accuracies/((iteration+1)*args.batch_size), 2), "%")
 
     average_loss = np.mean(losses)
     average_accuracy = accuracies / len(train_dataset)
@@ -124,12 +124,12 @@ def test(model, test_loader, optimizer, loss_function) :
         accuracies += (np.argmax(out.detach(), axis=1) == labels).sum().item()
 
         if iteration % 100 == 0 :
-            print("Testing iteration ", iteration, "out of ", len(test_loader.dataset)/args.batch_size, "loss = ", loss.item(), "accuracy = ", 100*accuracies/((iteration+1)*args.batch_size), "%")
+            print("Testing iteration ", iteration, "out of ", len(test_loader.dataset)/args.batch_size, "loss = ", round(loss.item(), 2), "accuracy = ", round(100*accuracies/((iteration+1)*args.batch_size), 2), "%")
 
     # output loss and accuracy
 
     average_loss = np.mean(losses)
-    average_accuracy = accuracies / len(train_dataset)
+    average_accuracy = accuracies / len(test_loader)
 
     print(100*average_accuracy, "%")
 
