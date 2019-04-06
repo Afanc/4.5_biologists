@@ -27,11 +27,11 @@ TODO :
 
 #we'll have to optimize parameters. this might help
 parser = argparse.ArgumentParser()
-parser.add_argument('--batch_size', default=32, type=int)
+parser.add_argument('--batch_size', default=128, type=int)
 parser.add_argument('--learning_rate', default=0.001, type=float)
-parser.add_argument('--hidden_width', default=512, type=int)
-parser.add_argument('--n_epochs', default=1, type=int)
-parser.add_argument('--dropout', default=0.95, type=float)
+parser.add_argument('--hidden_width', default=1024, type=int)
+parser.add_argument('--n_epochs', default=10, type=int)
+parser.add_argument('--dropout', default=1, type=float)
 args = parser.parse_args()
 
 #gpu if possible
@@ -130,7 +130,7 @@ def test(model, test_loader, optimizer, loss_function) :
     # output loss and accuracy
 
     average_loss = np.mean(losses)
-    average_accuracy = accuracies / len(test_loader)
+    average_accuracy = accuracies / len(test_dataset)
 
     # print(100*average_accuracy, "%")
 
@@ -155,7 +155,7 @@ if __name__ == '__main__' :
 
     #train and test
     for epoch in range(args.n_epochs) :
-        # print("Epoch ", epoch)
+        #print("Epoch ", epoch)
 
         training_results = train(model, train_loader, optimizer, loss_function)
         training_losses.append(training_results[0])
@@ -164,6 +164,7 @@ if __name__ == '__main__' :
         testing_results = test(model, train_loader, optimizer, loss_function)
         testing_losses.append(testing_results[0])
         testing_accuracies.append(testing_results[1])
+        #print('accuracy results: ' + str(testing_results))
     print(round(testing_accuracies[-1], 2), end='')
     # plotting disabled for run on cluster
     # plt.figure(figsize=(10,5))

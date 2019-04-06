@@ -1,0 +1,54 @@
+testing linear model with tuned parameter
+
+report : 
+               precision    recall  f1-score   support
+
+         0.0       0.96      0.99      0.97       980
+         1.0       0.98      0.99      0.99      1135
+         2.0       0.94      0.94      0.94      1032
+         3.0       0.92      0.94      0.93      1010
+         4.0       0.94      0.96      0.95       982
+         5.0       0.92      0.90      0.91       892
+         6.0       0.96      0.96      0.96       958
+         7.0       0.96      0.94      0.95      1028
+         8.0       0.94      0.91      0.93       974
+         9.0       0.95      0.92      0.94      1009
+
+   micro avg       0.95      0.95      0.95     10000
+   macro avg       0.95      0.95      0.95     10000
+weighted avg       0.95      0.95      0.95     10000
+
+model :  SVC(C=1e-06, cache_size=200, class_weight=None, coef0=0.0,
+  decision_function_shape='ovr', degree=3, gamma='auto_deprecated',
+  kernel='linear', max_iter=-1, probability=False, random_state=None,
+  shrinking=True, tol=0.001, verbose=False) 
+results :  94.71000000000001 %
+0.9471
+
+testing rbf model with tuned parameters
+report : 
+               precision    recall  f1-score   support
+
+         0.0       0.98      0.99      0.99       980
+         1.0       0.99      0.99      0.99      1135
+         2.0       0.98      0.98      0.98      1032
+         3.0       0.98      0.98      0.98      1010
+         4.0       0.98      0.98      0.98       982
+         5.0       0.98      0.98      0.98       892
+         6.0       0.99      0.98      0.99       958
+         7.0       0.98      0.98      0.98      1028
+         8.0       0.98      0.97      0.98       974
+         9.0       0.97      0.97      0.97      1009
+
+   micro avg       0.98      0.98      0.98     10000
+   macro avg       0.98      0.98      0.98     10000
+weighted avg       0.98      0.98      0.98     10000
+
+model :  SVC(C=10.0, cache_size=200, class_weight=None, coef0=0.0,
+  decision_function_shape='ovr', degree=3, gamma=1e-07, kernel='rbf',
+  max_iter=-1, probability=False, random_state=None, shrinking=True,
+  tol=0.001, verbose=False) 
+results :  98.22999999999999 %
+0.9823
+
+Process finished with exit code 0
