@@ -14,24 +14,17 @@ import matplotlib.pyplot as plt
 TODO :
 - create validation set (to be run at the very end), independent to both training and testing sets
 - write validation function
-- correctly track and plot losses and accuracies (matplotlib). check if it's do-able "live" ?
 - reguralize some shit 
     - add to transforms : pad + crop
-    - maybe add dropout ? or keep it for the cnn
-- maybe, just maybe, test other loss functions
-- and finally optimize parameters
-    - write a bash file that runs this thing with variable batch_sizes, lr, hidden_w
-    - and find the right epoch to stop training and avoid overfitting (graphs...)
-
 """
 
 #we'll have to optimize parameters. this might help
 parser = argparse.ArgumentParser()
-parser.add_argument('--batch_size', default=128, type=int)
+parser.add_argument('--batch_size', default=256, type=int)
 parser.add_argument('--learning_rate', default=0.001, type=float)
 parser.add_argument('--hidden_width', default=1024, type=int)
-parser.add_argument('--n_epochs', default=30, type=int)
-parser.add_argument('--dropout', default=1, type=float)
+parser.add_argument('--n_epochs', default=42, type=int)
+#parser.add_argument('--dropout', default=1, type=float)
 args = parser.parse_args()
 
 #gpu if possible

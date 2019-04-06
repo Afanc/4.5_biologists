@@ -1,0 +1,129 @@
+Run MLP on MNIST wiht batch_size=256, learning_rate=0.0010, hidden_width=1024, n_epochs=42
+Epoch  0
+Train accuracy 13.66% out of 60000 total
+Test accuracy 23.69% out of 10000 total
+Epoch  1
+Train accuracy 26.37% out of 60000 total
+Test accuracy 28.15% out of 10000 total
+Epoch  2
+Train accuracy 26.95% out of 60000 total
+Test accuracy 28.62% out of 10000 total
+Epoch  3
+Train accuracy 28.54% out of 60000 total
+Test accuracy 31.49% out of 10000 total
+Epoch  4
+Train accuracy 32.57% out of 60000 total
+Test accuracy 35.19% out of 10000 total
+Epoch  5
+Train accuracy 35.95% out of 60000 total
+Test accuracy 40.33% out of 10000 total
+Epoch  6
+Train accuracy 40.73% out of 60000 total
+Test accuracy 45.14% out of 10000 total
+Epoch  7
+Train accuracy 45.81% out of 60000 total
+Test accuracy 49.49% out of 10000 total
+Epoch  8
+Train accuracy 49.56% out of 60000 total
+Test accuracy 53.31% out of 10000 total
+Epoch  9
+Train accuracy 53.38% out of 60000 total
+Test accuracy 56.02% out of 10000 total
+Epoch  10
+Train accuracy 56.50% out of 60000 total
+Test accuracy 58.62% out of 10000 total
+Epoch  11
+Train accuracy 59.16% out of 60000 total
+Test accuracy 61.31% out of 10000 total
+Epoch  12
+Train accuracy 62.02% out of 60000 total
+Test accuracy 64.47% out of 10000 total
+Epoch  13
+Train accuracy 64.97% out of 60000 total
+Test accuracy 68.00% out of 10000 total
+Epoch  14
+Train accuracy 68.15% out of 60000 total
+Test accuracy 70.66% out of 10000 total
+Epoch  15
+Train accuracy 70.87% out of 60000 total
+Test accuracy 72.98% out of 10000 total
+Epoch  16
+Train accuracy 73.30% out of 60000 total
+Test accuracy 74.70% out of 10000 total
+Epoch  17
+Train accuracy 74.96% out of 60000 total
+Test accuracy 76.34% out of 10000 total
+Epoch  18
+Train accuracy 76.58% out of 60000 total
+Test accuracy 77.60% out of 10000 total
+Epoch  19
+Train accuracy 77.94% out of 60000 total
+Test accuracy 78.66% out of 10000 total
+Epoch  20
+Train accuracy 79.09% out of 60000 total
+Test accuracy 79.88% out of 10000 total
+Epoch  21
+Train accuracy 80.09% out of 60000 total
+Test accuracy 80.58% out of 10000 total
+Epoch  22
+Train accuracy 80.93% out of 60000 total
+Test accuracy 81.50% out of 10000 total
+Epoch  23
+Train accuracy 81.74% out of 60000 total
+Test accuracy 82.27% out of 10000 total
+Epoch  24
+Train accuracy 82.34% out of 60000 total
+Test accuracy 82.88% out of 10000 total
+Epoch  25
+Train accuracy 82.99% out of 60000 total
+Test accuracy 83.39% out of 10000 total
+Epoch  26
+Train accuracy 83.42% out of 60000 total
+Test accuracy 84.07% out of 10000 total
+Epoch  27
+Train accuracy 83.85% out of 60000 total
+Test accuracy 84.58% out of 10000 total
+Epoch  28
+Train accuracy 84.29% out of 60000 total
+Test accuracy 84.85% out of 10000 total
+Epoch  29
+Train accuracy 84.71% out of 60000 total
+Test accuracy 85.19% out of 10000 total
+Epoch  30
+Train accuracy 85.06% out of 60000 total
+Test accuracy 85.54% out of 10000 total
+Epoch  31
+Train accuracy 85.40% out of 60000 total
+Test accuracy 85.70% out of 10000 total
+Epoch  32
+Train accuracy 85.69% out of 60000 total
+Test accuracy 86.01% out of 10000 total
+Epoch  33
+Train accuracy 86.00% out of 60000 total
+Test accuracy 86.33% out of 10000 total
+Epoch  34
+Train accuracy 86.31% out of 60000 total
+Test accuracy 86.48% out of 10000 total
+Epoch  35
+Train accuracy 86.56% out of 60000 total
+Test accuracy 86.72% out of 10000 total
+Epoch  36
+Train accuracy 86.81% out of 60000 total
+Test accuracy 86.85% out of 10000 total
+Epoch  37
+Train accuracy 87.04% out of 60000 total
+Test accuracy 87.16% out of 10000 total
+Epoch  38
+Train accuracy 87.25% out of 60000 total
+Test accuracy 87.49% out of 10000 total
+Epoch  39
+Train accuracy 87.45% out of 60000 total
+Test accuracy 87.68% out of 10000 total
+Epoch  40
+Train accuracy 87.64% out of 60000 total
+Test accuracy 87.87% out of 10000 total
+Epoch  41
+Train accuracy 87.85% out of 60000 total
+Test accuracy 88.04% out of 10000 total
+accuracy results: (0.41107537895441054, 88.04)
+88.04
