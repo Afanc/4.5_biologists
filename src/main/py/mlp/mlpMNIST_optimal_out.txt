@@ -125,5 +125,5 @@ Test accuracy 87.87% out of 10000 total
 Epoch  41
 Train accuracy 87.85% out of 60000 total
 Test accuracy 88.04% out of 10000 total
-accuracy results: (0.41107537895441054, 88.04)
+Final accuracy results: (average_loss=0.41107537895441054, accuracy=88.04)
 88.04
