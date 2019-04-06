@@ -1,0 +1,100 @@
+optimizing parameter for linear model ...
+C:  1.000e-08    mean score:   0.758
+C:  3.162e-08    mean score:   0.859
+C:  1.000e-07    mean score:   0.889
+C:  3.162e-07    mean score:   0.899
+C:  1.000e-06    mean score:   0.903
+C:  3.162e-06    mean score:   0.894
+C:  1.000e-05    mean score:   0.894
+C:  3.162e-05    mean score:   0.894
+C:  1.000e-04    mean score:   0.894
+C:  3.162e-04    mean score:   0.894
+C:  1.000e-03    mean score:   0.894
+C:  3.162e-03    mean score:   0.894
+C:  1.000e-02    mean score:   0.894
+C:  3.162e-02    mean score:   0.894
+C:  1.000e-01    mean score:   0.894
+C:  3.162e-01    mean score:   0.894
+
+{'C': 1e-06, 'kernel': 'linear'}
+
+optimizing parameters for rbf model ...
+C:  1.000e-01    gamma:   1.000e-08    mean score:   0.118
+C:  1.000e-01    gamma:   1.000e-07    mean score:   0.807
+C:  1.000e-01    gamma:   1.000e-06    mean score:   0.210
+C:  1.000e-01    gamma:   1.000e-05    mean score:   0.118
+C:  1.000e+00    gamma:   1.000e-08    mean score:   0.839
+C:  1.000e+00    gamma:   1.000e-07    mean score:   0.909
+C:  1.000e+00    gamma:   1.000e-06    mean score:   0.863
+C:  1.000e+00    gamma:   1.000e-05    mean score:   0.144
+C:  1.000e+01    gamma:   1.000e-08    mean score:   0.898
+C:  1.000e+01    gamma:   1.000e-07    mean score:   0.924
+C:  1.000e+01    gamma:   1.000e-06    mean score:   0.869
+C:  1.000e+01    gamma:   1.000e-05    mean score:   0.156
+C:  1.000e+02    gamma:   1.000e-08    mean score:   0.902
+C:  1.000e+02    gamma:   1.000e-07    mean score:   0.923
+C:  1.000e+02    gamma:   1.000e-06    mean score:   0.869
+C:  1.000e+02    gamma:   1.000e-05    mean score:   0.156
+C:  1.000e+03    gamma:   1.000e-08    mean score:   0.900
+C:  1.000e+03    gamma:   1.000e-07    mean score:   0.923
+C:  1.000e+03    gamma:   1.000e-06    mean score:   0.869
+C:  1.000e+03    gamma:   1.000e-05    mean score:   0.156
+C:  1.000e+04    gamma:   1.000e-08    mean score:   0.900
+C:  1.000e+04    gamma:   1.000e-07    mean score:   0.923
+C:  1.000e+04    gamma:   1.000e-06    mean score:   0.869
+C:  1.000e+04    gamma:   1.000e-05    mean score:   0.156
+{'C': 10.0, 'gamma': 1e-07, 'kernel': 'rbf'}
+testing linear model with tuned parameter
+
+report : 
+               precision    recall  f1-score   support
+
+           0       0.94      1.00      0.97        34
+           1       0.86      0.92      0.89        39
+           2       0.81      0.90      0.85        39
+           3       0.89      0.89      0.89        38
+           4       0.90      0.98      0.94        47
+           5       0.87      0.82      0.85        40
+           6       0.97      0.92      0.95        38
+           7       1.00      0.85      0.92        47
+           8       0.83      0.79      0.81        38
+           9       0.90      0.90      0.90        40
+
+   micro avg       0.90      0.90      0.90       400
+   macro avg       0.90      0.90      0.90       400
+weighted avg       0.90      0.90      0.90       400
+
+model :  SVC(C=1e-06, cache_size=200, class_weight=None, coef0=0.0,
+  decision_function_shape='ovr', degree=3, gamma='auto_deprecated',
+  kernel='linear', max_iter=-1, probability=False, random_state=None,
+  shrinking=True, tol=0.001, verbose=False) 
+results :  89.75 %
+0.8975
+
+testing rbf model with tuned parameters
+report : 
+               precision    recall  f1-score   support
+
+           0       0.94      1.00      0.97        34
+           1       0.90      0.95      0.92        39
+           2       0.82      0.95      0.88        39
+           3       0.94      0.84      0.89        38
+           4       0.94      0.98      0.96        47
+           5       0.95      0.93      0.94        40
+           6       1.00      0.97      0.99        38
+           7       1.00      0.85      0.92        47
+           8       0.88      0.92      0.90        38
+           9       0.92      0.90      0.91        40
+
+   micro avg       0.93      0.93      0.93       400
+   macro avg       0.93      0.93      0.93       400
+weighted avg       0.93      0.93      0.93       400
+
+model :  SVC(C=10.0, cache_size=200, class_weight=None, coef0=0.0,
+  decision_function_shape='ovr', degree=3, gamma=1e-07, kernel='rbf',
+  max_iter=-1, probability=False, random_state=None, shrinking=True,
+  tol=0.001, verbose=False) 
+results :  92.75 %
+0.9275
+
+Process finished with exit code 0
