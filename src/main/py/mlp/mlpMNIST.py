@@ -30,43 +30,46 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--batch_size', default=128, type=int)
 parser.add_argument('--learning_rate', default=0.001, type=float)
 parser.add_argument('--hidden_width', default=1024, type=int)
-parser.add_argument('--n_epochs', default=10, type=int)
+parser.add_argument('--n_epochs', default=30, type=int)
 parser.add_argument('--dropout', default=1, type=float)
 args = parser.parse_args()
 
 #gpu if possible
 device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 
-#transformations (into tensors...)
-transforms = Compose([ToTensor(), Normalize(mean=(0.5,), std=(0.5,))])
 
-#https://pytorch.org/docs/stable/torchvision/datasets.html#mnist
-train_dataset = MNIST(root='data', train=True, download=True, transform=transforms)
-test_dataset = MNIST(root='data', train=False, download=True, transform=transforms)
+def loadDatasets(batch_size):
+    global train_loader, test_loader
+    # transformations (into tensors...)
+    transforms = Compose([ToTensor(), Normalize(mean=(0.5,), std=(0.5,))])
+    # https://pytorch.org/docs/stable/torchvision/datasets.html#mnist
+    train_dataset = MNIST(root='data', train=True, download=True, transform=transforms)
+    test_dataset = MNIST(root='data', train=False, download=True, transform=transforms)
+    # dataloaders
+    # things that load the images into the network. Necessary since you don't want to do this by hand (= 1 at a time)
+    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+    test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=True)
 
-#dataloaders
-#things that load the images into the network. Necessary since you don't want to do this by hand (= 1 at a time)
-train_loader = DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True)
-test_loader = DataLoader(test_dataset, batch_size=args.batch_size, shuffle=True)
 
 #1 hidden layer nn
 class simple_MLP(nn.Module):
-    def __init__(self):
+    def __init__(self, hidden_width):
         super(simple_MLP, self).__init__()
-        self.main = nn.Sequential(nn.Linear(28*28, args.hidden_width),   #input layer
-                                  nn.ReLU(),              #activation function
-                                  # nn.Dropout(args.dropout),
-                                  nn.Linear(args.hidden_width, args.hidden_width//2),
+        self.main = nn.Sequential(nn.Linear(28 * 28, hidden_width),  #input layer
+                                  nn.ReLU(),  #activation function
+                                  #nn.Dropout(dropout),
+                                  nn.Linear(hidden_width, hidden_width // 2),
                                   nn.ReLU(),
-                                  nn.Linear(args.hidden_width//2, args.hidden_width//4),
+                                  nn.Linear(hidden_width // 2, hidden_width // 4),
                                   nn.ReLU(),
-                                  nn.Linear(args.hidden_width//4, 10))     #first hidden layer
+                                  nn.Linear(hidden_width // 4, 10))     #first hidden layer
 
     #what does it do
     def forward(self,x) :
         flat = x.view(x.size(0), 28*28)  #we flatten the image (channels...)
         out = self.main(flat)             #pass it through the layers
         return(out)
+
 
 #train it
 def train(model, train_loader, optimizer, loss_function) :
@@ -76,9 +79,10 @@ def train(model, train_loader, optimizer, loss_function) :
 
     #and other things we would like to track
     losses = []
-    accuracies = 0
+    correct = 0
+    total = 0
 
-    for iteration, (images, labels) in enumerate(train_loader) :
+    for iteration, (images, labels) in enumerate(train_loader):
 
         #set all the gradients to 0
         optimizer.zero_grad()
@@ -92,17 +96,19 @@ def train(model, train_loader, optimizer, loss_function) :
         optimizer.step()
 
         losses.append(loss.item())
-        accuracies += (np.argmax(out.detach(), axis=1) == labels).sum().item()
+        predicted = np.argmax(out.detach(), axis=1)
+        correct += (predicted == labels).sum().item()
+        total += labels.size(0)
 
         # if iteration % 100 == 0 :
         #     print("Training iteration ", iteration, "out of ", len(train_loader.dataset)/args.batch_size, "loss = ", round(losses[-1], 2), "accuracy = ", round(100*accuracies/((iteration+1)*args.batch_size), 2), "%")
 
     average_loss = np.mean(losses)
-    average_accuracy = accuracies / len(train_dataset)
+    accuracy = (100 * correct / total)
 
-    # print(100*average_accuracy, "%")
+    print('Train accuracy %.2f%% out of %d total' % (accuracy, total))
+    return((average_loss, accuracy))
 
-    return((average_loss, average_accuracy))
 
 #test it
 def test(model, test_loader, optimizer, loss_function) :
@@ -111,61 +117,71 @@ def test(model, test_loader, optimizer, loss_function) :
     model.eval()
 
     losses = []
-    accuracies = 0
+    correct = 0
+    total = 0
 
-    for iteration, (images, labels) in enumerate(test_loader) :
+    with torch.no_grad():
+        for iteration, (images, labels) in enumerate(test_loader):
+            out = model(images)
+            #calculate the loss and backpropagate
+            loss = loss_function(out, labels)
+            losses.append(loss.item())
+            predicted = np.argmax(out.detach(), axis=1)
+            correct += (predicted == labels).sum().item()
+            total += labels.size(0)
 
-        #get the output
-        out = model(images)
-
-        #calculate the loss and backpropagate
-        loss = loss_function(out, labels)
-
-        losses.append(loss.item())
-        accuracies += (np.argmax(out.detach(), axis=1) == labels).sum().item()
-
-        # if iteration % 100 == 0 :
-            # print("Testing iteration ", iteration, "out of ", len(test_loader.dataset)/args.batch_size, "loss = ", round(loss.item(), 2), "accuracy = ", round(100*accuracies/((iteration+1)*args.batch_size), 2), "%")
-
-    # output loss and accuracy
+            # if iteration % 100 == 0 :
+                # print("Testing iteration ", iteration, "out of ", len(test_loader.dataset)/args.batch_size, "loss = ", round(loss.item(), 2), "accuracy = ", round(100*accuracies/((iteration+1)*args.batch_size), 2), "%")
 
     average_loss = np.mean(losses)
-    average_accuracy = accuracies / len(test_dataset)
+    accuracy = (100 * correct / total)
 
-    # print(100*average_accuracy, "%")
+    print('Test accuracy %.2f%% out of %d total' % (accuracy, total))
 
-    return((average_loss, average_accuracy))
+    return((average_loss, accuracy))
 
-if __name__ == '__main__' :
 
-    model = simple_MLP()
-    #send it to the device
+def trainAndTest(batch_size, learning_rate, hidden_width, n_epochs):
+    global model, loss_function, optimizer, training_losses, training_accuracies, testing_losses, testing_accuracies, testing_accuracy
+
+    print('Run MLP on MNIST wiht batch_size=%d, learning_rate=%.4f, hidden_width=%d, n_epochs=%d ' %
+          (batch_size, learning_rate, hidden_width, n_epochs))
+
+    loadDatasets(batch_size=batch_size)
+
+    model = simple_MLP(hidden_width=hidden_width)
+    # send it to the device
     model.to(device)
-
-    #define loss_fn and set optimizer up
+    # define loss_fn and set optimizer up
     loss_function = nn.CrossEntropyLoss()
-    optimizer = torch.optim.SGD(model.parameters(), lr=args.learning_rate)
-
+    optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
     training_losses = []
     training_accuracies = []
-
     testing_losses = []
     testing_accuracies = []
-
-
-    #train and test
-    for epoch in range(args.n_epochs) :
-        #print("Epoch ", epoch)
-
+    # train and test
+    for epoch in range(n_epochs):
+        print("Epoch ", epoch)
         training_results = train(model, train_loader, optimizer, loss_function)
         training_losses.append(training_results[0])
         training_accuracies.append(training_results[1])
-
-        testing_results = test(model, train_loader, optimizer, loss_function)
+        testing_results = test(model, test_loader, optimizer, loss_function)
         testing_losses.append(testing_results[0])
         testing_accuracies.append(testing_results[1])
-        #print('accuracy results: ' + str(testing_results))
-    print(round(testing_accuracies[-1], 2), end='')
+
+    print('accuracy results: ' + str(testing_results))
+    return testing_accuracies[-1]
+
+
+if __name__ == '__main__':
+
+    print(round(trainAndTest(batch_size=args.batch_size,
+                       learning_rate=args.learning_rate,
+                       hidden_width=args.hidden_width,
+                       n_epochs=args.n_epochs), 2),
+          end='')
+
+    # ### this could go in plotResult() function ###
     # plotting disabled for run on cluster
     # plt.figure(figsize=(10,5))
     # plt.subplot(1,2,1)
