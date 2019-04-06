@@ -4,6 +4,7 @@ from sklearn import svm
 from sklearn.metrics import classification_report, confusion_matrix  
 import numpy as np
 from sklearn.model_selection import GridSearchCV
+from torchvision.datasets import MNIST
 
 def train(model, data) :
     train_labels = data[:,0]
@@ -76,39 +77,70 @@ def find_C_gamma_RBF_kernel(data):
 
 
 if __name__ == '__main__':
-    train_data = np.loadtxt(open("data/train_sub.csv", "rb"), delimiter=",", skiprows=0, dtype = np.uint16)
-    test_data = np.loadtxt(open("data/test_sub.csv", "rb"), delimiter=",", skiprows=0, dtype = np.uint16)
-    #in case the symlink doesn't work for you, you might have to use this... How stupid does this path look EH ?
-    #train = np.loadtxt(open("../../../../data/train_sub.csv", "rb"), delimiter=",", skiprows=0, dtype = np.uint16)     
+    #this part is for parameter optimization on the reduced MNIST set
+    # train_data = np.loadtxt(open("data/train_sub.csv", "rb"), delimiter=",", skiprows=0, dtype = np.uint16)
+    # test_data = np.loadtxt(open("data/test_sub.csv", "rb"), delimiter=",", skiprows=0, dtype = np.uint16)
+    # #in case the symlink doesn't work for you, you might have to use this... How stupid does this path look EH ?
+    # #train = np.loadtxt(open("../../../../data/train_sub.csv", "rb"), delimiter=",", skiprows=0, dtype = np.uint16)
+    #
+    #
+    # #find parameters for linear model reduced data set
+    # print("optimizing parameter for linear model ...")
+    # linear_parameters= find_C_linear_kernel(train_data)
+    # print()
+    # print(linear_parameters)  # output: {'C': 1e-06, 'kernel': 'linear'}
+    # print()
+    #
+    # #find parameters for rbf model using the reduced data set
+    # print("optimizing parameters for rbf model ...")
+    # rbf_parameters = find_C_gamma_RBF_kernel(train_data)
+    # print(rbf_parameters)   # output: {'C': 10.0, 'gamma': 1e-07, 'kernel': 'rbf'}
+    #
+    #
+    # #applying tuned parameters for linear model on reduced Data set
+    # print("testing linear model with tuned parameter")
+    # linear_model = svm.SVC(kernel="linear", decision_function_shape="ovr", C=linear_parameters["C"])
+    # print()
+    # print(train_and_test(linear_model, train_data, test_data))
+    # print()
+    #
+    #
+    # #applying tuned parameters for rbf model on reduced Data set
+    # print("testing rbf model with tuned parameters")
+    # rbf_model = svm.SVC(kernel="rbf", decision_function_shape="ovr", C=rbf_parameters["C"], gamma=rbf_parameters["gamma"])
+    # print(train_and_test(rbf_model, train_data, test_data))
+    #
+    # linear_model_better = svm.LinearSVC(penalty='l2',loss='squared_hinge', dual=False, tol=0.0001)
+    # train_and_test(linear_model_better, train_data, test_data)
 
 
-    #find parameters for linear model
-    print("optimizing parameter for linear model ...")
-    linear_parameters= find_C_linear_kernel(train_data)
-    print()
-    print(linear_parameters)  # output: {'C': 1e-06, 'kernel': 'linear'}
-    print()
+    #####################################################################################
 
-    #"""
-    #find parameters for rbf model
-    print("optimizing parameters for rbf model ...")
-    rbf_parameters = find_C_gamma_RBF_kernel(train_data)
-    print(rbf_parameters)   # output: {'C': 10.0, 'gamma': 1e-07, 'kernel': 'rbf'}
-    #"""
+    #the following is to apply the optimzed parameters on the full MNIST data set
 
-    #applying tuned parameters for linear model
+
+    #load the whole MNIST data set
+    train_dataset = MNIST(root='src/main/py/mlp/data', train=True, download=True, transform=False)
+    training_data = train_dataset.train_data.numpy().reshape(len(train_dataset), 28*28)
+    train_data_labels = train_dataset.train_labels.numpy().reshape(len(train_dataset))
+    full_train_data=np.zeros((len(train_dataset), 28*28+1))
+    full_train_data[:, 0]=train_data_labels
+    full_train_data[:, 1:]= training_data
+
+    test_dataset = MNIST(root='src/main/py/mlp/data', train=False, download=True, transform=False)
+    testing_data = test_dataset.test_data.numpy().reshape(len(test_dataset), 28*28)
+    test_data_labels = test_dataset.test_labels.numpy().reshape(len(test_dataset))
+    full_test_data=np.zeros((len(test_dataset), 28*28+1))
+    full_test_data[:, 0]=test_data_labels
+    full_test_data[:, 1:]= testing_data
+
+    #test linear kernel
     print("testing linear model with tuned parameter")
-    linear_model = svm.SVC(kernel="linear", decision_function_shape="ovr", C=linear_parameters["C"])
+    linear_model = svm.SVC(kernel="linear", decision_function_shape="ovr", C=1e-06)
     print()
-    print(train_and_test(linear_model, train_data, test_data))
+    print(train_and_test(linear_model, full_train_data, full_test_data))
     print()
-
-    #"""
-    #applying tuned parameters for rbf model
+    #test rbf kernel
     print("testing rbf model with tuned parameters")
-    rbf_model = svm.SVC(kernel="rbf", decision_function_shape="ovr", C=rbf_parameters["C"], gamma=rbf_parameters["gamma"])
-    print(train_and_test(rbf_model, train_data, test_data))
-    #"""
-
-    #linear_model_better = svm.LinearSVC(penalty='l2',loss='squared_hinge', dual=False, tol=0.0001)
-    #train_and_test(linear_model_better, train_data, test_data)
+    rbf_model = svm.SVC(kernel="rbf", decision_function_shape="ovr", C=10.0, gamma=1e-07)
+    print(train_and_test(rbf_model, full_train_data, full_test_data))
