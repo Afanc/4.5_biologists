@@ -7,13 +7,14 @@ if __name__ == '__main__':
 
     reportFile = open(reportFileName, 'w+')
     reportFile.write('***** MLP parameter test ***** \n')
+    reportFile.write('final_accuracy, batch_size, learning_rate, hidden_width, dropout' + '\n')
     reportFile.close()
     i=0
     print("Parameter optimization started \n   Creating report...")
-    for batchSize in range(16, 70, 16):
-        for learningRate in np.arange(1e-4, 1e-3, 3e-4):
-            for dropout in np.arange(0.75, 1.05, 0.05):
-                for hiddenWidth in range(64, 320, 64):
+    for batchSize in [64, 128, 192]:
+        for learningRate in [1e-3, 3e-3]:
+            for dropout in [1, 0.9, 0.8]:
+                for hiddenWidth in [512, 1024]:
                     i+=1
                     print("iteration", i, "out of 336")
                     #reportFile = open(reportFileName, 'a')
@@ -28,7 +29,3 @@ if __name__ == '__main__':
                     reportFile.write('%\tbatch_size: ' + str(batchSize) + '\tlearning_rate: ' + str(
                         learningRate) + '\thidden_width: ' + str(hiddenWidth) + '\tdropout: ' + str(dropout) + '\n')
                     reportFile.close()
-
-                break
-            break
-        break
