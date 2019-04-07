@@ -7,6 +7,8 @@ Fix the three lines below marked with PR_FILL_HERE
 import torch
 import torch.nn as nn
 import utils
+import matplotlib.pyplot as plt
+import numpy as np
 
 class Flatten(nn.Module):
     """
@@ -93,16 +95,18 @@ utils.loadDatasets(batch_size)
 model = PR_CNN()
 model.to(device)
 
-learning_rate = 0.0001
+learning_rate = 0.001
 loss_function = nn.CrossEntropyLoss()
-optimizer = torch.optim.SGD(model.parameters(), lr = learning_rate)
+optimizer = torch.optim.Adam(model.parameters(), lr = learning_rate)
+scheduler = torch.optim.lr_scheduler.StepLR(optimizer=optimizer, step_size=5, gamma=0.1)
+
 
 training_losses = []
 training_accuracies = []
 testing_losses = []
 testing_accuracies = []
 
-n_epochs = 10
+n_epochs = 15
 
 for epoch in range(n_epochs):
         print("Epoch ", epoch)
@@ -114,3 +118,18 @@ for epoch in range(n_epochs):
         testing_losses.append(testing_results[0])
         testing_accuracies.append(testing_results[1])
 
+
+        if scheduler :
+            scheduler.step()
+
+plt.figure(figsize=(10,5))
+plt.subplot(1,2,1)
+plt.plot(np.arange(n_epochs), training_losses, color="blue", label="train loss")
+plt.plot(np.arange(n_epochs), validation_losses, color="red", label="val loss")
+plt.legend(loc='upper right')
+plt.subplot(1,2,2)
+plt.plot(np.arange(n_epochs), training_accuracies, color="blue", label="train accuracy")
+plt.plot(np.arange(n_epochs), validation_accuracies, color="red", label="val accuracy")
+plt.legend(loc='upper right')
+plt.tight_layout()
+plt.show()
