@@ -25,7 +25,7 @@ def loadDatasets(batch_size):
     test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=True)
 
 
-def train(model, train_loader, optimizer, loss_function) :
+def train(model, train_loader, optimizer, loss_function, batch_size) :
 
     #this does nice shit in case we dropout or other
     model.train()
@@ -56,7 +56,7 @@ def train(model, train_loader, optimizer, loss_function) :
         total += labels.size(0)
 
         if iteration % 100 == 0 :
-            print("Training iteration ", iteration, "out of ", len(train_loader.dataset)/args.batch_size, "loss = ", round(losses[-1], 2), "accuracy = ", round(100*accuracies/((iteration+1)*args.batch_size), 2), "%")
+            print("Training iteration ", iteration, "out of ", len(train_loader.dataset)/batch_size, "loss = ", round(losses[-1], 2), "accuracy = ", round(100*correct/total, 2), "%")
 
     average_loss = np.mean(losses)
     accuracy = (100 * correct / total)
@@ -65,7 +65,7 @@ def train(model, train_loader, optimizer, loss_function) :
     return((average_loss, accuracy))
 
 
-def test(model, test_loader, optimizer, loss_function) :
+def test(model, test_loader, optimizer, loss_function, batch_size) :
 
     #no dropout
     model.eval()
@@ -87,7 +87,7 @@ def test(model, test_loader, optimizer, loss_function) :
             total += labels.size(0)
 
             if iteration % 100 == 0 :
-                print("Testing iteration ", iteration, "out of ", len(test_loader.dataset)/args.batch_size, "loss = ", round(loss.item(), 2), "accuracy = ", round(100*accuracies/((iteration+1)*args.batch_size), 2), "%")
+                print("Testing iteration ", iteration, "out of ", len(test_loader.dataset)/batch_size, "loss = ", round(loss.item(), 2), "accuracy = ", round(100*correct/total, 2), "%")
 
     average_loss = np.mean(losses)
     accuracy = (100 * correct / total)

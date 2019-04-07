@@ -56,7 +56,7 @@ class PR_CNN(nn.Module):
         self.conv1 = nn.Sequential(
             # PR_FILL_HERE: Here you have to put the input channels, output channels ands the kernel size
             # o = [(i + 2p -k)/s + 1]
-            nn.Conv2d(in_channels=3 , out_channels=96, kernel_size=4 , stride=3),
+            nn.Conv2d(in_channels=1 , out_channels=6, kernel_size=3 , stride=3, padding=10),
             nn.LeakyReLU()
         )
 
@@ -64,7 +64,7 @@ class PR_CNN(nn.Module):
         self.fc = nn.Sequential(
             Flatten(),
             # PR_FILL_HERE: Here you have to put the output size of the linear layer. DO NOT change 1536!
-            nn.Linear(1536, 10)
+            nn.Linear(1536, 10)     #~channel2*kernel_size**2 after maxpool
         )
 
     def forward(self, x):
@@ -82,13 +82,13 @@ class PR_CNN(nn.Module):
             Activations of the fully connected layer
         """
         x = self.conv1(x)
-        print(x.shape)
         x = self.fc(x)
         return x
 
 device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 
-utils.loadDatasets(32)
+batch_size = 32
+utils.loadDatasets(batch_size)
 
 model = PR_CNN()
 model.to(device)
@@ -97,5 +97,20 @@ learning_rate = 0.0001
 loss_function = nn.CrossEntropyLoss()
 optimizer = torch.optim.SGD(model.parameters(), lr = learning_rate)
 
+training_losses = []
+training_accuracies = []
+testing_losses = []
+testing_accuracies = []
 
-utils.train(model, utils.train_loader, optimizer, loss_function)
+n_epochs = 10
+
+for epoch in range(n_epochs):
+        print("Epoch ", epoch)
+        training_results = utils.train(model, utils.train_loader, optimizer, loss_function, batch_size)
+        training_losses.append(training_results[0])
+        training_accuracies.append(training_results[1])
+
+        testing_results= utils.test(model, utils.train_loader, optimizer, loss_function, batch_size)
+        testing_losses.append(testing_results[0])
+        testing_accuracies.append(testing_results[1])
+
