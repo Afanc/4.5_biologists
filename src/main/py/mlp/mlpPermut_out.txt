@@ -1,0 +1,49 @@
+Run MLP on MNIST with batch_size=64, learning_rate=0.0090, hidden_width=1024, 1 hidden layer,
+max_no_epochs=15, delta_accuracy=0.01 %
+Epoch  0
+Train accuracy 73.18 % out of 40200 total
+Test accuracy 86.74 % out of 10000 total
+Epoch  1
+Train accuracy 88.12 % out of 40200 total
+Test accuracy 89.84 % out of 10000 total
+Epoch  2
+Train accuracy 89.81 % out of 40200 total
+Test accuracy 90.69 % out of 10000 total
+Epoch  3
+Train accuracy 90.88 % out of 40200 total
+Test accuracy 91.62 % out of 10000 total
+Epoch  4
+Train accuracy 91.54 % out of 40200 total
+Test accuracy 92.36 % out of 10000 total
+Epoch  5
+Train accuracy 92.18 % out of 40200 total
+Test accuracy 92.47 % out of 10000 total
+Epoch  6
+Train accuracy 92.74 % out of 40200 total
+Test accuracy 93.19 % out of 10000 total
+Epoch  7
+Train accuracy 93.18 % out of 40200 total
+Test accuracy 91.92 % out of 10000 total
+Epoch  8
+Train accuracy 93.58 % out of 40200 total
+Test accuracy 93.63 % out of 10000 total
+Epoch  9
+Train accuracy 94.04 % out of 40200 total
+Test accuracy 92.65 % out of 10000 total
+Epoch  10
+Train accuracy 94.35 % out of 40200 total
+Test accuracy 94.44 % out of 10000 total
+Epoch  11
+Train accuracy 94.70 % out of 40200 total
+Test accuracy 94.49 % out of 10000 total
+Epoch  12
+Train accuracy 95.04 % out of 40200 total
+Test accuracy 94.92 % out of 10000 total
+Epoch  13
+Train accuracy 95.32 % out of 40200 total
+Test accuracy 94.19 % out of 10000 total
+Epoch  14
+Train accuracy 95.53 % out of 40200 total
+Test accuracy 94.80 % out of 10000 total
+Final results: average_loss:0.18 accuracy:94.80 % after 15 epochs
+94.8

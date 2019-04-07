@@ -206,7 +206,7 @@ def plotResults():
     plotResultPanel(epoch_number_final, training_accuracies, testing_accuracies, x_axis_label = "training epoch", \
                     y_axis_label = "accuracy", line_label1 = "training set", line_label2 = "test set", \
                     line_color1 = "blue", line_color2 = "red", plot_title = "Accuracy")
-    figure_name = "MLP_4.5_Biologists__bs_" + str(args.batch_size) + "__lr_" + str(args.learning_rate) + "__hw_" \
+    figure_name = "MLP_PermutMNIST_4.5_Biologists__bs_" + str(args.batch_size) + "__lr_" + str(args.learning_rate) + "__hw_" \
                   + str(args.hidden_width) + "__no of epochs_" + str(epoch_number_final) + ".png"
     path = "figures"
     try:
