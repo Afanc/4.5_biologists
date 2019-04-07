@@ -106,7 +106,7 @@ training_accuracies = []
 testing_losses = []
 testing_accuracies = []
 
-n_epochs = 15
+n_epochs = 1
 
 for epoch in range(n_epochs):
         print("Epoch ", epoch)
@@ -125,11 +125,11 @@ for epoch in range(n_epochs):
 plt.figure(figsize=(10,5))
 plt.subplot(1,2,1)
 plt.plot(np.arange(n_epochs), training_losses, color="blue", label="train loss")
-plt.plot(np.arange(n_epochs), validation_losses, color="red", label="val loss")
+plt.plot(np.arange(n_epochs), testing_losses, color="red", label="val loss")
 plt.legend(loc='upper right')
 plt.subplot(1,2,2)
 plt.plot(np.arange(n_epochs), training_accuracies, color="blue", label="train accuracy")
-plt.plot(np.arange(n_epochs), validation_accuracies, color="red", label="val accuracy")
+plt.plot(np.arange(n_epochs), testing_losses, color="red", label="val accuracy")
 plt.legend(loc='upper right')
 plt.tight_layout()
 plt.show()
