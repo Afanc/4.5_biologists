@@ -2,3 +2,7 @@ data/mnist/
 data/mnist_test.csv
 data/mnist_train.csv
 .idea/
+data/mnist-permutated-png-format/mnist
+src/main/py/mlp/data/MNIST
+test.csv
+train.csv
