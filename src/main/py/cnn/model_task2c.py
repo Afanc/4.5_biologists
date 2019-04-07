@@ -4,8 +4,9 @@ PATTERN RECOGNITION EXERCISE:
 Fix the three lines below marked with PR_FILL_HERE
 """
 
+import torch
 import torch.nn as nn
-
+import utils
 
 class Flatten(nn.Module):
     """
@@ -48,14 +49,14 @@ class PR_CNN(nn.Module):
             Dimensionality of the input, typically 3 for RGB
         """
         super(PR_CNN, self).__init__()
-
         # PR_FILL_HERE: Here you have to put the expected input size in terms of width and height of your input image
-        self.expected_input_size = (______, ______)
+        self.expected_input_size = (28, 28)
 
         # First layer
         self.conv1 = nn.Sequential(
             # PR_FILL_HERE: Here you have to put the input channels, output channels ands the kernel size
-            nn.Conv2d(in_channels=______, out_channels=______, kernel_size=______, stride=3),
+            # o = [(i + 2p -k)/s + 1]
+            nn.Conv2d(in_channels=3 , out_channels=96, kernel_size=4 , stride=3),
             nn.LeakyReLU()
         )
 
@@ -63,7 +64,7 @@ class PR_CNN(nn.Module):
         self.fc = nn.Sequential(
             Flatten(),
             # PR_FILL_HERE: Here you have to put the output size of the linear layer. DO NOT change 1536!
-            nn.Linear(1536, ______)
+            nn.Linear(1536, 10)
         )
 
     def forward(self, x):
@@ -81,5 +82,20 @@ class PR_CNN(nn.Module):
             Activations of the fully connected layer
         """
         x = self.conv1(x)
+        print(x.shape)
         x = self.fc(x)
         return x
+
+device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
+
+utils.loadDatasets(32)
+
+model = PR_CNN()
+model.to(device)
+
+learning_rate = 0.0001
+loss_function = nn.CrossEntropyLoss()
+optimizer = torch.optim.SGD(model.parameters(), lr = learning_rate)
+
+
+utils.train(model, utils.train_loader, optimizer, loss_function)
