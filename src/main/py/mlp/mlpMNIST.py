@@ -60,7 +60,7 @@ class simple_MLP(nn.Module):
                                   nn.Linear(hidden_width // 2, 10))  # for 1 hidden layer
 
 
-    #what does it do
+        #what does it do
     def forward(self,x) :
         flat = x.view(x.size(0), 28*28)  #we flatten the image (channels...)
         out = self.main(flat)             #pass it through the layers
