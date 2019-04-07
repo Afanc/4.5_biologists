@@ -6,9 +6,9 @@ import torch.nn as nn
 from torch.utils.data import DataLoader
 from torchvision.datasets import MNIST
 from torchvision.transforms import Compose, ToTensor, Normalize, RandomRotation, RandomCrop
+import torchvision
 import numpy as np
 import sys
-import os
 import matplotlib.pyplot as plt
 
 """
@@ -22,9 +22,9 @@ TODO :
 #we'll have to optimize parameters. this might help
 parser = argparse.ArgumentParser()
 parser.add_argument('--batch_size', default=64, type=int)
-parser.add_argument('--learning_rate', default=0.005, type=float)
-parser.add_argument('--hidden_width', default=4096, type=int)
-parser.add_argument('--n_epochs', default=64, type=int)
+parser.add_argument('--learning_rate', default=0.009, type=float)
+parser.add_argument('--hidden_width', default=1024, type=int)
+parser.add_argument('--n_epochs', default=15, type=int)
 #parser.add_argument('--dropout', default=1, type=float)
 args = parser.parse_args()
 
@@ -37,8 +37,32 @@ def loadDatasets(batch_size):
     # transformations (into tensors...)
     transforms = Compose([ToTensor(), Normalize(mean=(0.5,), std=(0.5,))])
     # https://pytorch.org/docs/stable/torchvision/datasets.html#mnist
-    train_dataset = MNIST(root='data', train=True, download=True, transform=transforms)
-    test_dataset = MNIST(root='data', train=False, download=True, transform=transforms)
+    #train_dataset = MNIST(root='data', train=True, download=True, transform=transforms)
+    #test_dataset = MNIST(root='data', train=False, download=True, transform=transforms)
+
+
+    # train_dataset = MNIST(root='mnist-permutated-png-format', train=True, download=False, transform=transforms)
+    # training_data = train_dataset.train_data.numpy().reshape(len(train_dataset), 28*28)
+    # train_data_labels = train_dataset.train_labels.numpy().reshape(len(train_dataset))
+    # full_train_data=np.zeros((len(train_dataset), 28*28+1))
+    # full_train_data[:, 0]=train_data_labels
+    # full_train_data[:, 1:]= training_data
+    train_dataset = torchvision.datasets.ImageFolder(
+        root='mnist-permutated-png-format/mnist/train',
+        transform=transforms  # torchvision.transforms.ToTensor()
+    )
+
+    # test_dataset = MNIST(root='mnist-permutated-png-format', train=False, download=False, transform=False)
+    # testing_data = test_dataset.test_data.numpy().reshape(len(test_dataset), 28*28)
+    # test_data_labels = test_dataset.test_labels.numpy().reshape(len(test_dataset))
+    # full_test_data=np.zeros((len(test_dataset), 28*28+1))
+    # full_test_data[:, 0]=test_data_labels
+    # full_test_data[:, 1:]= testing_data
+    test_dataset = torchvision.datasets.ImageFolder(
+        root='mnist-permutated-png-format/mnist/test',
+        transform=transforms   # torchvision.transforms.ToTensor()
+    )
+
     # dataloaders
     # things that load the images into the network. Necessary since you don't want to do this by hand (= 1 at a time)
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
@@ -49,18 +73,16 @@ def loadDatasets(batch_size):
 class simple_MLP(nn.Module):
     def __init__(self, hidden_width):
         super(simple_MLP, self).__init__()
-        self.main = nn.Sequential(nn.Linear(28 * 28, hidden_width),  # input layer
+        self.main = nn.Sequential(nn.Linear(28 * 28, hidden_width),  #input layer
                                   nn.ReLU(),  #activation function
                                   #nn.Dropout(dropout),
-                                  nn.Linear(hidden_width, hidden_width // 2),  # first hidden layer
+                                  nn.Linear(hidden_width, hidden_width // 2),
                                   nn.ReLU(),
-                                  # nn.Linear(hidden_width // 2, hidden_width // 4),  # second hidden layer
-                                  # nn.ReLU(),
-                                  # nn.Linear(hidden_width // 4, 10))  # for 2 hidden layers
-                                  nn.Linear(hidden_width // 2, 10))  # for 1 hidden layer
+                                  nn.Linear(hidden_width // 2, hidden_width // 4),
+                                  nn.ReLU(),
+                                  nn.Linear(hidden_width // 4, 10))     #first hidden layer
 
-
-        #what does it do
+    #what does it do
     def forward(self,x) :
         flat = x.view(x.size(0), 28*28)  #we flatten the image (channels...)
         out = self.main(flat)             #pass it through the layers
@@ -102,7 +124,7 @@ def train(model, train_loader, optimizer, loss_function) :
     average_loss = np.mean(losses)
     accuracy = (100 * correct / total)
 
-    # print('Train accuracy %.2f %% out of %d total' % (accuracy, total))
+    print('Train accuracy %.2f %% out of %d total' % (accuracy, total))
     return((average_loss, accuracy))
 
 
@@ -132,16 +154,16 @@ def test(model, test_loader, optimizer, loss_function) :
     average_loss = np.mean(losses)
     accuracy = (100 * correct / total)
 
-    # print('Test accuracy %.2f %% out of %d total' % (accuracy, total))
+    print('Test accuracy %.2f %% out of %d total' % (accuracy, total))
 
     return((average_loss, accuracy))
 
 
-def trainAndTest(batch_size, learning_rate, hidden_width, n_epochs, delta_accuracy=0.5):
+def trainAndTest(batch_size, learning_rate, hidden_width, n_epochs, delta_accuracy=0.01):
     global model, loss_function, optimizer, training_losses, training_accuracies, testing_losses, testing_accuracies, testing_accuracy
 
-    # print('Run MLP on MNIST with batch_size=%d, learning_rate=%.4f, hidden_width=%d, 1 hidden layer, \nmax_no_epochs=%d, delta_accuracy=%.2f %% '
-    #       % (batch_size, learning_rate, hidden_width, n_epochs, delta_accuracy))
+    print('Run MLP on MNIST wiht batch_size=%d, learning_rate=%.4f, hidden_width=%d, n_epochs=%d, delta_accuracy=%.4f %% '
+          % (batch_size, learning_rate, hidden_width, n_epochs, delta_accuracy))
 
     loadDatasets(batch_size=batch_size)
 
@@ -172,52 +194,36 @@ def trainAndTest(batch_size, learning_rate, hidden_width, n_epochs, delta_accura
             break
         current_accuracy = accuracy
 
-    # print('Final results: average_loss:%.2f accuracy:%.2f %% after %d epochs'
-    #       % (testing_results[0], testing_results[1], epoch+1))
+    print('Final results: average_loss:%.2f accuracy:%.2f %% after %d epochs'
+          % (testing_results[0], testing_results[1], epoch+1))
     return (testing_accuracies[-1], epoch+1)
-
-
-def plotResultPanel(x_vals, y_vals1, y_vals2, x_axis_label, y_axis_label, line_label1, \
-                    line_label2, line_color1, line_color2, plot_title):
-    plt.plot(np.arange(x_vals), y_vals1, color=line_color1, label=line_label1)
-    plt.plot(np.arange(x_vals), y_vals2, color=line_color2, label=line_label2)
-    plt.title(plot_title)
-    plt.xlabel(x_axis_label)
-    plt.ylabel(y_axis_label)
-    plt.legend(loc='right')
-
-
-def plotResults():
-    figure = plt.figure(figsize=(10,5))
-    plt.suptitle("Batch size: " + str(args.batch_size) + ", learning rate: " + str(args.learning_rate) \
-                 + ", hidden width: " + str(args.hidden_width) + ", 1 hidden layer,, no. of epochs: " + str(result[1]))
-    plt.subplot(1,2,1)
-    plotResultPanel(epoch_number_final, training_losses, testing_losses, x_axis_label = "training epoch", \
-                    y_axis_label = "loss", line_label1 = "training set", line_label2 = "test set", \
-                    line_color1 = "blue", line_color2 = "red", plot_title = "Loss")
-    plt.subplot(1,2,2)
-    plotResultPanel(epoch_number_final, training_accuracies, testing_accuracies, x_axis_label = "training epoch", \
-                    y_axis_label = "accuracy", line_label1 = "training set", line_label2 = "test set", \
-                    line_color1 = "blue", line_color2 = "red", plot_title = "Accuracy")
-    figure_name = "MLP_4.5_Biologists__bs_" + str(args.batch_size) + "__lr_" + str(args.learning_rate) + "__hw_" \
-                  + str(args.hidden_width) + "__no of epochs_" + str(epoch_number_final) + ".png"
-    path = "figures"
-    try:
-        os.makedirs(path)
-    except FileExistsError:  # directory already exists
-        pass
-    full_name = os.path.join(path, figure_name)
-    figure.savefig(full_name)
 
 
 if __name__ == '__main__':
 
-    result = trainAndTest(batch_size=args.batch_size,
+    print(round(trainAndTest(batch_size=args.batch_size,
                        learning_rate=args.learning_rate,
                        hidden_width=args.hidden_width,
-                       n_epochs=args.n_epochs)
-    # result[0]: testing accuracy;    result[1]: number of epochs to reach testing accuracy
-    epoch_number_final = result[1]
-    print(round(result[0], 2), end='')
+                       n_epochs=args.n_epochs), 2)[0],
+          end='')
 
-    plotResults()
+    # ### this could go in plotResult() function ###
+    # plotting disabled for run on cluster
+    # plt.figure(figsize=(10,5))
+    # plt.subplot(1,2,1)
+    # plt.plot(np.arange(args.n_epochs), training_losses, color="blue", label="training set loss")
+    # plt.plot(np.arange(args.n_epochs), testing_losses, color="red", label="test set loss")
+    # plt.xlabel("training epoch")
+    # plt.ylabel("loss")
+    # plt.legend(loc='upper right')
+    #
+    # plt.subplot(1,2,2)
+    # plt.plot(np.arange(args.n_epochs), training_accuracies, color="blue", label="training set acc")
+    # plt.plot(np.arange(args.n_epochs), testing_accuracies, color="red", label="test set acc")
+    # plt.xlabel("training epoch")
+    # plt.ylabel("accuracy")
+    # plt.legend(loc='upper right')
+    #
+    # plt.tight_layout()
+    # plt.savefig("MLP_4.5_Biologists.png")
+    # plt.show()
