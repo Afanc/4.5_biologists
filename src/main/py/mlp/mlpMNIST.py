@@ -20,10 +20,10 @@ TODO :
 
 #we'll have to optimize parameters. this might help
 parser = argparse.ArgumentParser()
-parser.add_argument('--batch_size', default=256, type=int)
-parser.add_argument('--learning_rate', default=0.001, type=float)
-parser.add_argument('--hidden_width', default=1024, type=int)
-parser.add_argument('--n_epochs', default=42, type=int)
+parser.add_argument('--batch_size', default=64, type=int)
+parser.add_argument('--learning_rate', default=0.005, type=float)
+parser.add_argument('--hidden_width', default=512, type=int)
+parser.add_argument('--n_epochs', default=64, type=int)
 #parser.add_argument('--dropout', default=1, type=float)
 args = parser.parse_args()
 
@@ -99,7 +99,7 @@ def train(model, train_loader, optimizer, loss_function) :
     average_loss = np.mean(losses)
     accuracy = (100 * correct / total)
 
-    print('Train accuracy %.2f%% out of %d total' % (accuracy, total))
+    print('Train accuracy %.2f %% out of %d total' % (accuracy, total))
     return((average_loss, accuracy))
 
 
@@ -129,16 +129,16 @@ def test(model, test_loader, optimizer, loss_function) :
     average_loss = np.mean(losses)
     accuracy = (100 * correct / total)
 
-    print('Test accuracy %.2f%% out of %d total' % (accuracy, total))
+    print('Test accuracy %.2f %% out of %d total' % (accuracy, total))
 
     return((average_loss, accuracy))
 
 
-def trainAndTest(batch_size, learning_rate, hidden_width, n_epochs):
+def trainAndTest(batch_size, learning_rate, hidden_width, n_epochs, delta_accuracy=0.01):
     global model, loss_function, optimizer, training_losses, training_accuracies, testing_losses, testing_accuracies, testing_accuracy
 
-    print('Run MLP on MNIST wiht batch_size=%d, learning_rate=%.4f, hidden_width=%d, n_epochs=%d ' %
-          (batch_size, learning_rate, hidden_width, n_epochs))
+    print('Run MLP on MNIST wiht batch_size=%d, learning_rate=%.4f, hidden_width=%d, n_epochs=%d, delta_accuracy=%.4f %% '
+          % (batch_size, learning_rate, hidden_width, n_epochs, delta_accuracy))
 
     loadDatasets(batch_size=batch_size)
 
@@ -152,7 +152,10 @@ def trainAndTest(batch_size, learning_rate, hidden_width, n_epochs):
     training_accuracies = []
     testing_losses = []
     testing_accuracies = []
+    current_accuracy = 0
+
     # train and test
+    epoch = 0
     for epoch in range(n_epochs):
         print("Epoch ", epoch)
         training_results = train(model, train_loader, optimizer, loss_function)
@@ -161,9 +164,14 @@ def trainAndTest(batch_size, learning_rate, hidden_width, n_epochs):
         testing_results = test(model, test_loader, optimizer, loss_function)
         testing_losses.append(testing_results[0])
         testing_accuracies.append(testing_results[1])
+        accuracy = testing_results[1]
+        if abs(accuracy - current_accuracy) < delta_accuracy:
+            break
+        current_accuracy = accuracy
 
-    print('accuracy results: ' + str(testing_results))
-    return testing_accuracies[-1]
+    print('Final results: average_loss:%.2f accuracy:%.2f %% after %d epochs'
+          % (testing_results[0], testing_results[1], epoch+1))
+    return (testing_accuracies[-1], epoch+1)
 
 
 if __name__ == '__main__':
@@ -171,7 +179,7 @@ if __name__ == '__main__':
     print(round(trainAndTest(batch_size=args.batch_size,
                        learning_rate=args.learning_rate,
                        hidden_width=args.hidden_width,
-                       n_epochs=args.n_epochs), 2),
+                       n_epochs=args.n_epochs), 2)[0],
           end='')
 
     # ### this could go in plotResult() function ###
