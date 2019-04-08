@@ -23,7 +23,7 @@ def loadDatasets(batch_size):
     # dataloaders
     # things that load the images into the network. Necessary since you don't want to do this by hand (= 1 at a time)
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
-    test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=True)
+    test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
 
 def loadDatasetsPermutMNIST(batch_size):
     global train_loader, test_loader
@@ -31,16 +31,18 @@ def loadDatasetsPermutMNIST(batch_size):
     transforms = Compose([Grayscale(num_output_channels=1), ToTensor(), Normalize(mean=(0.5,), std=(0.5,))])
     train_dataset = torchvision.datasets.ImageFolder(
         root='mnist-permutated-png-format/mnist/train',
+        train=True,
         transform=transforms
     )
     test_dataset = torchvision.datasets.ImageFolder(
         root='mnist-permutated-png-format/mnist/test',
+        train=False,
         transform=transforms
     )
     # dataloaders
     # things that load the images into the network. Necessary since you don't want to do this by hand (= 1 at a time)
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
-    test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=True)
+    test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
 
 
 def train(model, train_loader, optimizer, loss_function, batch_size) :
