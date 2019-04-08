@@ -59,7 +59,7 @@ class PR_CNN(nn.Module):
             # PR_FILL_HERE: Here you have to put the input channels, output channels ands the kernel size
             # o = [(i + 2p -k)/s + 1]
             nn.Conv2d(in_channels=1 , out_channels=6, kernel_size=3 , stride=3, padding=10),
-            nn.LeakyReLU()
+            nn.LeakyReLU(0.2)
         )
 
         # Classification layer
@@ -87,7 +87,7 @@ class PR_CNN(nn.Module):
         x = self.fc(x)
         return x
 
-def trainAndTest(batch_size=32, learning_rate=0.001, g=0.1, n_epochs=10) :
+def trainAndTest(batch_size=32, learning_rate=0.003, g=0.5, n_epochs=10) :
     device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 
     #batch_size = 32
@@ -122,16 +122,21 @@ def trainAndTest(batch_size=32, learning_rate=0.001, g=0.1, n_epochs=10) :
             if scheduler :
                 scheduler.step()
 
+    #return(testing_accuracies[-1])
+
+    plt.figure(figsize=(10,5))
+    plt.subplot(1,2,1)
+    plt.plot(np.arange(n_epochs), training_losses, color="blue", label="train loss")
+    plt.plot(np.arange(n_epochs), testing_losses, color="red", label="val loss")
+    plt.legend(loc='upper right')
+    plt.subplot(1,2,2)
+    plt.plot(np.arange(n_epochs), training_accuracies, color="blue", label="train accuracy")
+    plt.plot(np.arange(n_epochs), testing_accuracies, color="red", label="val accuracy")
+    plt.legend(loc='upper right')
+    plt.tight_layout()
+    plt.show()
+
     return(testing_accuracies[-1])
 
-#    plt.figure(figsize=(10,5))
-#    plt.subplot(1,2,1)
-#    plt.plot(np.arange(n_epochs), training_losses, color="blue", label="train loss")
-#    plt.plot(np.arange(n_epochs), testing_losses, color="red", label="val loss")
-#    plt.legend(loc='upper right')
-#    plt.subplot(1,2,2)
-#    plt.plot(np.arange(n_epochs), training_accuracies, color="blue", label="train accuracy")
-#    plt.plot(np.arange(n_epochs), testing_accuracies, color="red", label="val accuracy")
-#    plt.legend(loc='upper right')
-#    plt.tight_layout()
-#    plt.show()
+if __name__=='__main__' :
+    trainAndTest()
