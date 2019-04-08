@@ -22,9 +22,9 @@ TODO :
 #we'll have to optimize parameters. this might help
 parser = argparse.ArgumentParser()
 parser.add_argument('--batch_size', default=64, type=int)
-parser.add_argument('--learning_rate', default=0.005, type=float)
-parser.add_argument('--hidden_width', default=4096, type=int)
-parser.add_argument('--n_epochs', default=64, type=int)
+parser.add_argument('--learning_rate', default=0.1, type=float)
+parser.add_argument('--hidden_width', default=1024, type=int)
+parser.add_argument('--n_epochs', default=15, type=int)
 #parser.add_argument('--dropout', default=1, type=float)
 args = parser.parse_args()
 
