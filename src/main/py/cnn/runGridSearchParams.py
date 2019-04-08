@@ -4,7 +4,7 @@ import os
 import model_task2c as cnn
 
 if __name__ == '__main__':
-    maxEpochs = 1
+    maxEpochs = 10
     reportFileName = 'CNN_test_report.csv'
 
     reportFile = open(reportFileName, 'w+')
