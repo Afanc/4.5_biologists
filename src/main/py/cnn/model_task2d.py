@@ -58,7 +58,8 @@ class PR_CNN(nn.Module):
         self.conv1 = nn.Sequential(
             # PR_FILL_HERE: Here you have to put the input channels, output channels ands the kernel size
             # o = [(i + 2p -k)/s + 1]
-            nn.Conv2d(in_channels=3 , out_channels=8, kernel_size=7 , stride=3),
+            nn.Conv2d(in_channels=1, out_channels=24, kernel_size=7, stride=3),
+
             nn.LeakyReLU(0.2)
         )
 
@@ -87,7 +88,7 @@ class PR_CNN(nn.Module):
         x = self.fc(x)
         return x
 
-def trainAndTest(batch_size=32, learning_rate=0.003, g=0.5, n_epochs=10, plot=False) :
+def trainAndTest(batch_size=16, learning_rate=0.003, g=0.1, n_epochs=10, plot=False) :
     device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 
     #batch_size = 32
