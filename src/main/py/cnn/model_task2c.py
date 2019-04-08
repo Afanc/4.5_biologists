@@ -87,7 +87,7 @@ class PR_CNN(nn.Module):
         x = self.fc(x)
         return x
 
-def trainAndTest(batch_size=32, learning_rate=0.003, g=0.5, n_epochs=10) :
+def trainAndTest(batch_size=32, learning_rate=0.003, g=0.5, n_epochs=10, plot=False) :
     device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 
     #batch_size = 32
@@ -123,20 +123,20 @@ def trainAndTest(batch_size=32, learning_rate=0.003, g=0.5, n_epochs=10) :
                 scheduler.step()
 
     #return(testing_accuracies[-1])
-
-    plt.figure(figsize=(10,5))
-    plt.subplot(1,2,1)
-    plt.plot(np.arange(n_epochs), training_losses, color="blue", label="train loss")
-    plt.plot(np.arange(n_epochs), testing_losses, color="red", label="val loss")
-    plt.legend(loc='upper right')
-    plt.subplot(1,2,2)
-    plt.plot(np.arange(n_epochs), training_accuracies, color="blue", label="train accuracy")
-    plt.plot(np.arange(n_epochs), testing_accuracies, color="red", label="val accuracy")
-    plt.legend(loc='upper right')
-    plt.tight_layout()
-    plt.show()
+    if plot :
+        plt.figure(figsize=(10,5))
+        plt.subplot(1,2,1)
+        plt.plot(np.arange(n_epochs), training_losses, color="blue", label="train loss")
+        plt.plot(np.arange(n_epochs), testing_losses, color="red", label="val loss")
+        plt.legend(loc='upper right')
+        plt.subplot(1,2,2)
+        plt.plot(np.arange(n_epochs), training_accuracies, color="blue", label="train accuracy")
+        plt.plot(np.arange(n_epochs), testing_accuracies, color="red", label="val accuracy")
+        plt.legend(loc='upper right')
+        plt.tight_layout()
+        plt.show()
 
     return(testing_accuracies[-1])
 
 if __name__=='__main__' :
-    trainAndTest()
+    trainAndTest(n_epochs=15, plot=True)
