@@ -87,49 +87,51 @@ class PR_CNN(nn.Module):
         x = self.fc(x)
         return x
 
-device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
+def trainAndTest(batch_size=32, learning_rate=0.001, g=0.1, n_epochs=10) :
+    device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 
-batch_size = 32
-utils.loadDatasets(batch_size)
+    #batch_size = 32
+    utils.loadDatasets(batch_size)
 
-model = PR_CNN()
-model.to(device)
+    model = PR_CNN()
+    model.to(device)
 
-learning_rate = 0.001
-loss_function = nn.CrossEntropyLoss()
-optimizer = torch.optim.Adam(model.parameters(), lr = learning_rate)
-scheduler = torch.optim.lr_scheduler.StepLR(optimizer=optimizer, step_size=5, gamma=0.1)
-
-
-training_losses = []
-training_accuracies = []
-testing_losses = []
-testing_accuracies = []
-
-n_epochs = 10
-
-for epoch in range(n_epochs):
-        print("Epoch ", epoch)
-        training_results = utils.train(model, utils.train_loader, optimizer, loss_function, batch_size)
-        training_losses.append(training_results[0])
-        training_accuracies.append(training_results[1])
-
-        testing_results= utils.test(model, utils.train_loader, optimizer, loss_function, batch_size)
-        testing_losses.append(testing_results[0])
-        testing_accuracies.append(testing_results[1])
+    #learning_rate = learning_rate
+    loss_function = nn.CrossEntropyLoss()
+    optimizer = torch.optim.Adam(model.parameters(), lr = learning_rate)
+    scheduler = torch.optim.lr_scheduler.StepLR(optimizer=optimizer, step_size=5, gamma=g)
 
 
-        if scheduler :
-            scheduler.step()
+    training_losses = []
+    training_accuracies = []
+    testing_losses = []
+    testing_accuracies = []
 
-plt.figure(figsize=(10,5))
-plt.subplot(1,2,1)
-plt.plot(np.arange(n_epochs), training_losses, color="blue", label="train loss")
-plt.plot(np.arange(n_epochs), testing_losses, color="red", label="val loss")
-plt.legend(loc='upper right')
-plt.subplot(1,2,2)
-plt.plot(np.arange(n_epochs), training_accuracies, color="blue", label="train accuracy")
-plt.plot(np.arange(n_epochs), testing_accuracies, color="red", label="val accuracy")
-plt.legend(loc='upper right')
-plt.tight_layout()
-plt.show()
+    #n_epochs = 10
+
+    for epoch in range(n_epochs):
+            print("Epoch ", epoch)
+            training_results = utils.train(model, utils.train_loader, optimizer, loss_function, batch_size)
+            training_losses.append(training_results[0])
+            training_accuracies.append(training_results[1])
+
+            testing_results= utils.test(model, utils.train_loader, optimizer, loss_function, batch_size)
+            testing_losses.append(testing_results[0])
+            testing_accuracies.append(testing_results[1])
+
+            if scheduler :
+                scheduler.step()
+
+    return(testing_accuracies[-1])
+
+#    plt.figure(figsize=(10,5))
+#    plt.subplot(1,2,1)
+#    plt.plot(np.arange(n_epochs), training_losses, color="blue", label="train loss")
+#    plt.plot(np.arange(n_epochs), testing_losses, color="red", label="val loss")
+#    plt.legend(loc='upper right')
+#    plt.subplot(1,2,2)
+#    plt.plot(np.arange(n_epochs), training_accuracies, color="blue", label="train accuracy")
+#    plt.plot(np.arange(n_epochs), testing_accuracies, color="red", label="val accuracy")
+#    plt.legend(loc='upper right')
+#    plt.tight_layout()
+#    plt.show()
