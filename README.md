@@ -3,10 +3,10 @@
 [Source Code for task 2b](src/main/py/mlp/mlpMNIST.py)
 
 ![Result Plot for task 2b MLP on the MNIST](src/main/py/mlp//figures/MLP_4.5_Biologists__bs_64__lr_0.1__hw_1024__no%20of%20epochs_4.png)
-final accuracy (testing) on task 2b : 88.04%
+final accuracy (testing) on task 2b : 97.46%
 
 [Source Code for task 2c](src/main/py/cnn/model_task2c.py)
-final accuracy (testing) on task 2c :
+final accuracy (testing) on task 2c : 99.64% 
 
 [Source Code for task 2d](src/main/py/cnn/model_task2d.py)
 
