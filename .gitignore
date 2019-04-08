@@ -6,3 +6,4 @@ data/mnist-permutated-png-format/mnist
 src/main/py/mlp/data/MNIST
 test.csv
 train.csv
+src/main/py/cnn/data
