@@ -1,6 +1,11 @@
 [Source Code for task 2a](src/main/py/svm/svm_1.0.py)
 
-[Source Code for task 2b](src/main/py/mlp/mlpMNIST.py.py)
+[Source Code for task 2b](src/main/py/mlp/mlpMNIST.py)
+
+
+[Source Code for task 2c](src/main/py/cnn/model_task2c.py)
+
+[Source Code for task 2d](src/main/py/cnn/model_task2d.py)
 
 [Source Code for task 2d MLP on the permutated MNIST](src/main/py/mlp/mlpPermutMNIST.py)
 
