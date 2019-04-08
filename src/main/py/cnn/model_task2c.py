@@ -58,7 +58,7 @@ class PR_CNN(nn.Module):
         self.conv1 = nn.Sequential(
             # PR_FILL_HERE: Here you have to put the input channels, output channels ands the kernel size
             # o = [(i + 2p -k)/s + 1]
-            nn.Conv2d(in_channels=3 , out_channels=8, kernel_size=7 , stride=3),
+            nn.Conv2d(in_channels=1, out_channels=24, kernel_size=7 , stride=3),
             nn.LeakyReLU(0.2)
         )
 
@@ -140,4 +140,4 @@ def trainAndTest(batch_size=32, learning_rate=0.003, g=0.5, n_epochs=10, plot=Fa
     return(testing_accuracies[-1])
 
 if __name__=='__main__' :
-    trainAndTest(n_epochs=15, plot=True)
+    trainAndTest(n_epochs=10, plot=True, batch_size=16, learning_rate=0.003, g=0.1)
