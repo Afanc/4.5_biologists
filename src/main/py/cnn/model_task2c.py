@@ -140,4 +140,5 @@ def trainAndTest(batch_size=32, learning_rate=0.003, g=0.5, n_epochs=10, plot=Fa
     return(testing_accuracies[-1])
 
 if __name__=='__main__' :
+    #
     trainAndTest(n_epochs=10, plot=True, batch_size=16, learning_rate=0.003, g=0.1)
