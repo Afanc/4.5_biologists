@@ -31,12 +31,10 @@ def loadDatasetsPermutMNIST(batch_size):
     transforms = Compose([Grayscale(num_output_channels=1), ToTensor(), Normalize(mean=(0.5,), std=(0.5,))])
     train_dataset = torchvision.datasets.ImageFolder(
         root='mnist-permutated-png-format/mnist/train',
-        train=True,
         transform=transforms
     )
     test_dataset = torchvision.datasets.ImageFolder(
         root='mnist-permutated-png-format/mnist/test',
-        train=False,
         transform=transforms
     )
     # dataloaders
