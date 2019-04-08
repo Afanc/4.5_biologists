@@ -2,7 +2,7 @@
 
 [Source Code for task 2b](src/main/py/mlp/mlpMNIST.py)
 
-![Result Plot for task 2b MLP on the MNIST](src/main/py/mlp//figures/MLP_4.5_Biologists__bs_64__lr_0.1__hw_1024__no of epochs_4.png)
+![Result Plot for task 2b MLP on the MNIST](src/main/py/mlp//figures/MLP_4.5_Biologists__bs_64__lr_0.1__hw_1024__no%20of%20epochs_4.png)
 
 
 [Source Code for task 2c](src/main/py/cnn/model_task2c.py)
