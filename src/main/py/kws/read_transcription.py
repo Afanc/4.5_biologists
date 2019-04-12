@@ -55,3 +55,26 @@ def retrieve_IDs(word, dictionary):
     return IDs
 
 # retrieve_IDs("General", test_dict)
+
+
+def generate_word_ID_csv(word_dict, file_name = "words_positions.txt", sep = ", "):
+    """Given a word-dictionary (key = word, values = positions), this function
+    generates a csv-file of words and respective positions in the images."""
+    with open(file_name, "w") as file:
+        for word in word_dict:
+            out = str(word) + sep
+            file.write(out)
+            if len(retrieve_IDs(word, word_dict)) == 1:
+                out = str(retrieve_IDs(word, word_dict)[0]) +"\n"
+                file.write(out)
+            else:
+                for i in range(len(retrieve_IDs(word, word_dict))):
+                    out = str(retrieve_IDs(word, word_dict)[i])
+                    if i < len(retrieve_IDs(word, word_dict))-1:
+                        file.write("".join([out, sep]))
+                    else:
+                        file.write("".join([out, "\n"]))
+    return
+
+
+# generate_word_ID_csv(word_dict = test_dict, file_name = "test_word_ID.txt", sep = ",")
