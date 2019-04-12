@@ -1,4 +1,3 @@
-import os
 import re
 
 
@@ -39,6 +38,3 @@ def read_transcription(file_name = "transcription.txt", output = "ID_dict"):
         print("\tWill return dictionary with ID (position or running number) or literal word as key, respectively.")
         return
 
-test_dict= dict()
-test_dict[2] = ["abc"]
-test_dict = test_dict.update((2, "def"))

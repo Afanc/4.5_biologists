@@ -190,7 +190,7 @@ def plotResultPanel(x_vals, y_vals1, y_vals2, x_axis_label, y_axis_label, line_l
 def plotResults():
     figure = plt.figure(figsize=(10,5))
     plt.suptitle("Batch size: " + str(args.batch_size) + ", learning rate: " + str(args.learning_rate) \
-                 + ", hidden width: " + str(args.hidden_width) + ", 1 hidden layer,, no. of epochs: " + str(result[1]))
+                 + ", hidden width: " + str(args.hidden_width) + ", 1 hidden layer, no. of epochs: " + str(result[1]))
     plt.subplot(1,2,1)
     plotResultPanel(epoch_number_final, training_losses, testing_losses, x_axis_label = "training epoch", \
                     y_axis_label = "loss", line_label1 = "training set", line_label2 = "test set", \
