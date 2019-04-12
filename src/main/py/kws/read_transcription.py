@@ -7,7 +7,8 @@ def read_transcription(file_name = "transcription.txt", output = "ID_dict"):
         - "ID_dict": dictionary key is positional ID (page-line-word position; for transcription file) or running number (for keyword file)
                 dictionary entries are tuples of word with and without special characters as well as literal word
         - "word_dict": dictionary key is literal word
-                dictionary entries are tuples of running ID and word with and without special characters
+                dictionary entries are lists of tuples of running ID and word with and without special characters
+                For words occurring multiple times, the list has multiple entries.
         Examples:
             - transcription file with option ID_dict:
                 e.g. transcr_dict["270-01-02"] --> ('L-e-t-t-e-r-s-s_cm', 'L-e-t-t-e-r-s', 'Letters').
@@ -24,16 +25,33 @@ def read_transcription(file_name = "transcription.txt", output = "ID_dict"):
                 else:
                     word = line.rstrip("\n")
                     ID = counter
-                word_no_special_char = re.sub("s_s-", "s-", word)  # replaces the strong "s" (s_s-s) with s-s
+                word_no_special_char = re.sub("s_s-", "s-", word)  # special case: replaces the strong "s" (s_s-s) with s-s
                 word_no_special_char = re.sub("-s_.*$", "", word_no_special_char)  # removes trailing special characters
                 word_literal = ''.join(re.split("-", word_no_special_char))  # the literal word, without hyphens
                 if output == "ID_dict":
                     word_dict[ID] = word, word_no_special_char, word_literal
                 elif output == "word_dict":
-                    word_dict[word_literal] = ID, word, word_no_special_char
+                    new_entry = tuple([ID, word, word_no_special_char])  # tuple
+                    if word_literal not in word_dict:  # new word
+                        word_dict[word_literal] = [new_entry]  # list containing tuple
+                    else:  # word is already in dictionary
+                        existing_entry = word_dict.pop(word_literal)
+                        existing_entry.append(new_entry)
+                        word_dict[word_literal] = existing_entry
                 counter += 1
         return word_dict
-    else:  # output specification is not valid
+    else:  # output specification invalid
         print("\tPlease select output argument from 'ID_dict' or 'word_dict'.")
         print("\tWill return dictionary with ID (position or running number) or literal word as key, respectively.")
         return
+
+# test_dict = read_transcription(output = "word_dict")
+
+
+def retrieve_IDs(word, dictionary):
+    """Function returning list of positional IDs (page-line-word position) from checking word_dictionary
+    (key: word; value: tuple of positional ID, word with and without special characters)"""
+    IDs = [dictionary[word][i][0] for i in range(len(dictionary[word]))]
+    return IDs
+
+# retrieve_IDs("General", test_dict)
