@@ -1,4 +1,3 @@
-import os
 import re
 
 
@@ -34,7 +33,7 @@ def read_transcription(file_name = "transcription.txt", output = "ID_dict"):
                     word_dict[word_literal] = ID, word, word_no_special_char
                 counter += 1
         return word_dict
-    else:
+    else:  # output specification is not valid
         print("\tPlease select output argument from 'ID_dict' or 'word_dict'.")
         print("\tWill return dictionary with ID (position or running number) or literal word as key, respectively.")
         return
