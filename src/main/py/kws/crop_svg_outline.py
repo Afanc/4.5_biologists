@@ -45,7 +45,7 @@ def crop_svg_outline(image_file, ID_dict, svg_coordinates):
 
         # reconvert to Image format for saving
         newIm = Image.fromarray(img_crop_polygon, "RGBA")
-        file_name = ID +"_" + word + "_polygon.png"
+        file_name = ID +"_" + word + ".png"
         save_path = os.path.join(output_path_polygon, file_name)
         newIm.save(save_path)
     return
