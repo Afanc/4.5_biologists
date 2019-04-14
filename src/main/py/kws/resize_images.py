@@ -19,3 +19,4 @@ for file in list_of_words:
     resized_img = cv2.resize(img, (100, 100))
 
     scipy.misc.imsave(output_path + '/' + file, resized_img)
+
