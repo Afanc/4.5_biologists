@@ -2,51 +2,44 @@
 import numpy as np
 
 
-"""
-functions for different features
-and one function that brings them all together
-"""
-
-def number_of_black_pixels(col):
-    """
-    input: column of a image
-    output: number of black pixels in this column
-    """
-    feature = np.sum(col>0)
-    return feature
-
-def upper_boundary(col)
-    """
-    input: column of a image
-    output: minimal distance form upper boundary of the image to a black pixel in this column
-    """
-
-    return feature
-
-def lower_boundary(col)
-    """
-    input: column of a image
-    output: minimal distance form upper boundary of the image to the first black pixel in this column 
-    """
-
-    return feature
-
-def black_white_transitions(col):
-    """
-    input: column of a image
-    outbut: number of black and white transitions
-    """
-
-    return feature
-
-
-
-
-
 def feature_extraction(col):
     """
     input: column of a image
     output: feature vector containing the different feature values of this column
-    """
 
+    features:
+        number_of_black_pixels
+        upper_boundary
+        lower_boundary
+        black_white_transitions
+        ...?
+    """
+    # update this if you add a feature
+    num_of_features = 4
+
+    # number of black pixels
+    number_of_black_pixels = np.sum(col == 0)
+    #if there are black pixels in this column the other features need to be calculated
+    if number_of_black_pixels > 0:
+        upper_boundary = np.argwhere(col == 0)[0][0]  # get first index of black pixel
+        lower_boundary = np.argwhere(col[::-1, :] == 0)[0][0]   # invert the array and get first index of black pixel
+        black_white_transitions = 0
+        for row in range(upper_boundary, len(col)-lower_boundary-1):  # iterate from first to last black pixel
+            # when there is a transition from black to white, the counter is increased by one
+            if col[row, 0] < col[row+1, 0]:
+                black_white_transitions += 1
+    # if there are no black pixels the features get the following values
+    else:
+        upper_boundary = len(col)
+        lower_boundary = len(col)
+        black_white_transitions = 0
+    feature_vector = np.array([number_of_black_pixels, upper_boundary, lower_boundary, black_white_transitions]).reshape(1, num_of_features)
     return feature_vector
+
+# small test example
+# a= np.zeros((9,1))
+# a[:2,0]=1
+# a[5,0]=1
+# a[7:,0]=1
+# print(a)
+# print(feature_extraction(a))
