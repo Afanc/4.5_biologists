@@ -14,9 +14,16 @@ import matplotlib.pyplot as plt
 from skimage.filters import threshold_local
 
 #path of the folder containing the original images
-input_path = 'src/main/py/kws/data/images'
 #path of the folder in which the processed images should be saved
-output_path = 'src/main/py/kws/data/binarized_images'
+if(os.getcwd()[-14:] == "4.5_biologists"):
+    input_path = 'src/main/py/kws/data/images'
+    output_path = 'src/main/py/kws/data/binarized_images'
+elif(os.getcwd()[-3:] == "kws") :
+    input_path = 'data/images'
+    output_path = 'data/binarized_images'
+else :
+    print("get back to main directory, or cd into src/main/py/kws, sucker !")
+    exit()
 
 # create directory if not existant
 if not os.path.exists(output_path):

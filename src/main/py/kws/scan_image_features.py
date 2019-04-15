@@ -1,7 +1,11 @@
+#!/usr/bin/python
+
 import numpy as np
 from PIL import Image, ImageDraw
+import feature_extraction
 
-# img = Image.open("270-25-05_Clock.png")
+
+img = Image.open("270-25-05_Clock.png")
 
 
 def scan_image_features(image_file, normalize_feature_matrix = False):
@@ -23,7 +27,7 @@ def scan_image_features(image_file, normalize_feature_matrix = False):
         feature_matrix = normalization(feature_matrix)
     return feature_matrix
 
-# features_Clock = scan_image_features("270-25-05_Clock.png", normalize_feature_matrix=False)
+features_Clock = scan_image_features("270-25-05_Clock.png", normalize_feature_matrix=False)
 # same as:
 # features_Clock2 = scan_image_features("270-25-05_Clock.png")
 # features_Clock_norm = scan_image_features("270-25-05_Clock.png", normalize_feature_matrix=True)

@@ -58,12 +58,12 @@ def normalization(feature_matrix):
         feature_matrix[row, :] = (feature_matrix[row, :] - np.mean(feature_matrix[row, :])) / np.std(feature_matrix[row,:])
     return feature_matrix
 
-# short example
-# img = plt.imread("src/main/py/kws/data/resized_word_images/270-01-01_s_2.png")
-# plt.imshow(img)
-# plt.show()
-# a=get_feature_vectors(img)
-# print(a[:,:20])
-# print(a.shape)
-# n=normalization(a)
-# print(n[:,:20])
+#short example
+#img = plt.imread("src/main/py/kws/data/resized_word_images/270-01-01_s_2.png")
+#plt.imshow(img)
+#plt.show()
+#a=get_feature_vectors(img)
+#print(a[:,:20])
+#print(a.shape)
+#n=normalization(a)
+#print(n[:,:20])
