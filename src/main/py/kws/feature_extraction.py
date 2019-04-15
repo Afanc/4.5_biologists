@@ -59,7 +59,7 @@ def normalization(feature_matrix):
     return feature_matrix
 
 #short example
-#img = plt.imread("src/main/py/kws/data/resized_word_images/270-01-01_s_2.png")
+#img = plt.imread("data/resized_word_images/270-01-01_s_2.png")
 #plt.imshow(img)
 #plt.show()
 #a=get_feature_vectors(img)
