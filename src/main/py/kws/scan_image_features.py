@@ -22,7 +22,7 @@ def scan_image_features(image_file, normalize_feature_matrix = False):
         col_features = fe.feature_extraction(col)
         feature_matrix[ : , column] = col_features
     if normalize_feature_matrix:
-        feature_matrix = normalization(feature_matrix)
+        feature_matrix = fe.normalization(feature_matrix)
     return feature_matrix
 
 features_Clock = scan_image_features("270-25-05_Clock.png", normalize_feature_matrix=False)
