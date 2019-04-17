@@ -17,6 +17,7 @@ def scan_image_features(image_file, normalize_feature_matrix = False):
     img_width = img_array.shape[1]
     no_of_features = len( fe.feature_extraction(img_array[:, 1].reshape(img_height, 1)) )  # get number of features assessed by feature_extraction-function
     feature_matrix = np.zeros(shape = (no_of_features, img_width))
+    print("shape of feature matrix : ", feature_matrix.shape)
     for column in range(img_width):
         col = img_array[:, column].reshape(img_height, 1)
         col_features = fe.feature_extraction(col)
@@ -26,6 +27,8 @@ def scan_image_features(image_file, normalize_feature_matrix = False):
     return feature_matrix
 
 features_Clock = scan_image_features("270-25-05_Clock.png", normalize_feature_matrix=False)
+#print(np.array(img).shape)
+#print(features_Clock.shape)
 # same as:
 # features_Clock2 = scan_image_features("270-25-05_Clock.png")
 # features_Clock_norm = scan_image_features("270-25-05_Clock.png", normalize_feature_matrix=True)

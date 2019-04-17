@@ -1,6 +1,7 @@
+#!/usr/bin/python
+
 import re
 import numpy as np
-
 
 def extract_SVG_masks(file_name):
     """Reads svg-file and returns list of ID, xy-coordinates (as numpy-array and list of xy-tuples) and svg-coordinates (as string)."""

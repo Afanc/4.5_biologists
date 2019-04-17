@@ -2,7 +2,6 @@
 
 import re
 
-
 def read_transcription(file_name = "transcription.txt", output = "ID_dict"):
     """Function reading transcription or keyword file, returns dictionary.
     Options:
@@ -47,7 +46,7 @@ def read_transcription(file_name = "transcription.txt", output = "ID_dict"):
         print("\tWill return dictionary with ID (position or running number) or literal word as key, respectively.")
         return
 
-# test_dict = read_transcription(output = "word_dict")
+test_dict = read_transcription(output = "word_dict")
 
 
 def retrieve_IDs(word, dictionary):
@@ -56,8 +55,7 @@ def retrieve_IDs(word, dictionary):
     IDs = [dictionary[word][i][0] for i in range(len(dictionary[word]))]
     return IDs
 
-# retrieve_IDs("General", test_dict)
-
+#retrieve_IDs("General", test_dict)
 
 def generate_word_ID_csv(word_dict, file_name = "words_positions.txt", sep = ", "):
     """Given a word-dictionary (key = word, values = positions), this function
@@ -79,4 +77,4 @@ def generate_word_ID_csv(word_dict, file_name = "words_positions.txt", sep = ", 
     return
 
 
-# generate_word_ID_csv(word_dict = test_dict, file_name = "test_word_ID.txt", sep = ",")
+generate_word_ID_csv(word_dict = test_dict, file_name = "test_word_ID.txt", sep = ",")
