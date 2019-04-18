@@ -12,6 +12,7 @@ import numpy as np
 import os
 import matplotlib.pyplot as plt
 from skimage.filters import threshold_local
+from PIL import Image
 
 
 def binarize_image(image, block_size = 101):
@@ -26,7 +27,7 @@ def binarize_image(image, block_size = 101):
 
 def save_image_png(file_name, array):
     file_name = file_name[:-4] + ".png"
-    image_PIL = PIL.Image.fromarray(array)
+    image_PIL = Image.fromarray(array)
     image_PIL.save(file_name)
     return
 
