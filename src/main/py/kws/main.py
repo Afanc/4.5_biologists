@@ -50,7 +50,7 @@ if (os.uname().sysname == "Windows") :
 #and create directories if these don't exist
 for k in paths :
     if (not os.path.exists(paths[k]) and paths[k][:-4] != ".txt"):
-        os.makedirs(p)
+        os.makedirs(paths[k])
 
 
 list_of_wordimages = os.listdir(paths["wordimages_input"])
@@ -106,7 +106,7 @@ if args.preprocessing :
     i = 0
 
     for file in list_of_wordimages:
-        print("processing page ", i, " out of ", len(list_of_images))
+        print("processing page ", i, " out of ", len(list_of_wordimages))
         file_in = os.path.join(paths["wordimages_input"], file)
         img = plt.imread(file_in) #the loaded image has the shape: (height, widht, 4)
 #
