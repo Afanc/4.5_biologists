@@ -89,6 +89,10 @@ if args.preprocessing :
         i += 1
 
 
+        break
+
+
+
     list_of_wordimages = os.listdir(paths["wordimages_input"])
     #word_lengths = [len(word) for word in word_dict]
     #median_word_length = int(np.median(word_lengths))
@@ -129,4 +133,7 @@ if args.preprocessing :
 
         i += 1
         
+        plt.imshow(img, cmap = "gray")
+        plt.show()
+        break
 

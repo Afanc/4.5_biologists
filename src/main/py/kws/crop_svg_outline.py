@@ -3,6 +3,8 @@
 import os
 from PIL import Image, ImageDraw
 import numpy as np
+from skimage import color
+from skimage import io
 
 # https://pypi.org/project/svgpathtools/
 
@@ -46,7 +48,9 @@ def crop_svg_outline(image_file, ID_dict, svg_coordinates):
         img_crop_polygon = newImArray[LRy:ULy, ULx:LRx]
 
         # reconvert to Image format for saving
-        newIm = Image.fromarray(img_crop_polygon, "RGBA")
+        newIm = Image.fromarray(img_crop_polygon, "LA")
+        #print(type(newIm))
+        #newIm = color.rgb2gray(io.imread(newIm))
         file_name = ID +"_" + word + ".png"
         save_path = os.path.join(output_path_polygon, file_name)
         newIm.save(save_path)
