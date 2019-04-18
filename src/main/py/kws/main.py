@@ -73,33 +73,60 @@ if args.preprocessing :
     i = 0
     for page_no, page in enumerate(list_of_images):
         print("processing page ", i, " out of ", len(list_of_images))
-        svg = os.path.normpath(os.path.join(paths["svg"], page[:-4]+".svg"))
-        image = os.path.normpath(os.path.join(paths["images"], page))
-        coord_list = svgread.extract_SVG_masks(svg)
-        svgcrop.crop_svg_outline(image, ID_dict = ID_dict, svg_coordinates = coord_list)
         
+        image = plt.imread(os.path.join(paths["images"], page))
+        svg = os.path.join(paths["svg"], list_of_svg[page_no])
+        coord_list = svgread.extract_SVG_masks(svg)
+
+        img_name = page[:-4] + ".png"
+        image_out = os.path.join(paths["images_output"], img_name)
+        image_bin = binary.binarize_image(image, block_size = 101)
+        binary.save_image_png(image_out, image_bin)
+
+        svg_in = os.path.join(paths["images_output"], img_name)
+        svgcrop.crop_svg_outline(svg_in, ID_dict = ID_dict, svg_coordinates = coord_list)
+
+        i += 1
+
 
     list_of_wordimages = os.listdir(paths["wordimages_input"])
-    word_lengths = [len(word) for word in word_dict]
-    median_word_length = int(np.median(word_lengths))
+    #word_lengths = [len(word) for word in word_dict]
+    #median_word_length = int(np.median(word_lengths))
     
+#    word_lengths = [len(word) for word in word_dict]
+#    median_word_length = int(np.median(word_lengths))
+#    os.chdir(".\\data\\word_images")
+#    word_widths = list()
+#    for word in list_of_wordimages:
+#        xyz = plt.imread(word)
+#        word_widths.append(xyz.shape[1])
+#    median_word_width = int(np.median(word_widths))  # 207 is the median width of the cut words
+#
+
     i = 0
+
     for file in list_of_wordimages:
         print("processing page ", i, " out of ", len(list_of_images))
-        file_in = os.path.normpath(os.path.join(paths["wordimages_input"], file))
+        file_in = os.path.join(paths["wordimages_input"], file)
         img = plt.imread(file_in) #the loaded image has the shape: (height, widht, 4)
-
-     #these steps remove the 4 channels in the 3. dimension
+#
+#     #these steps remove the 4 channels in the 3. dimension
         frame = img[:, :, 3]
         img = img[:, :, 0]
         img = np.where((frame[:, :] == 0), 1, img[:, :])
-#        img = plt.imread("270-25-05_Clock.png")
         img_PIL = Image.fromarray(img)
-        resized_img = img_PIL.resize(size = (100, 200)) #the reshaped image has the shape: (100, 100)
+##        resized_img = cv2.resize(img, (100, 200))  # does not work on my machine... :-(
+        resized_img = img_PIL.resize(size = (207, 100)) #the reshaped image has the shape: (200 (width), 100 (height))
         resized_img_array = np.array(resized_img)
-        file_out = os.path.normpath(os.path.join(paths["wordimages_output"], file))
-#        resized_img.save(file_out)
-#        scipy.misc.imsave(file_out, resized_img)
-        resized_img_bin = binary.binarize_image(resized_img_array, block_size = 5)
-        binary.save_image_png(file_out, resized_img_bin)
+        file_out = os.path.join(paths["wordimages_output"], file)
+##        resized_img.save(file_out)  # does not work - format error
+##        binary.save_image_png(file_out, resized_img_array)
+        plt.imsave(file_out, resized_img_array)
+##        scipy.misc.imsave(file_out, resized_img)
+#
+        file_in = os.path.normpath(os.path.join(paths["wordimages_input"], file))
+        img = plt.imread(file_in) #the loaded image has the shape: (height, widht, 4)
+
+        i += 1
+        
 
