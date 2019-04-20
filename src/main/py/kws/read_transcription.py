@@ -47,7 +47,7 @@ def read_transcription(file_name = "transcription.txt", output = "ID_dict"):
         return
 
 # word_dict = read_transcription(output = "word_dict")
-
+# ID_dict = read_transcription(output = "ID_dict")
 
 def retrieve_IDs(word, dictionary):
     """Function returning list of positional IDs (page-line-word position) from checking word_dictionary
