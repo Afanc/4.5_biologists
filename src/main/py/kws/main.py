@@ -115,9 +115,12 @@ if args.preprocessing:
         # image_PIL = Image.fromarray(resized_img).convert(mode = "L")
         # this turned some pixels which should be black into white pixels,
         # so I applied a threshold to get binary word images
-        thresh = threshold_otsu(resized_img)
-        binary_resized_img = (resized_img > thresh)*255
-        image_PIL = Image.fromarray(binary_resized_img).convert(mode = "L")
+        # thresh = threshold_otsu(resized_img)  # threshold_otsu results in an error: "ValueError: threshold_otsu is expected to work with images having more than one color. The input image seems to have just one color 1.0."
+            # Problem with the last main.py was probably that crop_scg_outline had also been changed in parallel... x_x
+        # binary_resized_img = (resized_img > thresh)*255
+        resized_img = (resized_img > np.unique(img)[0]) * 255
+        # image_PIL = Image.fromarray(binary_resized_img).convert(mode = "L")
+        image_PIL = Image.fromarray(resized_img).convert(mode="L")
         file_out = os.path.join(paths["wordimages_output"], file)
         image_PIL.save(file_out)
 
