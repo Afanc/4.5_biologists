@@ -48,7 +48,8 @@ def crop_svg_outline(image_file, ID_dict, svg_coordinates):
         img_crop_polygon = newImArray[LRy:ULy, ULx:LRx]
 
         # reconvert to Image format for saving
-        newIm = Image.fromarray(img_crop_polygon, "LA")
+        # newIm = Image.fromarray(img_crop_polygon, "LA")  # Leaving RGBA seems unintuitive, but the main.py then removes mask and extra channels (could not incorporate this into the f...ing !!! function, maybe if we have a lot of time left...)
+        newIm = Image.fromarray(img_crop_polygon, "RGBA")
         #print(type(newIm))
         #newIm = color.rgb2gray(io.imread(newIm))
         file_name = ID +"_" + word + ".png"
