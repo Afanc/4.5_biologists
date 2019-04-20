@@ -11,7 +11,7 @@ import binarization as binary
 # import scan_image_features as scan
 from matplotlib import pyplot as plt
 from PIL import Image
-
+from skimage.filters import threshold_otsu
 parser = argparse.ArgumentParser()
 parser.add_argument('--preprocessing', default=True, type=bool)
 parser.add_argument('--id_linking', default=True, type=bool)
@@ -111,8 +111,13 @@ if args.preprocessing:
         img_PIL = Image.fromarray(img)
         resized_img = img_PIL.resize(size=(207, 100))  # the reshaped image has the shape: (200 (width), 100 (height))
         resized_img = np.array(resized_img)
-        resized_img = (resized_img > np.unique(img)[0])*255
-        image_PIL = Image.fromarray(resized_img).convert(mode = "L")
+        # resized_img = (resized_img > np.unique(img)[0])*255
+        # image_PIL = Image.fromarray(resized_img).convert(mode = "L")
+        # this turned some pixels which should be black into white pixels,
+        # so I applied a threshold to get binary word images
+        thresh = threshold_otsu(resized_img)
+        binary_resized_img = (resized_img > thresh)*255
+        image_PIL = Image.fromarray(binary_resized_img).convert(mode = "L")
         file_out = os.path.join(paths["wordimages_output"], file)
         image_PIL.save(file_out)
 
