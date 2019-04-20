@@ -46,7 +46,7 @@ def read_transcription(file_name = "transcription.txt", output = "ID_dict"):
         print("\tWill return dictionary with ID (position or running number) or literal word as key, respectively.")
         return
 
-test_dict = read_transcription(output = "word_dict")
+# word_dict = read_transcription(output = "word_dict")
 
 
 def retrieve_IDs(word, dictionary):
@@ -77,4 +77,4 @@ def generate_word_ID_csv(word_dict, file_name = "words_positions.txt", sep = ", 
     return
 
 
-generate_word_ID_csv(word_dict = test_dict, file_name = "test_word_ID.txt", sep = ",")
+# generate_word_ID_csv(word_dict = word_dict, file_name = "word_ID_dict.txt", sep = ",")
