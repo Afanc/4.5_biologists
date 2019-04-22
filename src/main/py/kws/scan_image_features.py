@@ -4,7 +4,7 @@ import numpy as np
 from PIL import Image, ImageDraw
 import feature_extraction as fe
 
-img = Image.open("270-25-05_Clock.png")
+#img = Image.open("270-25-05_Clock.png")
 
 def scan_image_features(image_file, normalize_feature_matrix = False):
     """Scans image column-wise and returns vector of dimensions no_of_features x image width
@@ -26,7 +26,7 @@ def scan_image_features(image_file, normalize_feature_matrix = False):
         feature_matrix = fe.normalization(feature_matrix)
     return feature_matrix
 
-features_Clock = scan_image_features("270-25-05_Clock.png", normalize_feature_matrix=False)
+#features_Clock = scan_image_features("270-25-05_Clock.png", normalize_feature_matrix=False)
 #print(np.array(img).shape)
 #print(features_Clock.shape)
 # same as:
