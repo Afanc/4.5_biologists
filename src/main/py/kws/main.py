@@ -120,7 +120,7 @@ if args.preprocessing:
         # binary_resized_img = (resized_img > thresh)*255
         resized_img = (resized_img > np.unique(img)[0]) * 255
         # image_PIL = Image.fromarray(binary_resized_img).convert(mode = "L")
-        image_PIL = Image.fromarray(resized_img).convert(mode="L")
+        image_PIL = Image.fromarray(resized_img,"RGB").convert(mode="L")
         file_out = os.path.join(paths["wordimages_output"], file)
         image_PIL.save(file_out)
 
