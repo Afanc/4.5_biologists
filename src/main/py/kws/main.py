@@ -26,19 +26,19 @@ if (work_dir[-14:] != "4.5_biologists" and work_dir[-3:] != "kws"):
 paths = {}
 
 # directories
-paths["images"] = 'data/images'
-paths["images_output"] = 'data/binarized_images'
-paths["wordimages_input"] = "data/word_images"
-paths["wordimages_output"] = "data/resized_word_images"
-paths["svg"] = "data/ground-truth/locations"
+paths["images"] = os.path.join('data', 'images')
+paths["images_output"] = os.path.join('data', 'binarized_images')
+paths["wordimages_input"] = os.path.join('data', 'word_images')
+paths["wordimages_output"] = os.path.join('data', 'resized_word_images')
+paths["svg"] = os.path.join('data', 'ground-truth', 'locations')
 
 # files
-paths["transcription.txt"] = "data/ground-truth/transcription.txt"
+paths["transcription.txt"] = os.path.join('data', 'ground-truth', 'transcription.txt')
 
 # adapt if run from 4.5_biologists
 if (os.getcwd()[-14:] == "4.5_biologists"):
     for k in paths:
-        paths[k] = "src/main/py/kws/" + paths[k]
+        paths[k] = os.path.join('src', 'main', 'py', 'kws', paths[k])
 
 # adapt for Windows
 if (platform.system() == "Windows"):
@@ -53,8 +53,8 @@ for k in paths:
         os.makedirs(paths[k])
 
 
-list_of_images = os.listdir(paths["images"])
-list_of_svg = os.listdir(paths["svg"])
+list_of_images = sorted(os.listdir(paths["images"]))
+list_of_svg = sorted(os.listdir(paths["svg"]))
 
 # ----- ID linking----#
 if args.id_linking:

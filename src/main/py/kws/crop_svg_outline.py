@@ -12,7 +12,7 @@ def crop_svg_outline(image_file, ID_dict, svg_coordinates):
     """Accepts image, ID-dictionary (key: position in format page-line-word; values: word), and svg-masks.
     Outlines all words for which an svg-mask is available, crops the outlined word and saves a file with name in the
     format "positional ID_literal word.png". """
-    output_path_polygon = ".\\data\\word_images"
+    output_path_polygon = os.path.join('.', 'data', 'word_images')
     if not os.path.exists(output_path_polygon):
         os.makedirs(output_path_polygon)
 
