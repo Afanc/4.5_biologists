@@ -28,3 +28,22 @@ def resize_images() :
 
         scipy.misc.imsave(output_path + '/' + file, resized_img)
 
+
+
+def median_wh(list_of_wordimages):
+    """Returns median width and height of images present in a list of filenames (e.g. created
+    using os.listdir). Must be run in the respective directory where the files are present."""
+    word_widths = list()
+    word_heights = list()
+    for word in list_of_wordimages:
+        image = plt.imread(word)
+        word_widths.append(image.shape[1])
+        word_heights.append(image.shape[0])
+    median_word_width = int(np.median(word_widths))  # 207 is the median width of the cut words
+    median_word_height = int(np.median(word_heights))  # 207 is the median width of the cut words
+    return median_word_width, median_word_height
+
+# os.chdir(paths["wordimages_input"])
+#list_of_wordimages = os.listdir(paths["wordimages_input"])
+    #list_of_wordimages = os.listdir("C:\\Data\\word_images")
+# median_wh(list_of_wordimages)
