@@ -1,5 +1,7 @@
 import numpy as np
 from matplotlib import pyplot as plt
+import feature_extraction as fe
+import scan_image_features as scan
 
 
 #def euclidean(vector1, vector2):
@@ -101,7 +103,76 @@ def dist_matrix(features1, features2, Sakoe_Chiba = True, band_width = 50):
 
 
 
-###  I think next we need a function for determination of the minimal cost of the "alignment".
+def cost_matrix(features1, features2, Sakoe_Chiba = True, band_width = 50):
+    """ Creates distance and cost matrix of comparison of two feature matrices, 
+    e.g. output of scan_image_features-function.
+    Offers Sakoe-Chiba-band option to consider paths only within band_width of 
+    the matrix diagonal. If band_width reaches or exceeds width of feature matrix,
+    the full comparison is calculated.
+    Minimal cost for alignment is returned."""
+    width1 = features1.shape[1]  # width of feature matrix 1 (features1)
+    width2 = features2.shape[1]  # width of feature matrix 2 (features2)
+    
+    # initialize distance matrix matching the two feature matrices
+    dist_matrix = np.full(shape = (width1, width2), fill_value = np.inf)
 
-# def min_cost(dist_matrix):
-    # ...
+    # get tuples of indices of combinations of interest (i.e. within Sakoe-Chiba-band or complete matrix)
+    if Sakoe_Chiba:
+        band_coords = sakoe_chiba_band(features1, features2, band_width)
+    else:
+        band_coords = [(i, j) for i in np.arange(width1) for j in np.arange(width2)]  # list comprehension creating tuples of all matrix indices
+
+    # calculate Euclidean distances of all combinations of interest
+    dist = [euclidean(features1[:, i[0]], features2[:, i[1]]) for i in band_coords]    
+
+    # enter distances into distance matrix
+    for i, coords in enumerate(band_coords):
+        dist_matrix[coords]  = dist[i]
+    
+    cost_matrix = np.full(shape = (width1, width2), fill_value = 0)
+    for i in band_coords:
+        neighbors_potential = [(i[0]-1, i[1]), (i[0]-1, i[1]-1), (i[0], i[1]-1)]
+        neighbors_relevant = [n for n in neighbors_potential if n in band_coords]
+#    print(cost_matrix[i], test[i])
+        if i == (0, 0):
+            cost_matrix[i] = dist_matrix[i]
+        else:
+            cost_matrix[i] = dist_matrix[i] + min([cost_matrix[j] for j in neighbors_relevant])
+        
+        min_cost = cost_matrix[width1-1, width2-1]  # the entry at the lower right of the cost_matrix contains the minimal cost
+
+    return min_cost
+#    return min_cost, dist_matrix, cost_matrix
+
+
+# non-resized images
+#features1 = scan.scan_image_features("270-01-02_Letters.png", normalize_feature_matrix = False)
+#features2 = scan.scan_image_features("270-01-03_Orders.png", normalize_feature_matrix = False)
+#features3 = scan.scan_image_features("270-04-07_to.png", normalize_feature_matrix = False)
+#features4 = scan.scan_image_features("270-05-09_to.png", normalize_feature_matrix = False)
+
+# trying differnet widths for Sakoe-Chiba-band
+#min_cost1 = cost_matrix(features1, features2, False)  # 3200  Sakoe-Chiba-band disabled
+#min_cost1a = cost_matrix(features1, features2, True, 20)  # 3634  features 1, 2, 3, and 4 are feature matrices generated using the scan_image_features-function
+#min_cost1b = cost_matrix(features1, features2, True, 30)  # 3323
+#min_cost1c = cost_matrix(features1, features2, True, 50)  # 3200
+#
+#
+#min_cost2 = cost_matrix(features3, features4, False)  # 1424
+#min_cost2a = cost_matrix(features3, features4, True, 20)  # 3297
+#min_cost2b = cost_matrix(features3, features4, True, 40)  # 1424
+
+
+##### visualization
+# use the alternative return of cost_matrix
+#min_cost, dist_mat, cost_mat = cost_matrix(features1, features2, True, 50)  # for this line use the alternative return of cost_matrix
+#
+#plt.figure(figsize = (12, 5))
+#plt.subplot(1, 2, 1)
+#plt.imshow(dist_matrix)
+#plt.title("Distance matrix")
+#plt.colorbar()
+#plt.subplot(1, 2, 2)
+#plt.imshow(cost_matrix)
+#plt.title("Cost matrix")
+#plt.colorbar()
