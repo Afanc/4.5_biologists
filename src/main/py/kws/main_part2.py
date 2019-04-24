@@ -75,8 +75,7 @@ if args.feature_extr:
 
         #testing
         if(i>10) : 
-            pass
-
+            pass 
     words_and_features = [[w, features[i]] for i,w in enumerate(words)]
 
     if False :
