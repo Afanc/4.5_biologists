@@ -11,6 +11,7 @@ import scan_image_features as sif
 import dyn_time_warp as dtw
 from itertools import combinations
 import csv
+import random
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--feature_extr', default=True, type=bool)
@@ -35,6 +36,7 @@ paths["svg"] = os.path.join('data', 'ground-truth', 'locations')
 paths["transcription.txt"] = os.path.join('data', 'ground-truth', 'transcription.txt')
 paths["features.txt"] = os.path.join('data', 'features.txt')
 paths["csv_results.txt"] = os.path.join('data', 'csv_results.txt')
+paths["word_positionID_dict.txt"] = os.path.join('data', 'word_positionID_dict.txt')
 
 # adapt if run from 4.5_biologists
 if (os.getcwd()[-14:] == "4.5_biologists"):
@@ -66,7 +68,9 @@ if args.feature_extr:
     words = []
     #print(features.shape)
 
-    for i,w in enumerate(list_of_wordimages) : 
+    for i, w in enumerate(list_of_wordimages):
+        if w.startswith('.'):
+            continue
         wordimage = os.path.join(paths["wordimages_input"], w)
         f = sif.scan_image_features(wordimage, number_of_features, normalize_feature_matrix=True)
         features[i] = f
@@ -82,12 +86,24 @@ if args.feature_extr:
 
     words_and_features = [[w, features[i]] for i,w in enumerate(words)]
 
-    if False :
-        with open(paths["features.txt"], 'w') as f:
-            writer = csv.writer(f , lineterminator='\n', quoting=csv.QUOTE_NONE, escapechar='\\')
-            for row in words_and_features:
-                writer.writerow(row)
+    # if False:
+    #     with open(paths["features.txt"], 'w') as f:
+    #         writer = csv.writer(f , lineterminator='\n', quoting=csv.QUOTE_NONE, escapechar='\\')
+    #         for row in words_and_features:
+    #             writer.writerow(row)
 
+
+# --- get a random list of word for testing -- #
+def get_test_words(num):
+    with open(paths["word_positionID_dict.txt"], 'r') as f:
+        reader = csv.reader(f, delimiter=',')
+        words = list(reader)
+    rand_words = random.sample(words, num)
+    rand_words = [word[0] for word in rand_words]
+    return rand_words
+
+
+test_words = get_test_words(3)
 
 # ----- dtw ----#
 if args.dtw:
@@ -99,19 +115,19 @@ if args.dtw:
     #ach... anyone has any idea ?
     #and then if it's fast, we can even merge args.feature_extr and args.dtw 
     #read from csv
-    if False :
-        words_and_features = []
-        with open(paths["features.txt"], 'r') as f:
-            reader = csv.reader(f)
-            for row in reader:
-                words_and_features.append(row)
+    if True:
+        # words_and_features = []
+        # with open(paths["features.txt"], 'r') as f:
+        #     reader = csv.reader(f)
+        #     for row in reader:
+        #         words_and_features.append(row)
 
         print(words_and_features[0])
 
         #so this might depend on how we write the whole thing, but you'll get the idea. example :
         #-----------------------this should be replaced with whole file version
         my_features = features[0:10]
-        words = ['s_2', 'Letters', 'whatev', 'whatev', 'whatev', 'whatev', 'whatev', 'whatev', 'whatev', 'whatev']
+        words = get_test_words(33)     # ['s_2', 'Letters', 'whatev', 'whatev', 'whatev', 'whatev', 'whatev', 'whatev', 'whatev', 'whatev']
         #------------------------
 
         words_and_features = [[words[i], f] for i,f in enumerate(my_features)]
@@ -119,7 +135,7 @@ if args.dtw:
         #------------------
 
         print(words_and_features[0])
-        exit()
+        #exit()
 
     #NEEDS : list such as [['word', np.array(4,207)], ['word', np.array(4,207)], ...]
 
