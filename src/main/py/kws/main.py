@@ -65,22 +65,22 @@ if args.id_linking:
 if args.preprocessing:
     # --- processing pages (binarization and cropping out words) --- #
     i = 0
-    for page_no, page in enumerate(list_of_images):
-        print("processing page ", i+1, " out of ", len(list_of_images))
-
-        image = plt.imread(os.path.join(paths["images"], page))
-        svg = os.path.join(paths["svg"], list_of_svg[page_no])
-        coord_list = svgread.extract_SVG_masks(svg)
-
-        img_name = page[:-4] + ".png"
-        image_out = os.path.join(paths["images_output"], img_name)
-        image_bin = binary.binarize_image(image, block_size=101)
-        binary.save_image_png(image_out, image_bin)
-
-        svg_in = os.path.join(paths["images_output"], img_name)
-        svgcrop.crop_svg_outline(svg_in, ID_dict=ID_dict, svg_coordinates=coord_list)
-
-        i += 1
+    # for page_no, page in enumerate(list_of_images):
+    #     print("processing page ", i+1, " out of ", len(list_of_images))
+    #
+    #     image = plt.imread(os.path.join(paths["images"], page))
+    #     svg = os.path.join(paths["svg"], list_of_svg[page_no])
+    #     coord_list = svgread.extract_SVG_masks(svg)
+    #
+    #     img_name = page[:-4] + ".png"
+    #     image_out = os.path.join(paths["images_output"], img_name)
+    #     image_bin = binary.binarize_image(image, block_size=101)
+    #     binary.save_image_png(image_out, image_bin)
+    #
+    #     svg_in = os.path.join(paths["images_output"], img_name)
+    #     svgcrop.crop_svg_outline(svg_in, ID_dict=ID_dict, svg_coordinates=coord_list)
+    #
+    #     i += 1
 
 
     list_of_wordimages = os.listdir(paths["wordimages_input"])
@@ -115,12 +115,12 @@ if args.preprocessing:
         # image_PIL = Image.fromarray(resized_img).convert(mode = "L")
         # this turned some pixels which should be black into white pixels,
         # so I applied a threshold to get binary word images
-        # thresh = threshold_otsu(resized_img)  # threshold_otsu results in an error: "ValueError: threshold_otsu is expected to work with images having more than one color. The input image seems to have just one color 1.0."
+        thresh = threshold_otsu(resized_img)  # threshold_otsu results in an error: "ValueError: threshold_otsu is expected to work with images having more than one color. The input image seems to have just one color 1.0."
             # Problem with the last main.py was probably that crop_scg_outline had also been changed in parallel... x_x
-        # binary_resized_img = (resized_img > thresh)*255
-        resized_img = (resized_img > np.unique(img)[0]) * 255
-        # image_PIL = Image.fromarray(binary_resized_img).convert(mode = "L")
-        image_PIL = Image.fromarray(resized_img,"RGB").convert(mode="L")
+        binary_resized_img = (resized_img > thresh)*255
+        #resized_img = (resized_img > np.unique(img)[0]) * 255
+        image_PIL = Image.fromarray(binary_resized_img).convert(mode = "L")
+        # image_PIL = Image.fromarray(resized_img,).convert(mode="L")
         file_out = os.path.join(paths["wordimages_output"], file)
         image_PIL.save(file_out)
 
