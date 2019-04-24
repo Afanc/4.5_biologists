@@ -71,7 +71,7 @@ if args.feature_extr:
 #TODO
 #extract features to a csv
 
-# ----- pre-processing ----#
+# ----- dtw ----#
 if args.dtw:
     print(features[0])
 

@@ -2,7 +2,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-def feature_extraction(col):
+def feature_extraction(col, num_f):
     """
     input: column of a image
     output: feature vector containing the different feature values of this column
@@ -15,7 +15,7 @@ def feature_extraction(col):
         ...?
     """
     # update this if you add a feature
-    num_of_features = 4
+    num_of_features = num_f
 
     # number of black pixels
     number_of_black_pixels = np.sum(col == 0)
@@ -58,6 +58,8 @@ def normalization(feature_matrix):
         feature_matrix[row, :] = (feature_matrix[row, :] - np.mean(feature_matrix[row, :])) / np.std(feature_matrix[row,:])
     return feature_matrix
 
+if(__name__=='__main__') :
+    pass
 #short example
 #img = plt.imread("data/resized_word_images/270-01-01_s_2.png")
 #plt.imshow(img)
