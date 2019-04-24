@@ -79,10 +79,11 @@ if args.feature_extr:
 
     words_and_features = [[w, features[i]] for i,w in enumerate(words)]
 
-    with open(paths["features.txt"], 'w') as f:
-        writer = csv.writer(f , lineterminator='\n', quoting=csv.QUOTE_NONE, escapechar='\\')
-        for row in words_and_features:
-            writer.writerow(row)
+    if False :
+        with open(paths["features.txt"], 'w') as f:
+            writer = csv.writer(f , lineterminator='\n', quoting=csv.QUOTE_NONE, escapechar='\\')
+            for row in words_and_features:
+                writer.writerow(row)
 
 
 # ----- dtw ----#
@@ -91,27 +92,29 @@ if args.dtw:
     #TODO
     #this part is shitty, if we want to extract those features to a csv........... since multiple rows and shit
     #ach... anyone has any idea ?
+    #and then if it's fast, we can even merge args.feature_extr and args.dtw 
     #read from csv
-    words_and_features = []
-    with open(paths["features.txt"], 'r') as f:
-        reader = csv.reader(f)
-        for row in reader:
-            words_and_features.append(row)
+    if False :
+        words_and_features = []
+        with open(paths["features.txt"], 'r') as f:
+            reader = csv.reader(f)
+            for row in reader:
+                words_and_features.append(row)
 
-    print(words_and_features[0])
+        print(words_and_features[0])
 
-    #so this might depend on how we write the whole thing, but you'll get the idea. example :
-    #-----------------------this should be replaced with whole file version
-    my_features = features[0:10]
-    words = ['s_2', 'Letters', 'whatev', 'whatev', 'whatev', 'whatev', 'whatev', 'whatev', 'whatev', 'whatev']
-    #------------------------
+        #so this might depend on how we write the whole thing, but you'll get the idea. example :
+        #-----------------------this should be replaced with whole file version
+        my_features = features[0:10]
+        words = ['s_2', 'Letters', 'whatev', 'whatev', 'whatev', 'whatev', 'whatev', 'whatev', 'whatev', 'whatev']
+        #------------------------
 
-    words_and_features = [[words[i], f] for i,f in enumerate(my_features)]
-    #print(words_and_features[0])
-    #------------------
+        words_and_features = [[words[i], f] for i,f in enumerate(my_features)]
+        #print(words_and_features[0])
+        #------------------
 
-    print(words_and_features[0])
-    exit()
+        print(words_and_features[0])
+        exit()
 
     #NEEDS : list such as [['word', np.array(4,207)], ['word', np.array(4,207)], ...]
 
