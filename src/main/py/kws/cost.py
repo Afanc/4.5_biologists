@@ -1,4 +1,5 @@
 import numpy as np
+import scipy as sp
 from matplotlib import pyplot as plt
 import feature_extraction as fe
 import scan_image_features as scan
@@ -17,6 +18,8 @@ def euclidean(vector1, vector2):
     their Euclideam distance."""
     distance = np.sqrt(sum([(a - b)**2 for a, b in zip(vector1, vector2)]))  # list comprehension for squares of distances, summed up and square root taken
     return distance
+    # should be the same
+    # return sp.spatial.distance.euclidean(vector1, vector2)
 
 
 
