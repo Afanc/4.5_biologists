@@ -24,9 +24,9 @@ if (work_dir[-14:] != "4.5_biologists" and work_dir[-3:] != "kws"):
     exit()
 
 import PIL
-if (PIL.__version__ != '5.3.0') :
-    print("you need PIL 5.3.0 to run this thing, won't work otherwise. Goodbye")
-    exit()
+if PIL.__version__ != '5.3.0':
+    print("you don'thave PIL 5.3.0 but I hope we'll make it ")
+#    exit()
 
 paths = {}
 
@@ -88,7 +88,7 @@ if args.preprocessing:
     #     i += 1
 
 
-    list_of_wordimages = os.listdir(paths["wordimages_input"])
+    list_of_wordimages = sorted(os.listdir(paths["wordimages_input"]))
 
     #    word_lengths = [len(word) for word in word_dict]
     #    median_word_length = int(np.median(word_lengths))
@@ -124,8 +124,7 @@ if args.preprocessing:
             # Problem with the last main.py was probably that crop_scg_outline had also been changed in parallel... x_x
         binary_resized_img = (resized_img > thresh)*255
         #resized_img = (resized_img > np.unique(img)[0]) * 255
-        image_PIL = Image.fromarray(binary_resized_img).convert(mode = "L")
-        # image_PIL = Image.fromarray(resized_img,).convert(mode="L")
+        image_PIL = Image.fromarray(np.uint8(binary_resized_img)) if (PIL.__version__ != '5.3.0') else Image.fromarray(binary_resized_img).convert(mode="L")
         file_out = os.path.join(paths["wordimages_output"], file)
         image_PIL.save(file_out)
 
