@@ -76,6 +76,10 @@ if args.feature_extr:
         #testing
         if(i>10) : 
             pass 
+
+        if(i%100 == 0) :
+            print("feature extraction, image ", i, "out of", len(list_of_wordimages))
+
     words_and_features = [[w, features[i]] for i,w in enumerate(words)]
 
     if False :
@@ -87,6 +91,8 @@ if args.feature_extr:
 
 # ----- dtw ----#
 if args.dtw:
+
+    print("warping : wwwwwooooooooooo......")
 
     #TODO
     #this part is shitty, if we want to extract those features to a csv........... since multiple rows and shit
@@ -119,8 +125,15 @@ if args.dtw:
 
     dtw_res = [((x[0],y[0], dtw.dyn_time_warp(x[1],y[1]))) for x,y in combinations(words_and_features, 2)]
 
+    print("exporting to file")
+
     with open(paths["csv_results.txt"], 'w') as f:
         writer = csv.writer(f , lineterminator='\n')
+        i = 0
         for row in dtw_res:
+            i+=1
+            if(i%1000 == 0) :
+                print("row ", i, "out of", len(dtw_res))
+
             writer.writerow(row)
 
