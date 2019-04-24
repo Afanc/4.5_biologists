@@ -17,7 +17,7 @@ def scan_image_features(image_file, num_f, normalize_feature_matrix = False):
     img_width = img_array.shape[1]
     no_of_features = len( fe.feature_extraction(img_array[:, 1].reshape(img_height, 1),num_f) )  # get number of features assessed by feature_extraction-function
     feature_matrix = np.zeros(shape = (no_of_features, img_width))
-    print("shape of feature matrix : ", feature_matrix.shape)
+    #print("shape of feature matrix : ", feature_matrix.shape)
     for column in range(img_width):
         col = img_array[:, column].reshape(img_height, 1)
         col_features = fe.feature_extraction(col, num_f)

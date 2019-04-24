@@ -8,6 +8,9 @@ import feature_extraction as features
 import scan_image_features as scan
 from matplotlib import pyplot as plt
 import scan_image_features as sif
+import dyn_time_warp as dtw
+from itertools import combinations
+import csv
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--feature_extr', default=True, type=bool)
@@ -30,6 +33,8 @@ paths["svg"] = os.path.join('data', 'ground-truth', 'locations')
 
 # files
 paths["transcription.txt"] = os.path.join('data', 'ground-truth', 'transcription.txt')
+paths["features.txt"] = os.path.join('data', 'features.txt')
+paths["csv_results.txt"] = os.path.join('data', 'csv_results.txt')
 
 # adapt if run from 4.5_biologists
 if (os.getcwd()[-14:] == "4.5_biologists"):
@@ -44,10 +49,10 @@ if (platform.system() == "Windows"):
         paths[k] = os.path.normpath(paths[k])
 
 # and create directories if these don't exist
-for k in paths:
-    if (not os.path.exists(paths[k]) and paths[k][:-4] != ".txt"):
-        os.makedirs(paths[k])
 
+for k in paths:
+    if (not os.path.exists(paths[k]) and paths[k][-4:] != ".txt"):
+        os.makedirs(paths[k])
 
 list_of_wordimages = sorted(os.listdir(paths["wordimages_input"]))
 list_of_svg = sorted(os.listdir(paths["svg"]))
@@ -58,20 +63,62 @@ if args.feature_extr:
     width = args.width
 
     features = np.zeros(shape=(len(list_of_wordimages), number_of_features, width))
-    print(features.shape)
+    words = []
+    #print(features.shape)
 
     for i,w in enumerate(list_of_wordimages) : 
         wordimage = os.path.join(paths["wordimages_input"], w)
         f = sif.scan_image_features(wordimage, number_of_features, normalize_feature_matrix=True)
         features[i] = f
 
-        print(features[i])
-        break
+        words.append(w[10:-4])
 
-#TODO
-#extract features to a csv
+        #testing
+        if(i>10) : 
+            break
+
+    words_and_features = [[w, features[i]] for i,w in enumerate(words)]
+
+    with open(paths["features.txt"], 'w') as f:
+        writer = csv.writer(f , lineterminator='\n', quoting=csv.QUOTE_NONE, escapechar='\\')
+        for row in words_and_features:
+            writer.writerow(row)
+
 
 # ----- dtw ----#
 if args.dtw:
-    print(features[0])
+
+    #TODO
+    #this part is shitty, if we want to extract those features to a csv........... since multiple rows and shit
+    #ach... anyone has any idea ?
+    #read from csv
+    words_and_features = []
+    with open(paths["features.txt"], 'r') as f:
+        reader = csv.reader(f)
+        for row in reader:
+            words_and_features.append(row)
+
+    print(words_and_features[0])
+
+    #so this might depend on how we write the whole thing, but you'll get the idea. example :
+    #-----------------------this should be replaced with whole file version
+    my_features = features[0:10]
+    words = ['s_2', 'Letters', 'whatev', 'whatev', 'whatev', 'whatev', 'whatev', 'whatev', 'whatev', 'whatev']
+    #------------------------
+
+    words_and_features = [[words[i], f] for i,f in enumerate(my_features)]
+    #print(words_and_features[0])
+    #------------------
+
+    print(words_and_features[0])
+    exit()
+
+    #NEEDS : list such as [['word', np.array(4,207)], ['word', np.array(4,207)], ...]
+
+    dtw_res = [((x[0],y[0], dtw.dyn_time_warp(x[1],y[1]))) for x,y in combinations(words_and_features, 2)]
+
+    with open(paths["csv_results.txt"], 'w') as f:
+        writer = csv.writer(f , lineterminator='\n')
+        for row in dtw_res:
+            writer.writerow(row)
 
