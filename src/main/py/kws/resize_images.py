@@ -4,29 +4,26 @@ import scipy.misc
 import numpy as np
 import os
 import matplotlib.pyplot as plt
+from PIL import Image
 import cv2
 
-def resize_images() :
-    input_path = r"C:\Users\svenw\Desktop\GitHub\4.5_biologists\src\main\py\kws\data\word_images"
-    output_path = r"C:\Users\svenw\Desktop\GitHub\4.5_biologists\src\main\py\kws\data\resized_word_images"
 
+def resize_image(file, height_new, width_new, output_path = None):
+    """ Loads an image, resizes it to the (new) given dimensions and saves it in the output_path. """
+
+    if output_path is None:
+        output_path = os.path.join(".", "data", "resized_word_images")
     if not os.path.exists(output_path):
         os.makedirs(output_path)
 
-    list_of_words = os.listdir(input_path)
+    file_name = os.path.normpath(file).split(os.path.sep)[-1]  # split path to its components and get the last of them (i.e. the file name)
+    file_out = os.path.join(output_path, file_name)  # create outputpath + file_name
 
+    img_PIL = Image.open(file)
+    resized_img = img_PIL.resize(size=(width_new, height_new))  # reshaping the image
+    resized_img.save(file_out)
 
-    for file in list_of_words:
-        img = plt.imread(input_path + '/' + file) #the loaded image has the shape: (height, widht, 4)
-
-        #these steps remove the 4 channels in the 3. dimension
-        frame = img[:, :, 3]
-        img = img[:, :, 0]
-        img = np.where((frame[:, :] == 0), 1, img[:, :])
-
-        resized_img = cv2.resize(img, (100, 100)) #the reshaped image has the shape: (100, 100)
-
-        scipy.misc.imsave(output_path + '/' + file, resized_img)
+    return
 
 
 
@@ -39,8 +36,9 @@ def median_wh(list_of_wordimages):
         image = plt.imread(word)
         word_widths.append(image.shape[1])
         word_heights.append(image.shape[0])
-    median_word_width = int(np.median(word_widths))  # 207 is the median width of the cut words
-    median_word_height = int(np.median(word_heights))  # 207 is the median width of the cut words
+    median_word_width = int(np.median(word_widths))  # 212 is the median width of the cut words
+    median_word_height = int(np.median(word_heights))  # 94 is the median height of the cut words
+#    print(median_word_width, median_word_height)
     return median_word_width, median_word_height
 
 # os.chdir(paths["wordimages_input"])

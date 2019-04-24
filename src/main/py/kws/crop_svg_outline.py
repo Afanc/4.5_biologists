@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import os
+import PIL
 from PIL import Image, ImageDraw
 import numpy as np
 from skimage import color
@@ -8,13 +9,14 @@ from skimage import io
 
 # https://pypi.org/project/svgpathtools/
 
-def crop_svg_outline(image_file, ID_dict, svg_coordinates):
-    """Accepts image, ID-dictionary (key: position in format page-line-word; values: word), and svg-masks.
-    Outlines all words for which an svg-mask is available, crops the outlined word and saves a file with name in the
-    format "positional ID_literal word.png". """
-    output_path_polygon = os.path.join('.', 'data', 'word_images')
-    if not os.path.exists(output_path_polygon):
-        os.makedirs(output_path_polygon)
+def crop_svg_outline(image_file, ID_dict, svg_coordinates, output_path=None):
+    """ Accepts (binarized) image (of a scanned page), ID-dictionary (key: position in format page-line-word; values: word), and svg-masks.
+    Outlines all words for which an svg-mask is available, crops the outlined word, first along svg-polygon, then along bounding box of polygon.
+    Removes mask and saves a binary image with name in the format "positional ID_literal word.png" at the given outputpath. """
+    if output_path is None:
+        output_path = os.path.join(".", "data", "word_images")
+    if not os.path.exists(output_path):
+        os.makedirs(output_path)
 
     img = Image.open(image_file).convert("RGBA")
 
@@ -23,7 +25,7 @@ def crop_svg_outline(image_file, ID_dict, svg_coordinates):
         outline = entry[1]
         outline_polygon = entry[2]
         word = ID_dict[ID][2]  # the literal word at this position
-
+        
         # define polygon mask
         imArray = np.asarray(img)
         maskIm = Image.new('L', (imArray.shape[1], imArray.shape[0]), 0)
@@ -38,6 +40,10 @@ def crop_svg_outline(image_file, ID_dict, svg_coordinates):
 
         # transparency (mask)
         newImArray[:, :, 3] = mask * 255
+        
+        frame = newImArray[:, :, 3]  # the alpha channel of the image, containing the mask with the polygon delimiter
+        new_img = newImArray[:, :, 0]  # the image (in principle, the first of the three RGB-channels - which are all equivalent in case of a grayscale or binary image as input)
+        newImArray = np.where((frame[:, :] == 0), 255, new_img[:, :])  # everything outside the mask is replaced by white pixels (value 255)
 
         # define bounding box for cropping (UL upper left and LR lower right)
         ULx = np.amin(outline, axis = 0)[0]
@@ -48,16 +54,14 @@ def crop_svg_outline(image_file, ID_dict, svg_coordinates):
         img_crop_polygon = newImArray[LRy:ULy, ULx:LRx]
 
         # reconvert to Image format for saving
-        # newIm = Image.fromarray(img_crop_polygon, "LA")  # Leaving RGBA seems unintuitive, but the main.py then removes mask and extra channels (could not incorporate this into the f...ing !!! function, maybe if we have a lot of time left...)
-        newIm = Image.fromarray(img_crop_polygon, "RGBA")
-        #print(type(newIm))
-        #newIm = color.rgb2gray(io.imread(newIm))
+        newIm = Image.fromarray(np.uint8(img_crop_polygon)) if (PIL.__version__ != '5.3.0') else Image.fromarray(img_crop_polygon).convert(mode="L")
+
+        # save under output_path
         file_name = ID +"_" + word + ".png"
-        save_path = os.path.join(output_path_polygon, file_name)
+        save_path = os.path.join(output_path, file_name)
         newIm.save(save_path)
+        
     return
 
-# os.getcwd()
-# os.chdir("C:\\Bern\\Github\\4.5_biologists-master\\src\\main\\py\\kws")
 
-# crop_svg_outline("270.jpg", ID_dict = ID_dict, svg_coordinates = coord_list)
+# crop_svg_outline("270.png", ID_dict = ID_dict, svg_coordinates = coord_list)

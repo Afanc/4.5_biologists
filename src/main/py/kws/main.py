@@ -6,6 +6,7 @@ import argparse
 import read_transcription as rt
 import read_SVG as svgread
 import crop_svg_outline as svgcrop
+import resize_images as resize
 import binarization as binary
 # import feature_extraction as features
 # import scan_image_features as scan
@@ -17,7 +18,7 @@ parser.add_argument('--preprocessing', default=True, type=bool)
 parser.add_argument('--id_linking', default=True, type=bool)
 args = parser.parse_args()
 
-# ----- paths and folders and shit ----#
+# ----- paths and folders ----#
 work_dir = os.getcwd()
 if (work_dir[-14:] != "4.5_biologists" and work_dir[-3:] != "kws"):
     print("get back to main directory, or cd into src/main/py/kws, sucker !")
@@ -70,64 +71,41 @@ if args.id_linking:
 if args.preprocessing:
     # --- processing pages (binarization and cropping out words) --- #
     i = 0
-    # for page_no, page in enumerate(list_of_images):
-    #     print("processing page ", i+1, " out of ", len(list_of_images))
-    #
-    #     image = plt.imread(os.path.join(paths["images"], page))
-    #     svg = os.path.join(paths["svg"], list_of_svg[page_no])
-    #     coord_list = svgread.extract_SVG_masks(svg)
-    #
-    #     img_name = page[:-4] + ".png"
-    #     image_out = os.path.join(paths["images_output"], img_name)
-    #     image_bin = binary.binarize_image(image, block_size=101)
-    #     binary.save_image_png(image_out, image_bin)
-    #
-    #     svg_in = os.path.join(paths["images_output"], img_name)
-    #     svgcrop.crop_svg_outline(svg_in, ID_dict=ID_dict, svg_coordinates=coord_list)
-    #
-    #     i += 1
+    for page_no, page in enumerate(list_of_images):
+        print("processing page ", i+1, " out of ", len(list_of_images))
+
+        image = plt.imread(os.path.join(paths["images"], page))
+        svg = os.path.join(paths["svg"], list_of_svg[page_no])
+        coord_list = svgread.extract_SVG_masks(svg)
+
+        img_name = page[:-4] + ".png"
+        image_out = os.path.join(paths["images_output"], img_name)
+        
+        image_bin = binary.binarize_image(image, block_size=101)  # binarize image using local thresholding
+        binary.save_image_png(image_out, image_bin)
+
+        svg_in = os.path.join(paths["images_output"], img_name)
+        svgcrop.crop_svg_outline(svg_in, ID_dict=ID_dict, svg_coordinates=coord_list, output_path = paths["wordimages_input"])  # crop individual words by polygon outline
+
+        i += 1
 
 
+    # --- get median word width and height (for resizing) --- #
+    base = os.getcwd()
     list_of_wordimages = sorted(os.listdir(paths["wordimages_input"]))
+    os.chdir(paths["wordimages_input"])
+    median_word_width, median_word_height = resize.median_wh(list_of_wordimages) #    word_lengths = [len(word) for word in word_dict]
+    os.chdir(base)
 
-    #    word_lengths = [len(word) for word in word_dict]
-    #    median_word_length = int(np.median(word_lengths))
-    #    os.chdir(".\\data\\word_images")
-    #    word_widths = list()
-    #    for word in list_of_wordimages:
-    #        xyz = plt.imread(word)
-    #        word_widths.append(xyz.shape[1])
-    #    median_word_width = int(np.median(word_widths))  # 207 is the median width of the cut words
-    #
 
-    # --- processing individual word images (mask removal and resizing) --- #
+    # --- processing individual word images (resizing) --- #
     i = 0
-
     for file in list_of_wordimages:
         if i%100 == 0:
             print("processing word-image ", i+1, " out of ", len(list_of_wordimages))
         file_in = os.path.join(paths["wordimages_input"], file)
-        img = plt.imread(file_in)  # the loaded image has the shape: (height, widht, 4)
-        #
-        #     #these steps remove the 4 channels in the 3. dimension
-        frame = img[:, :, 3]
-        img = img[:, :, 0]
-        img = np.where((frame[:, :] == 0), 1, img[:, :])
-        img_PIL = Image.fromarray(img)
-        resized_img = img_PIL.resize(size=(207, 100))  # the reshaped image has the shape: (200 (width), 100 (height))
-        resized_img = np.array(resized_img)
-        # resized_img = (resized_img > np.unique(img)[0])*255
-        # image_PIL = Image.fromarray(resized_img).convert(mode = "L")
-        # this turned some pixels which should be black into white pixels,
-        # so I applied a threshold to get binary word images
-        thresh = threshold_otsu(resized_img)  # threshold_otsu results in an error: "ValueError: threshold_otsu is expected to work with images having more than one color. The input image seems to have just one color 1.0."
-            # Problem with the last main.py was probably that crop_scg_outline had also been changed in parallel... x_x
-        binary_resized_img = (resized_img > thresh)*255
-        #resized_img = (resized_img > np.unique(img)[0]) * 255
-        image_PIL = Image.fromarray(np.uint8(binary_resized_img)) if (PIL.__version__ != '5.3.0') else Image.fromarray(binary_resized_img).convert(mode="L")
-        file_out = os.path.join(paths["wordimages_output"], file)
-        image_PIL.save(file_out)
+        resize.resize_image(file_in, height_new = median_word_height, width_new = median_word_width, output_path = paths["wordimages_output"])
 
         i += 1
 
-    print("Binary images of individual words extracted and rescaled to 207 x 100 pixel (width x height).")
+    print("Binary images of individual words extracted and rescaled to", median_word_width, "x", median_word_height, "pixel (width x height).")
