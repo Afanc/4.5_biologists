@@ -23,6 +23,11 @@ if (work_dir[-14:] != "4.5_biologists" and work_dir[-3:] != "kws"):
     print("get back to main directory, or cd into src/main/py/kws, sucker !")
     exit()
 
+import PIL
+if (PIL.__version__ != '5.3.0') :
+    print("you need PIL 5.3.0 to run this thing, won't work otherwise. Goodbye")
+    exit()
+
 paths = {}
 
 # directories
