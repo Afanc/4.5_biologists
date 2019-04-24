@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from kws.RecallPrecision import RecallPrecision
+from RecallPrecision import RecallPrecision
 
 
 class TestRecallPrecision(TestCase):
