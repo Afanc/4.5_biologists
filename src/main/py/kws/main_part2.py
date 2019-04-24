@@ -65,13 +65,13 @@ if args.feature_extr:
         f = sif.scan_image_features(wordimage, number_of_features, normalize_feature_matrix=True)
         features[i] = f
 
-        print(features[0])
+        print(features[i])
         break
 
-        print(f.shape)
-
+#TODO
+#extract features to a csv
 
 # ----- pre-processing ----#
 if args.dtw:
-    pass
+    print(features[0])
 
