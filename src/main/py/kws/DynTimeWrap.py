@@ -34,7 +34,7 @@ class DynTimeWrap:
         self.words_and_features = self.get_word_features(word_images)
         if len(save_file_name) != 0:
             with open(save_file_name, 'w') as f:
-                writer = csv.writer(f , lineterminator='\n', quoting=csv.QUOTE_NONE, escapechar='\\')
+                writer = csv.writer(f, lineterminator='\n', quoting=csv.QUOTE_NONE, escapechar='\\')
                 for feature in self.words_and_features:
                     writer.writerow(feature)
         return self.words_and_features
@@ -61,13 +61,40 @@ class DynTimeWrap:
                 print("feature extraction, image ", i, "out of", len(word_images))
         return [[w, features[i]] for i, w in enumerate(words)]
 
-    def spot_keywords(self, pages, keywords):
-        file_filter = '-*.png|'.join([str(page) for page in pages])
-        word_images = fnmatch.filter(os.listdir(self.paths["resized_word_images"]), file_filter)
+    def spot_keywords(self, pages, keywords, result_file_name=''):
+        key_features = []
+        for kwf in self.words_and_features:
+            if kwf[0] in keywords:
+                key_features.append(kwf)
+
+        file_filters = []
+        for page in pages:
+            file_filters.append(page + '-*.png')
+        word_images = sorted(fnmatch.filter(os.listdir(self.paths["resized_word_images"]), file_filters))
 
         validate_word_features = self.get_word_features(word_images)
-        # TODO do DTW and spot the keywords among the given word_images (loaded from pages) by some threshold
-        #  and maybe plot accuracy plot
+
+        spotted_words = []
+        for w, wf in validate_word_features:
+            for kwf in key_features:
+                (d, cost_matrix, acc_cost_matrix, path) = dtw.dtw((kwf[1], wf), dist=cityblock)
+                guess = d > 100
+                if guess:
+                    spotted_words.append(spotted_word, real_word, (d, cost_matrix, acc_cost_matrix, path))
+                spotted_word = kwf[0]
+                real_word = w
+                if guess and spotted_word == real_word:
+                    print('good guess for: ' + real_word)
+                else:
+                    print('good guess for: ' + real_word)
+
+        if len(result_file_name) != 0:
+            with open(result_file_name, 'w') as fr:
+                writer = csv.writer(fr, lineterminator='\n')
+                for word_stat in spotted_words:
+                    writer.writerow(word_stat)
+
+        # TODO maybe plot accuracy plot
         return
 
     """Dynamic Time Warping between two feature vector sequences"""
