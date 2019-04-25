@@ -22,17 +22,17 @@ def feature_extraction(col, num_f):
     #if there are black pixels in this column the other features need to be calculated
     if number_of_black_pixels > 0:
         upper_boundary = np.argwhere(col == 0)[0][0]  # get first index of black pixel
-        lower_boundary = np.argwhere(col == 0)[-1][0]   # invert the array and get first index of black pixel
+        lower_boundary = np.argwhere(col == 0)[-1][0]   # get index of last black pixel (using -1 for reverse slicing)
         black_white_transitions = 0
-        for row in range(len(col)-1):  # iterate from first to last black pixel
-            # when there is a transition from black to white, the counter is increased by one
+        for row in range(len(col)-1):  # iterate over column
+            # when there is a transition from black to white or reverse, the counter is increased by one
             if col[row] != col[row+1]:
                 black_white_transitions += 1
     # if there are no black pixels the features get the following values
     else:
         upper_boundary = len(col)
         lower_boundary = len(col)
-        black_white_transitions = 0
+        black_white_transitions = 0  # this will cause errors on a pure black or pure white image, but as soon as there is a single transition in one columns of the image, it should work
     feature_values = np.array([number_of_black_pixels, upper_boundary, lower_boundary, black_white_transitions]).reshape(num_of_features, )
     return feature_values
 
