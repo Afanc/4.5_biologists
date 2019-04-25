@@ -10,3 +10,5 @@ src/main/py/cnn/data
 src/main/py/kws/data/resized_word_images
 src/main/py/kws/data/word_images
 src/main/py/kws/data/binarized_images
+csv_results.txt
+features.txt
