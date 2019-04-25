@@ -2,6 +2,7 @@
 
 import os
 import csv
+import pickle
 from wcmatch import fnmatch
 import numpy as np
 from scipy.spatial.distance import euclidean, cityblock
@@ -13,17 +14,19 @@ import scan_image_features as sif
 class DynTimeWrap:
     """Dynamic Time Warping train, validate, search for keywords.
         object arguments:
-        - num_f: number of features
+        - numb_f: number of features
         - f_width: feature width
+        - spot_threshold: spot distance threshold for the Dynamic Time Wrapping
         - paths: data file paths
             required:
             - resized_word_images
     """
-    def __init__(self, paths, numb_f=4, f_width=212):
+    def __init__(self, paths, numb_f=4, f_width=212, spot_threshold=82):
         self.paths = paths
         self.numb_f = numb_f
         self.f_width = f_width
-        self.words_and_features = []
+        self.words_features = []
+        self.spot_threshold = spot_threshold
 
     def train(self, train_pages, save_file_name=''):
         file_filters = []
@@ -31,23 +34,36 @@ class DynTimeWrap:
             file_filters.append(page + '-*.png')
         word_images = sorted(fnmatch.filter(os.listdir(self.paths["resized_word_images"]), file_filters))
 
-        self.words_and_features = self.get_word_features(word_images)
+        self.words_features = self.get_word_features(word_images)
         if len(save_file_name) != 0:
-            with open(save_file_name, 'w') as f:
-                writer = csv.writer(f, lineterminator='\n', quoting=csv.QUOTE_NONE, escapechar='\\')
-                for feature in self.words_and_features:
-                    writer.writerow(feature)
-        return self.words_and_features
+            self.save_word_features(self.words_features, save_file_name)
+        return self.words_features
+
+    def save_word_features(self, words_features, file_name):
+        with open(file_name, 'wb') as f:
+            pickle.dump(words_features, f)
+            # fieldnames = ['word', 'features']
+            # writer = csv.DictWriter(f, fieldnames=fieldnames)
+            # writer.writeheader()
+            # # writer = csv.writer(f, lineterminator='\n', escapechar='\\')
+            # for feature in words_features:
+            #     writer.writerow({'word': feature[0], 'features': feature[1]})
+            #     # writer.writerow(feature)
 
     def load_word_features(self, features_file_name):
-        self.words_and_features = []
-        with open(features_file_name, 'r') as f:
-            reader = csv.reader(f)
-            for row in reader:
-                self.words_and_features.append(row)
-        return self.words_and_features
+        self.words_features = []
+        with open(features_file_name, 'rb') as f:
+            self.words_features = pickle.load(f)
+            # # reader = csv.reader(f, lineterminator='\n', escapechar='\\')
+            # reader = csv.DictReader(f)
+            # for row in reader:
+            #     features = list(zip(*row['features'].replace('\n', '')))
+            #     self.words_features.append([row['word'], features])
+            #     # self.words_features.append([row[0], row[1].replace('\n', '')])
+            #     # self.words_features.append(row)
+        return self.words_features
 
-    def get_word_features(self, word_images):       # TODO buggy: fix it
+    def get_word_features(self, word_images):
         features = np.zeros(shape=(len(word_images), self.numb_f, self.f_width))
         words = []
         for i, w in enumerate(word_images):
@@ -63,7 +79,7 @@ class DynTimeWrap:
 
     def spot_keywords(self, pages, keywords, result_file_name=''):
         key_features = []
-        for kwf in self.words_and_features:
+        for kwf in self.words_features:
             if kwf[0] in keywords:
                 key_features.append(kwf)
 
@@ -75,25 +91,34 @@ class DynTimeWrap:
         validate_word_features = self.get_word_features(word_images)
 
         spotted_words = []
+        count_good_guesses = 0
+        count_bad_guesses = 0
         for w, wf in validate_word_features:
             for kwf in key_features:
-                (d, cost_matrix, acc_cost_matrix, path) = dtw.dtw(kwf[1], wf, dist=cityblock)
-                guess = d > 100
-                if guess:
-                    spotted_words.append((spotted_word, real_word, (d, cost_matrix, acc_cost_matrix, path)))
                 spotted_word = kwf[0]
                 real_word = w
+                (d, cost_matrix, acc_cost_matrix, path) = dtw.dtw(kwf[1], wf, dist=euclidean)
+                guess = d < self.spot_threshold  # TODO find the better threshold, need more features
+                if guess:
+                    spotted_words.append((spotted_word, real_word, (d, cost_matrix, acc_cost_matrix, path)))
+                if spotted_word == real_word:
+                    print("MATH:")
+                    print((w, d, cost_matrix, acc_cost_matrix, path))
                 if guess and spotted_word == real_word:
-                    print('good guess for: ' + real_word)
+                    # print('good guess for [' + real_word + ']')
+                    count_good_guesses += 1
                 else:
-                    print('bad guess for: ' + real_word + ' miss matched with ' + spotted_word)
+                    # print('bad guess for [' + real_word + '] miss matched with [' + spotted_word + ']')
+                    count_bad_guesses += 1
 
         if len(result_file_name) != 0:
             with open(result_file_name, 'w') as fr:
                 writer = csv.writer(fr, lineterminator='\n')
                 for word_stat in spotted_words:
                     writer.writerow(word_stat)
-
+        print("FINAL STATS:")
+        print("\t good guesses %d " % count_good_guesses)
+        print("\t bad guesses %d " % count_bad_guesses)
         # TODO maybe plot accuracy plot
         return
 
