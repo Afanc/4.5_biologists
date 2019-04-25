@@ -33,9 +33,9 @@ paths = {}
 
 # directories
 paths["images"] = os.path.join('data', 'images')
-paths["images_output"] = os.path.join('data', 'binarized_images')
-paths["wordimages_input"] = os.path.join('data', 'word_images')
-paths["wordimages_output"] = os.path.join('data', 'resized_word_images')
+paths["binarized_images"] = os.path.join('data', 'binarized_images')
+paths["word_images"] = os.path.join('data', 'word_images')
+paths["resized_word_images"] = os.path.join('data', 'resized_word_images')
 paths["svg"] = os.path.join('data', 'ground-truth', 'locations')
 
 # files
@@ -62,50 +62,51 @@ for k in paths:
 list_of_images = sorted(os.listdir(paths["images"]))
 list_of_svg = sorted(os.listdir(paths["svg"]))
 
-# ----- ID linking----#
-if args.id_linking:
-    word_dict = rt.read_transcription(file_name=paths["transcription.txt"], output="word_dict")
-    ID_dict = rt.read_transcription(file_name=paths["transcription.txt"], output="ID_dict")
 
 # ----- pre-processing ----#
 if args.preprocessing:
-    # --- processing pages (binarization and cropping out words) --- #
-    i = 0
-    for page_no, page in enumerate(list_of_images):
-        print("processing page ", i+1, " out of ", len(list_of_images))
+    if not os.listdir(paths["binarized_images"]) or not os.listdir(paths["word_images"]) :
+        # ----- ID linking----#
+        ID_dict = rt.read_transcription(file_name=paths["transcription.txt"], output="ID_dict")
 
-        image = plt.imread(os.path.join(paths["images"], page))
-        svg = os.path.join(paths["svg"], list_of_svg[page_no])
-        coord_list = svgread.extract_SVG_masks(svg)
+        # --- processing pages (binarization and cropping out words) --- #
+        i = 0
+        for page_no, page in enumerate(list_of_images):
+            print("processing page ", i+1, " out of ", len(list_of_images))
 
-        img_name = page[:-4] + ".png"
-        image_out = os.path.join(paths["images_output"], img_name)
-        
-        image_bin = binary.binarize_image(image, block_size=101)  # binarize image using local thresholding
-        binary.save_image_png(image_out, image_bin)
+            image = plt.imread(os.path.join(paths["images"], page))
+            svg = os.path.join(paths["svg"], list_of_svg[page_no])
+            coord_list = svgread.extract_SVG_masks(svg)
 
-        svg_in = os.path.join(paths["images_output"], img_name)
-        svgcrop.crop_svg_outline(svg_in, ID_dict=ID_dict, svg_coordinates=coord_list, output_path = paths["wordimages_input"])  # crop individual words by polygon outline
+            img_name = page[:-4] + ".png"
+            image_out = os.path.join(paths["binarized_images"], img_name)
 
-        i += 1
+            image_bin = binary.binarize_image(image, block_size=101)  # binarize image using local thresholding
+            binary.save_image_png(image_out, image_bin)
+
+            svg_in = os.path.join(paths["binarized_images"], img_name)
+            svgcrop.crop_svg_outline(svg_in, ID_dict=ID_dict, svg_coordinates=coord_list, output_path=paths["word_images"])  # crop individual words by polygon outline
+
+            i += 1
 
 
     # --- get median word width and height (for resizing) --- #
     base = os.getcwd()
-    list_of_wordimages = sorted(os.listdir(paths["wordimages_input"]))
-    os.chdir(paths["wordimages_input"])
+    list_of_wordimages = sorted(os.listdir(paths["word_images"]))
+    os.chdir(paths["word_images"])
     median_word_width, median_word_height = resize.median_wh(list_of_wordimages) #    word_lengths = [len(word) for word in word_dict]
     os.chdir(base)
 
 
     # --- processing individual word images (resizing) --- #
-    i = 0
-    for file in list_of_wordimages:
-        if i%100 == 0:
-            print("processing word-image ", i+1, " out of ", len(list_of_wordimages))
-        file_in = os.path.join(paths["wordimages_input"], file)
-        resize.resize_image(file_in, height_new = median_word_height, width_new = median_word_width, output_path = paths["wordimages_output"])
+    if not os.listdir(paths["resized_word_images"]):
+        i = 0
+        for file in list_of_wordimages:
+            if i%100 == 0:
+                print("processing word-image ", i+1, " out of ", len(list_of_wordimages))
+            file_in = os.path.join(paths["word_images"], file)
+            resize.resize_image(file_in, height_new=median_word_height, width_new = median_word_width, output_path=paths["resized_word_images"])
 
-        i += 1
+            i += 1
 
     print("Binary images of individual words extracted and rescaled to", median_word_width, "x", median_word_height, "pixel (width x height).")

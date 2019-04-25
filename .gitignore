@@ -7,4 +7,6 @@ src/main/py/mlp/data/MNIST
 test.csv
 train.csv
 src/main/py/cnn/data
-src/main/py/kws/data
+src/main/py/kws/data/resized_word_images
+src/main/py/kws/data/word_images
+src/main/py/kws/data/binarized_images
