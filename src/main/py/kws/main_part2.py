@@ -18,7 +18,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--feature_extr', default=True, type=bool)
 parser.add_argument('--dtw', default=True, type=bool)
 parser.add_argument('--numb_f', default=4, type=int)
-parser.add_argument('--width', default=207, type=int)
+parser.add_argument('--width', default=212, type=int)
 args = parser.parse_args()
 
 # ----- paths and folders and shit ----#
@@ -129,7 +129,7 @@ if args.dtw:
             for row in reader:
                 words_and_features.append(row)
 
-    print(words_and_features[0])
+    #print(words_and_features[0])
 
     #so this might depend on how we write the whole thing, but you'll get the idea. example :
     #-----------------------this should be replaced with whole file version
@@ -141,7 +141,7 @@ if args.dtw:
     #print(words_and_features[0])
     #------------------
 
-    print(words_and_features[0])
+    #print(words_and_features[0])
 
     #NEEDS : list such as [['word', np.array(4,207)], ['word', np.array(4,207)], ...]
 
