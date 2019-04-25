@@ -47,7 +47,7 @@ class DynTimeWrap:
                 self.words_and_features.append(row)
         return self.words_and_features
 
-    def get_word_features(self, word_images):
+    def get_word_features(self, word_images):       # TODO buggy: fix it
         features = np.zeros(shape=(len(word_images), self.numb_f, self.f_width))
         words = []
         for i, w in enumerate(word_images):
@@ -77,16 +77,16 @@ class DynTimeWrap:
         spotted_words = []
         for w, wf in validate_word_features:
             for kwf in key_features:
-                (d, cost_matrix, acc_cost_matrix, path) = dtw.dtw((kwf[1], wf), dist=cityblock)
+                (d, cost_matrix, acc_cost_matrix, path) = dtw.dtw(kwf[1], wf, dist=cityblock)
                 guess = d > 100
                 if guess:
-                    spotted_words.append(spotted_word, real_word, (d, cost_matrix, acc_cost_matrix, path))
+                    spotted_words.append((spotted_word, real_word, (d, cost_matrix, acc_cost_matrix, path)))
                 spotted_word = kwf[0]
                 real_word = w
                 if guess and spotted_word == real_word:
                     print('good guess for: ' + real_word)
                 else:
-                    print('good guess for: ' + real_word)
+                    print('bad guess for: ' + real_word + ' miss matched with ' + spotted_word)
 
         if len(result_file_name) != 0:
             with open(result_file_name, 'w') as fr:

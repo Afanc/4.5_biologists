@@ -27,16 +27,17 @@ class TestDynTimeWrap(TestCase):
             for line in pages:
                 page = line.rstrip("\n\r")
                 train_pages.append(page)
-        features = self.dtw.train(train_pages, save_file_name=self.paths['train_features.txt'])
+        features = self.dtw.train(train_pages)  # , save_file_name=self.paths['train_features.txt'])
         assert len(features) > 0
 
     def test_load_word_features(self):
-        features = self.dtw.load_word_features(self.paths['train_features.txt'])
+        features = self.dtw.load_word_features(self.paths['train_features.txt'])  # to test need first to save it ^^^
         assert len(features) > 0
 
     def test_spot_keywords(self):
         # first train
-        self.dtw.load_word_features(self.paths['train_features.txt'])
+        # self.dtw.load_word_features(self.paths['train_features.txt'])  # BUGGY need work
+        self.test_train()
         # then spot
         spot_pages = []
         with open(self.paths["valid.txt"], "r") as pages:
