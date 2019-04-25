@@ -22,11 +22,11 @@ def feature_extraction(col, num_f):
     #if there are black pixels in this column the other features need to be calculated
     if number_of_black_pixels > 0:
         upper_boundary = np.argwhere(col == 0)[0][0]  # get first index of black pixel
-        lower_boundary = np.argwhere(col[::-1, :] == 0)[0][0]   # invert the array and get first index of black pixel
+        lower_boundary = np.argwhere(col == 0)[-1][0]   # invert the array and get first index of black pixel
         black_white_transitions = 0
-        for row in range(upper_boundary, len(col)-lower_boundary-1):  # iterate from first to last black pixel
+        for row in range(len(col)-1):  # iterate from first to last black pixel
             # when there is a transition from black to white, the counter is increased by one
-            if col[row, 0] < col[row+1, 0]:
+            if col[row] != col[row+1]:
                 black_white_transitions += 1
     # if there are no black pixels the features get the following values
     else:
