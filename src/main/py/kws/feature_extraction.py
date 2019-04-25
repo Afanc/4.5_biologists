@@ -32,7 +32,7 @@ def feature_extraction(col, num_f):
     else:
         upper_boundary = len(col)
         lower_boundary = len(col)
-        black_white_transitions = 0  # this will cause errors on a pure black or pure white image, but as soon as there is a single transition in one columns of the image, it should work
+        black_white_transitions = 0  # this will cause errors on a pure black or pure white image, but as soon as there is a single black-white transition in one columns of the image, it should work
     feature_values = np.array([number_of_black_pixels, upper_boundary, lower_boundary, black_white_transitions]).reshape(num_of_features, )
     return feature_values
 
