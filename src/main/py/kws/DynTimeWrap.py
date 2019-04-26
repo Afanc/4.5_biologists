@@ -21,7 +21,7 @@ class DynTimeWrap:
             required:
             - resized_word_images
     """
-    def __init__(self, paths, numb_f=4, f_width=212, spot_threshold=6):
+    def __init__(self, paths, numb_f=4, f_width=212, spot_threshold=4.):
         self.paths = paths
         self.numb_f = numb_f
         self.f_width = f_width
@@ -121,7 +121,6 @@ class DynTimeWrap:
         print("\t Bad spots FP: %d " % count_bad_spots)
         total = len(validate_word_features)
         print("\t Total %d " % total)
-        print("\t Accuracy: %d " % self.rp.str())
         print("\t Report: %s " % self.rp.str())
         # TODO maybe plot accuracy plot
         return

@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import matplotlib.pyplot as plt
+import sys
 
 
 class RecallPrecision:
@@ -25,8 +26,10 @@ class RecallPrecision:
         self.name = name
 
     def add_recal_precision(self):
-        self.recall = self.TP / (self.TP + self.FN)   # Sensitivity also True Positive Rate (TPR)
-        self.precision = self.TP / (self.TP + self.FP)  # Positive Predictive Value (PPV)
+        # Sensitivity also True Positive Rate (TPR)
+        self.recall = self.TP / (self.TP + self.FN + (sys.float_info.epsilon if self.TP == self.FN else 0))
+        # Positive Predictive Value (PPV)
+        self.precision = self.TP / (self.TP + self.FP + (sys.float_info.epsilon if self.TP == self.FP else 0))
         self.recalls.append(self.recall)
         self.precisions.append(self.precision)
 
