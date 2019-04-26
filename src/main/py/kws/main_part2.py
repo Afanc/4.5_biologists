@@ -17,7 +17,7 @@ import random
 parser = argparse.ArgumentParser()
 parser.add_argument('--feature_extr', default=True, type=bool)
 parser.add_argument('--dtw', default=True, type=bool)
-parser.add_argument('--numb_f', default=4, type=int)
+parser.add_argument('--numb_f', default=9, type=int)
 parser.add_argument('--width', default=212, type=int)
 args = parser.parse_args()
 
