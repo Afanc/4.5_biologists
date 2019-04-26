@@ -2,6 +2,10 @@
 
 import matplotlib.pyplot as plt
 import sys
+from sklearn.metrics import roc_curve
+from sklearn.metrics import average_precision_score
+from sklearn.metrics import precision_recall_curve
+from sklearn.utils.fixes import signature
 
 
 class RecallPrecision:
@@ -22,6 +26,9 @@ class RecallPrecision:
         self.TN_words = []
         self.FP_words = []
         self.FN_words = []
+        self.y_test = []
+        self.y_score = []
+        self.word_dict = {}
 
     def reset_point(self):
         self.TP = 0
@@ -49,12 +56,23 @@ class RecallPrecision:
         p = RecallPrecision.precision(tp, fp)
         return 2 * (p * r) / (p + r + (sys.float_info.epsilon if r == p else 0))
 
+    def factor(self, word):
+        if word in self.word_dict:
+            w_factor = self.word_dict[word]
+        else:
+            w_factor = len(self.word_dict) + 1
+            self.word_dict[word] = w_factor
+        return w_factor
+
     def add_plot_point(self):
         self.recalls.append(self.recall(self.TP, self.FN))
         self.precisions.append(self.precision(self.TP, self.FP))
         self.reset_point()
 
     def add(self, word, true_word, is_call):
+        # convert string words to factors
+        self.y_test.append(self.factor(true_word))
+        self.y_score.append(self.factor(word) if is_call else (self.factor(true_word) if word != true_word else 0))
         if is_call:
             if word == true_word:
                 self.addTP(word)
@@ -95,9 +113,32 @@ class RecallPrecision:
 
     def plot(self, filename=''):
         plt.figure()
-        plt.plot(self.recalls, self.precisions, 'ro', label='Recall-Precision Curve')
+
+        # MY WAY (wrong):
+        plt.plot(self.recalls, self.precisions, 'ro')
+        plt.title('Recall-Precision Curve')
+        plt.show()
+
+        # FANCY WAY source: https://scikit-learn.org/stable/auto_examples/model_selection/plot_precision_recall.html
+        # not working
+        average_precision = average_precision_score(self.y_test, self.y_score)
+        print('Average precision-recall score: {0:0.2f}'.format(average_precision))
+        precision, recall, _ = precision_recall_curve(self.y_test, self.y_score)
+
+        # In matplotlib < 1.5, plt.fill_between does not have a 'step' argument
+        step_kwargs = ({'step': 'post'}
+                       if 'step' in signature(plt.fill_between).parameters
+                       else {})
+        plt.step(recall, precision, color='b', alpha=0.2,
+                 where='post')
+        plt.fill_between(recall, precision, alpha=0.2, color='b', **step_kwargs)
+
         plt.xlabel('Recall')
         plt.ylabel('Precision')
+        plt.ylim([0.0, 1.05])
+        plt.xlim([0.0, 1.0])
+        plt.title('2-class Precision-Recall curve: AP={0:0.2f}'.format(average_precision))
+
         if filename != '':
             plt.savefig(filename)
         plt.show()
