@@ -39,6 +39,16 @@ class RecallPrecision:
     def precision(tp, fp):
         return tp / (tp + fp + (sys.float_info.epsilon if tp == fp else 0))
 
+    @staticmethod
+    def accuracy(tp, tn, fp, fn):
+        return (tp + tn) / (tp + tn + fp + fn + (sys.float_info.epsilon if tp == fp else 0))
+
+    @staticmethod
+    def f1score(tp, fp, fn):
+        r = RecallPrecision.recall(tp, fn)
+        p = RecallPrecision.precision(tp, fp)
+        return 2 * (p * r) / (p + r + (sys.float_info.epsilon if r == p else 0))
+
     def add_plot_point(self):
         self.recalls.append(self.recall(self.TP, self.FN))
         self.precisions.append(self.precision(self.TP, self.FP))
@@ -76,10 +86,12 @@ class RecallPrecision:
         self.FN += 1
         self.FN_total += 1
 
-    def str(self):
+    def stats(self):
         recall = self.recall(self.TP_total, self.FN_total)
         precision = self.precision(self.TP_total, self.FP_total)
-        return 'Recall {}; Precision {}'.format(recall, precision)
+        accuracy = self.accuracy(self.TP_total, self.TN_total, self.FP_total, self.FN_total)
+        f1score = self.f1score(self.TP_total, self.FP_total, self.FN_total)
+        return '\t Recall: {}\t Precision: {}\t Accuracy: {}\t F1score {}'.format(recall, precision, accuracy, f1score)
 
     def plot(self, filename=''):
         plt.figure()

@@ -94,6 +94,7 @@ class DynTimeWrap:
         spotted_words = []
         count_good_spots = 0
         count_bad_spots = 0
+        count_missed_spots = 0
         len_ws = len(validate_word_features)
         for kwf in key_features:
             spotted_word = kwf[0]
@@ -110,6 +111,7 @@ class DynTimeWrap:
                     else:
                         count_bad_spots += 1
                 elif spotted_word == real_word:
+                    count_missed_spots += 1
                     print("could spot FN:")
                     print((w, d, cost_matrix, acc_cost_matrix, path))
             self.rp.add_plot_point()
@@ -122,9 +124,10 @@ class DynTimeWrap:
         print("FINAL STATS:")
         print("\t Good spots TP: %d " % count_good_spots)
         print("\t Bad spots FP: %d " % count_bad_spots)
+        print("\t Missed spots FN: %d " % count_missed_spots)
         total = len(validate_word_features)
-        print("\t Total %d " % total)
-        print("\t Report: %s " % self.rp.str())
+        print("\t Total scanned words: %d " % total)
+        print("\t Stats: \n%s " % self.rp.stats())
         self.rp.plot()
         # TODO maybe plot outside
         return
