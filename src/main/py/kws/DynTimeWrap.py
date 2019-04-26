@@ -9,7 +9,7 @@ from scipy.spatial.distance import euclidean, cityblock
 import dtw
 
 import scan_image_features as sif
-
+from RecallPrecision import RecallPrecision
 
 class DynTimeWrap:
     """Dynamic Time Warping train, validate, search for keywords.
@@ -21,12 +21,13 @@ class DynTimeWrap:
             required:
             - resized_word_images
     """
-    def __init__(self, paths, numb_f=4, f_width=212, spot_threshold=82):
+    def __init__(self, paths, numb_f=4, f_width=212, spot_threshold=6):
         self.paths = paths
         self.numb_f = numb_f
         self.f_width = f_width
         self.words_features = []
         self.spot_threshold = spot_threshold
+        self.rp = RecallPrecision('dtw')
 
     def train(self, train_pages, save_file_name=''):
         file_filters = []
@@ -91,25 +92,24 @@ class DynTimeWrap:
         validate_word_features = self.get_word_features(word_images)
 
         spotted_words = []
-        count_good_guesses = 0
-        count_bad_guesses = 0
+        count_good_spots = 0
+        count_bad_spots = 0
         for w, wf in validate_word_features:
             for kwf in key_features:
                 spotted_word = kwf[0]
                 real_word = w
                 (d, cost_matrix, acc_cost_matrix, path) = dtw.dtw(kwf[1], wf, dist=euclidean)
-                guess = d < self.spot_threshold  # TODO find the better threshold, need more features
-                if guess:
+                spot = d < self.spot_threshold  # TODO find the better threshold, need more features
+                self.rp.add(spotted_word, real_word, spot)
+                if spot:
                     spotted_words.append((spotted_word, real_word, (d, cost_matrix, acc_cost_matrix, path)))
-                if spotted_word == real_word:
-                    print("MATH:")
+                    if spotted_word == real_word:
+                        count_good_spots += 1
+                    else:
+                        count_bad_spots += 1
+                elif spotted_word == real_word:
+                    print("could spot FN:")
                     print((w, d, cost_matrix, acc_cost_matrix, path))
-                if guess and spotted_word == real_word:
-                    # print('good guess for [' + real_word + ']')
-                    count_good_guesses += 1
-                else:
-                    # print('bad guess for [' + real_word + '] miss matched with [' + spotted_word + ']')
-                    count_bad_guesses += 1
 
         if len(result_file_name) != 0:
             with open(result_file_name, 'w') as fr:
@@ -117,8 +117,12 @@ class DynTimeWrap:
                 for word_stat in spotted_words:
                     writer.writerow(word_stat)
         print("FINAL STATS:")
-        print("\t good guesses %d " % count_good_guesses)
-        print("\t bad guesses %d " % count_bad_guesses)
+        print("\t Good spots TP: %d " % count_good_spots)
+        print("\t Bad spots FP: %d " % count_bad_spots)
+        total = len(validate_word_features)
+        print("\t Total %d " % total)
+        print("\t Accuracy: %d " % self.rp.str())
+        print("\t Report: %s " % self.rp.str())
         # TODO maybe plot accuracy plot
         return
 
