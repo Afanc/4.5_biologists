@@ -32,7 +32,7 @@ class DynTimeWrap:
     def train(self, train_pages, save_file_name=''):
         file_filters = []
         for page in train_pages:
-            file_filters.append(page + '-*.png')
+            file_filters.append(str(page) + '-*.png')
         word_images = sorted(fnmatch.filter(os.listdir(self.paths["resized_word_images"]), file_filters))
 
         self.words_features = self.get_word_features(word_images)
@@ -86,7 +86,7 @@ class DynTimeWrap:
 
         file_filters = []
         for page in pages:
-            file_filters.append(page + '-*.png')
+            file_filters.append(str(page) + '-*.png')
         word_images = sorted(fnmatch.filter(os.listdir(self.paths["resized_word_images"]), file_filters))
 
         validate_word_features = self.get_word_features(word_images)
@@ -94,9 +94,11 @@ class DynTimeWrap:
         spotted_words = []
         count_good_spots = 0
         count_bad_spots = 0
-        for w, wf in validate_word_features:
-            for kwf in key_features:
-                spotted_word = kwf[0]
+        len_ws = len(validate_word_features)
+        for kwf in key_features:
+            spotted_word = kwf[0]
+            print('spotting word [%s] out of %d' % (spotted_word, len_ws))
+            for w, wf in validate_word_features:
                 real_word = w
                 (d, cost_matrix, acc_cost_matrix, path) = dtw.dtw(kwf[1], wf, dist=euclidean)
                 spot = d < self.spot_threshold  # TODO find the better threshold, need more features
@@ -110,6 +112,7 @@ class DynTimeWrap:
                 elif spotted_word == real_word:
                     print("could spot FN:")
                     print((w, d, cost_matrix, acc_cost_matrix, path))
+            self.rp.add_plot_point()
 
         if len(result_file_name) != 0:
             with open(result_file_name, 'w') as fr:
@@ -122,7 +125,8 @@ class DynTimeWrap:
         total = len(validate_word_features)
         print("\t Total %d " % total)
         print("\t Report: %s " % self.rp.str())
-        # TODO maybe plot accuracy plot
+        self.rp.plot()
+        # TODO maybe plot outside
         return
 
     """Dynamic Time Warping between two feature vector sequences"""

@@ -5,6 +5,7 @@ from DynTimeWrap import DynTimeWrap
 
 import os
 
+
 class TestDynTimeWrap(TestCase):
     def setUp(self):
         self.paths = {"images": os.path.join('data', 'images'),
@@ -22,12 +23,7 @@ class TestDynTimeWrap(TestCase):
         self.dtw = DynTimeWrap(self.paths)
 
     def test_train(self):
-        train_pages = []
-        with open(self.paths["train.txt"], "r") as pages:
-            for line in pages:
-                page = line.rstrip("\n\r")
-                train_pages.append(page)
-        features = self.dtw.train(train_pages, save_file_name=self.paths['train_features.txt'])
+        features = self.dtw.train(train_pages=range(270, 280), save_file_name=self.paths['train_features.txt'])
         assert len(features) > 0
 
     def test_save_load_word_features(self):
@@ -41,12 +37,22 @@ class TestDynTimeWrap(TestCase):
     def test_spot_keywords(self):
         # first train
         self.dtw.load_word_features(self.paths['train_features.txt'])
-        # self.test_train()  # train in memory
+        # or in memory
+        # self.dtw.train(range(270,280), save_file_name=self.paths['train_features.txt'])
+
         # then spot
-        spot_pages = []
-        with open(self.paths["valid.txt"], "r") as pages:
-            for line in pages:
-                page = line.rstrip("\n\r")
-                spot_pages.append(page)
-        spotted = self.dtw.spot_keywords(spot_pages, ['Letters', 'October'], self.paths['spotting_results.txt'])
+        # keywords = ['Alexandria', 'Letters', 'October']
+        keywords = ['Alexandria', 'Captain', 'Colonel', 'Lieutenant', 'Major', 'Letters', 'October']
+        # keywords = self.load_keywords()
+        spot_pages = range(300, 305)
+        spotted = self.dtw.spot_keywords(spot_pages, keywords, self.paths['spotting_results.txt'])
         print(spotted)
+
+    def __load_keywords(self):
+        keywords = []
+        with open(self.paths["keywords.txt"], "r") as pages:
+            for line in pages:
+                keyword = line.rstrip("\n\r").replace('-', '').replace('_cm', '').replace('_pt', '') \
+                    .replace('_qo', '').replace('_', ' ')
+                keywords.append(keyword)
+        return keywords
