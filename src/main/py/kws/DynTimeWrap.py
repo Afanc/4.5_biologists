@@ -21,7 +21,7 @@ class DynTimeWrap:
             required:
             - resized_word_images
     """
-    def __init__(self, paths, numb_f=4, f_width=212, spot_threshold=4.):
+    def __init__(self, paths, numb_f=9, f_width=212, spot_threshold=6.):   # TODO find the better threshold
         self.paths = paths
         self.numb_f = numb_f
         self.f_width = f_width
@@ -96,13 +96,28 @@ class DynTimeWrap:
         count_bad_spots = 0
         count_missed_spots = 0
         len_ws = len(validate_word_features)
-        for kwf in key_features:
+        len_ks = len(key_features)
+        # we have multiple features for the same word so better sort them for better statistics
+        key_features.sort(key=lambda e: e[0])
+
+        current_word = key_features[0][0]
+        current_word_best_dtw = None
+        print('SPOTTING word [%s] %d out of %d' % (current_word, 1, len_ks))
+        for i, kwf in enumerate(key_features):
             spotted_word = kwf[0]
-            print('spotting word [%s] out of %d' % (spotted_word, len_ws))
+            if spotted_word != current_word:
+                # one word to spot one RP point
+                print("[%s] best missed spot FN:" % current_word)
+                print(current_word_best_dtw)
+                self.rp.add_plot_point()
+                current_word = spotted_word
+                current_word_best_dtw = None
+                print('SPOTTING word [%s] %d out of %d' % (current_word, i+1, len_ks))
+
             for w, wf in validate_word_features:
                 real_word = w
                 (d, cost_matrix, acc_cost_matrix, path) = dtw.dtw(kwf[1], wf, dist=euclidean)
-                spot = d < self.spot_threshold  # TODO find the better threshold, need more features
+                spot = d < self.spot_threshold
                 self.rp.add(spotted_word, real_word, spot)
                 if spot:
                     spotted_words.append((spotted_word, real_word, (d, cost_matrix, acc_cost_matrix, path)))
@@ -112,9 +127,13 @@ class DynTimeWrap:
                         count_bad_spots += 1
                 elif spotted_word == real_word:
                     count_missed_spots += 1
-                    print("could spot FN:")
-                    print((w, d, cost_matrix, acc_cost_matrix, path))
-            self.rp.add_plot_point()
+                    if current_word_best_dtw is None or d < current_word_best_dtw[0]:
+                        current_word_best_dtw = (d, cost_matrix, acc_cost_matrix, path)
+
+        # for the last word
+        self.rp.add_plot_point()
+        print("[%s] best missed spot FN:" % current_word)
+        print(current_word_best_dtw)
 
         if len(result_file_name) != 0:
             with open(result_file_name, 'w') as fr:

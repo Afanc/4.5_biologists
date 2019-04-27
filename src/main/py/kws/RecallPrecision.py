@@ -48,7 +48,7 @@ class RecallPrecision:
 
     @staticmethod
     def accuracy(tp, tn, fp, fn):
-        return (tp + tn) / (tp + tn + fp + fn + (sys.float_info.epsilon if tp == fp else 0))
+        return (tp + tn) / (tp + tn + fp + fn)
 
     @staticmethod
     def f1score(tp, fp, fn):
