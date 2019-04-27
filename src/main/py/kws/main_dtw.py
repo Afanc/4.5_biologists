@@ -23,6 +23,7 @@ paths = {"resized_word_images":     os.path.join('data', 'resized_word_images'),
          "valid.txt":               os.path.join('data', 'task', 'valid.txt'),
          "keywords.txt":            os.path.join('data', 'task', 'keywords.txt'),
          "train_features.txt":      os.path.join('data', 'train_features.txt'),
+         "valid_features.txt":      os.path.join('data', 'valid_features.txt'),
          "spotting_results.txt":    os.path.join('data', 'spotting_results.txt')
          }
 
@@ -48,31 +49,34 @@ for k in paths:
 
 # ----- features extraction ----#
 if args.feature_extr or not os.path.isfile(paths["train_features.txt"]):  # first time no way you have to do it
+    # create also validating word_features to speed up testing
+    dtw.train(train_pages=range(300, 305), save_file_name=paths['valid_features.txt'])
     dtw.train(train_pages=range(270, 280), save_file_name=paths['train_features.txt'])
 else:
-    dtw.load_word_features(paths['train_features.txt'])
-
-
-def load_keywords(self):
-    keywords = []
-    with open(self.paths["keywords.txt"], "r") as pages:
-        for line in pages:
-            keyword = line.rstrip("\n\r").replace('-', '').replace('_cm', '').replace('_pt', '') \
-                .replace('_qo', '').replace('_', ' ')
-            keywords.append(keyword)
-    return keywords
-
-
-# keywords = ['Alexandria', 'Letters', 'October']
-keywords = ['Alexandria', 'Captain', 'Colonel', 'Lieutenant', 'Major', 'Letters', 'October']
-# keywords = load_keywords()
-
-spot_pages = range(300, 305)
+    dtw.train_word_features(paths['train_features.txt'])
 
 
 # ----- dtw ----#
 if args.dtw:
 
-    print("warping : wwwwwooooooooooo......")
+    print("time for dynamic time warping...")
 
-    spotted = dtw.spot_keywords(spot_pages, keywords, paths['spotting_results.txt'])
+    def load_keywords(self):
+        keywords = []
+        with open(self.paths["keywords.txt"], "r") as pages:
+            for line in pages:
+                keyword = line.rstrip("\n\r").replace('-', '').replace('_cm', '').replace('_pt', '') \
+                    .replace('_qo', '').replace('_', ' ')
+                keywords.append(keyword)
+        return keywords
+
+    # keywords = ['Alexandria', 'Letters', 'October']
+    keywords = ['Alexandria', 'Captain', 'Colonel', 'Lieutenant', 'Major', 'Letters', 'October']
+    # keywords = load_keywords()
+
+    # used saved valid set: faster
+    valid_word_features = dtw.load_word_features(paths['valid_features.txt'])
+    spotted = dtw.spot_keywords(valid_word_features, keywords, paths['spotting_results.txt'])
+
+    # or do it now
+    # spotted = dtw.spot_keywords(range(300, 305), keywords, paths['spotting_results.txt'])

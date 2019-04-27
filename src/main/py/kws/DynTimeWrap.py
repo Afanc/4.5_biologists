@@ -26,6 +26,7 @@ class DynTimeWrap:
         self.numb_f = numb_f
         self.f_width = f_width
         self.words_features = []
+        self.learned_words = set()
         self.spot_threshold = spot_threshold
         self.rp = RecallPrecision('dtw')
 
@@ -38,30 +39,26 @@ class DynTimeWrap:
         self.words_features = self.get_word_features(word_images)
         if len(save_file_name) != 0:
             self.save_word_features(self.words_features, save_file_name)
+
+        for wf in self.words_features:
+            self.learned_words.add(wf[0])
         return self.words_features
 
     def save_word_features(self, words_features, file_name):
         with open(file_name, 'wb') as f:
             pickle.dump(words_features, f)
-            # fieldnames = ['word', 'features']
-            # writer = csv.DictWriter(f, fieldnames=fieldnames)
-            # writer.writeheader()
-            # # writer = csv.writer(f, lineterminator='\n', escapechar='\\')
-            # for feature in words_features:
-            #     writer.writerow({'word': feature[0], 'features': feature[1]})
-            #     # writer.writerow(feature)
 
-    def load_word_features(self, features_file_name):
-        self.words_features = []
+    @staticmethod
+    def load_word_features(features_file_name):
+        words_features = []
         with open(features_file_name, 'rb') as f:
-            self.words_features = pickle.load(f)
-            # # reader = csv.reader(f, lineterminator='\n', escapechar='\\')
-            # reader = csv.DictReader(f)
-            # for row in reader:
-            #     features = list(zip(*row['features'].replace('\n', '')))
-            #     self.words_features.append([row['word'], features])
-            #     # self.words_features.append([row[0], row[1].replace('\n', '')])
-            #     # self.words_features.append(row)
+            words_features = pickle.load(f)
+        return words_features
+
+    def train_word_features(self, features_file_name):
+        self.words_features = self.load_word_features(features_file_name)
+        for wf in self.words_features:
+            self.learned_words.add(wf[0])
         return self.words_features
 
     def get_word_features(self, word_images):
@@ -83,63 +80,58 @@ class DynTimeWrap:
         # return {'words': {'word': w, 'features': features[i], 'location': locations[i]} for i, w in enumerate(words)}
 
     def spot_keywords(self, pages, keywords, result_file_name=''):
-        key_features = []
-        for kwf in self.words_features:
-            if kwf[0] in keywords:
-                key_features.append(kwf)
-
         file_filters = []
         for page in pages:
             file_filters.append(str(page) + '-*.png')
         word_images = sorted(fnmatch.filter(os.listdir(self.paths["resized_word_images"]), file_filters))
-
         validate_word_features = self.get_word_features(word_images)
+        return self.spot_keywords(validate_word_features, keywords, result_file_name)
+
+    def spot_keywords(self, validate_word_features, keywords, result_file_name=''):
+        keywords_features = []
+        for kwf in self.words_features:
+            if kwf[0] in keywords:
+                keywords_features.append(kwf)
+        # we have multiple features for the same word so better sort them for better statistics
+        keywords_features.sort(key=lambda e: e[0])
+        self.rp.keywords = keywords
 
         spotted_words = []
         count_good_spots = 0
         count_bad_spots = 0
         count_missed_spots = 0
-        len_ws = len(validate_word_features)
-        len_ks = len(key_features)
-        # we have multiple features for the same word so better sort them for better statistics
-        key_features.sort(key=lambda e: e[0])
 
-        current_word = key_features[0][0]
-        current_word_best_dtw = None
-        print('SPOTTING word [%s] %d out of %d' % (current_word, 1, len_ks))
-        for i, kwf in enumerate(key_features):
-            spotted_word = kwf[0]
-            if spotted_word != current_word:
-                # one word to spot one RP point
-                print("[%s] best spot:" % current_word)
-                print(current_word_best_dtw[0])
-                self.rp.add_plot_point()
-                current_word = spotted_word
-                current_word_best_dtw = None
-                print('SPOTTING word [%s] %d out of %d' % (current_word, i+1, len_ks))
+        print("Scanning %d words for %d keywords with %d word features and DTW threshold %.2f"
+              % (len(validate_word_features), len(keywords), len(keywords_features), self.spot_threshold))
+        for i, (true_word, wf, word_location) in enumerate(validate_word_features):
+            current_word_best_dtw = None
+            if i > 0 and i % 100 == 0:
+                print('scanned  %d words' % i)
 
-            for true_word, wf, word_location in validate_word_features:
+            for j, kwf in enumerate(keywords_features):
+                spotted_word = kwf[0]
                 (d, cost_matrix, acc_cost_matrix, path) = dtw.dtw(kwf[1], wf, dist=euclidean)
-                spot = d < self.spot_threshold
-                self.rp.add(spotted_word, true_word, spot)
-                if spot:
-                    spotted_words.append((spotted_word, word_location, true_word, d))   # (d, cost_matrix, acc_cost_matrix, path)))
-                    if spotted_word == true_word:
-                        count_good_spots += 1
-                        print("spotted [%s] at [%s], d: %.4f" % (spotted_word, word_location, d))
-                    else:
-                        count_bad_spots += 1
-                        print("mis-spotted [%s] as [%s] at [%s], d: %.4f" % (spotted_word, true_word, word_location, d))
-                elif spotted_word == true_word:
-                    count_missed_spots += 1
-                if current_word_best_dtw is None or d < current_word_best_dtw[0]:
-                    current_word_best_dtw = (d, cost_matrix, acc_cost_matrix, path)
+                if current_word_best_dtw is None or d < current_word_best_dtw[1]:
+                    current_word_best_dtw = (spotted_word, d, cost_matrix, acc_cost_matrix, path)
 
-        # for the last word
-        self.rp.add_plot_point()
-        print("[%s] best spot:" % current_word)
-        print(current_word_best_dtw)
+            # check spotting condition
+            spotted_word = current_word_best_dtw[0]
+            d = current_word_best_dtw[1]
+            spot = d < self.spot_threshold
+            self.rp.add(spotted_word, true_word, spot)
+            if spot:
+                spotted_words.append((spotted_word, word_location, true_word, d))   # (d, cost_matrix, acc_cost_matrix, path)))
+                if spotted_word.lower() == true_word.lower():
+                    count_good_spots += 1
+                    print("* spotted\t [%s]\t\t at [%s],\t d: %.4f" % (spotted_word, word_location, d))
+                else:
+                    count_bad_spots += 1
+                    print("! mis-spotted\t [%s]\t as [%s]\t at [%s],\t d: %.4f" % (spotted_word, true_word, word_location, d))
+            elif true_word in keywords:
+                count_missed_spots += 1
+                print("- not spotted\t [%s]\t\t at [%s],\t d: %.4f as [%s]" % (true_word, word_location, d, spotted_word))
 
+        # save results
         if len(result_file_name) != 0:
             with open(result_file_name, 'w') as fr:
                 writer = csv.writer(fr, lineterminator='\n')
@@ -147,6 +139,7 @@ class DynTimeWrap:
                     writer.writerow(word_stat)
                 writer.writerow("Stats: ")
                 writer.writerow(self.rp.stats())
+
         print("FINAL STATS:")
         print("\t Good spots TP: %d " % count_good_spots)
         print("\t Bad spots FP: %d " % count_bad_spots)
@@ -157,11 +150,3 @@ class DynTimeWrap:
         self.rp.plot()
         # TODO maybe plot outside
         return
-
-    """Dynamic Time Warping between two feature vector sequences"""
-    def dyn_time_warp(word1, word2):
-        d, cost_matrix, acc_cost_matrix, path = dtw.dtw(word1, word2, dist=cityblock)
-        #or dtw.accelerated_dtw(...) ?
-        #or euclidean ?
-
-        return (d, cost_matrix, acc_cost_matrix, path)
