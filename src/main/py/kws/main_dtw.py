@@ -47,7 +47,7 @@ for k in paths:
         os.makedirs(paths[k])
 
 # ----- features extraction ----#
-if args.feature_extr:
+if args.feature_extr or not os.path.isfile(paths["train_features.txt"]):  # first time no way you have to do it
     dtw.train(train_pages=range(270, 280), save_file_name=paths['train_features.txt'])
 else:
     dtw.load_word_features(paths['train_features.txt'])
