@@ -67,6 +67,7 @@ class DynTimeWrap:
     def get_word_features(self, word_images):
         features = np.zeros(shape=(len(word_images), self.numb_f, self.f_width))
         words = []
+        locations = []
         for i, w in enumerate(word_images):
             if w.startswith('.'):
                 continue
@@ -74,9 +75,12 @@ class DynTimeWrap:
             f = sif.scan_image_features(word_image, self.numb_f, normalize_feature_matrix=True)
             features[i] = f
             words.append(w[10:-4])
+            locations.append(w[:9])
             if i % 100 == 0:
                 print("feature extraction, image ", i, "out of", len(word_images))
-        return [[w, features[i]] for i, w in enumerate(words)]
+        return [[w, features[i], locations[i]] for i, w in enumerate(words)]
+        # the dictionary way: but needs a lot of other changes
+        # return {'words': {'word': w, 'features': features[i], 'location': locations[i]} for i, w in enumerate(words)}
 
     def spot_keywords(self, pages, keywords, result_file_name=''):
         key_features = []
@@ -107,32 +111,33 @@ class DynTimeWrap:
             spotted_word = kwf[0]
             if spotted_word != current_word:
                 # one word to spot one RP point
-                print("[%s] best missed spot FN:" % current_word)
-                print(current_word_best_dtw)
+                print("[%s] best spot:" % current_word)
+                print(current_word_best_dtw[0])
                 self.rp.add_plot_point()
                 current_word = spotted_word
                 current_word_best_dtw = None
                 print('SPOTTING word [%s] %d out of %d' % (current_word, i+1, len_ks))
 
-            for w, wf in validate_word_features:
-                real_word = w
+            for true_word, wf, word_location in validate_word_features:
                 (d, cost_matrix, acc_cost_matrix, path) = dtw.dtw(kwf[1], wf, dist=euclidean)
                 spot = d < self.spot_threshold
-                self.rp.add(spotted_word, real_word, spot)
+                self.rp.add(spotted_word, true_word, spot)
                 if spot:
-                    spotted_words.append((spotted_word, real_word, (d, cost_matrix, acc_cost_matrix, path)))
-                    if spotted_word == real_word:
+                    spotted_words.append((spotted_word, word_location, true_word, d))   # (d, cost_matrix, acc_cost_matrix, path)))
+                    if spotted_word == true_word:
                         count_good_spots += 1
+                        print("spotted [%s] at [%s], d: %.4f" % (spotted_word, word_location, d))
                     else:
                         count_bad_spots += 1
-                elif spotted_word == real_word:
+                        print("mis-spotted [%s] as [%s] at [%s], d: %.4f" % (spotted_word, true_word, word_location, d))
+                elif spotted_word == true_word:
                     count_missed_spots += 1
-                    if current_word_best_dtw is None or d < current_word_best_dtw[0]:
-                        current_word_best_dtw = (d, cost_matrix, acc_cost_matrix, path)
+                if current_word_best_dtw is None or d < current_word_best_dtw[0]:
+                    current_word_best_dtw = (d, cost_matrix, acc_cost_matrix, path)
 
         # for the last word
         self.rp.add_plot_point()
-        print("[%s] best missed spot FN:" % current_word)
+        print("[%s] best spot:" % current_word)
         print(current_word_best_dtw)
 
         if len(result_file_name) != 0:
@@ -140,6 +145,8 @@ class DynTimeWrap:
                 writer = csv.writer(fr, lineterminator='\n')
                 for word_stat in spotted_words:
                     writer.writerow(word_stat)
+                writer.writerow("Stats: ")
+                writer.writerow(self.rp.stats())
         print("FINAL STATS:")
         print("\t Good spots TP: %d " % count_good_spots)
         print("\t Bad spots FP: %d " % count_bad_spots)

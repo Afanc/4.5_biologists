@@ -18,7 +18,7 @@ class TestDynTimeWrap(TestCase):
                         "valid.txt": os.path.join('data', 'task', 'valid.txt'),
                         "keywords.txt": os.path.join('data', 'task', 'keywords.txt'),
                         "train_features.txt": os.path.join('data', 'train_features.txt'),
-                        "spotting_results.txt": os.path.join('data', 'csv_results.txt')
+                        "spotting_results.txt": os.path.join('data', 'spotting_results.txt')
                     }
         self.dtw = DynTimeWrap(self.paths)
 
