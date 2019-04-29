@@ -1,4 +1,4 @@
-Scanning 1293 words for 7 keywords with 58 word features and DTW threshold 6.00
+Scanning 1293 words for 7 keywords with 58 training words and DTW threshold 6.00
 - not spotted	 [Letters]		 at [300-02-02],	 d: 6.3410 as [Letters]
 - not spotted	 [Alexandria]		 at [300-12-01],	 d: 7.8824 as [Alexandria]
 scanned  100 words
