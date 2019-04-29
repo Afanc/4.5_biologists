@@ -1,3 +1,27 @@
+### Group Task #3 - Keyword Spotting
+Identification of given keywords in historical documents written by George Washington
+
+##### Two-step approach
+##### Preprocessing (main.py)
+- reading transcription file (separating positional IDs and literal words)
+- binarizing page images
+- extracting word positions (svg polygons and bounding boxes)
+- extracting word images
+- resizing word images (to median width and height of all words)
+
+##### Feature extraction and analysis (main_dtw.py)
+- feature extraction for each word (number of black_pixels, upper boundary, lower boundary, black_white_transitions, percentage of black pixels (between upper and lower bound, in center half, in lower third, in lower quarter, in upper third))
+- distance calculation and dynamic time warping: keywords vs. known words
+- calculation of precision and recall
+- graphical representation
+
+[Result file]
+
+
+
+***************************************************
+### Group Task #2 - Machine learning
+
 [Source Code for task 2a SVM](src/main/py/svm/svm_1.0.py)
 
 [SVM model output on the ful dataset](src/main/py/svm/svm_results_full_dataset.txt)
