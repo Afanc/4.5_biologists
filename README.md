@@ -7,7 +7,7 @@ Identification of given keywords in historical documents written by George Washi
 - binarizing page images
 - extracting word positions (svg polygons and bounding boxes)
 - extracting word images
-- resizing word images (to median width and height of all words)
+- resizing word images (to median width and height of all extracted word images)
 
 ##### Feature extraction and analysis (main_dtw.py)
 - feature extraction for each word (number of black_pixels, upper boundary, lower boundary, black_white_transitions, percentage of black pixels (between upper and lower bound, in center half, in lower third, in lower quarter, in upper third))
@@ -15,7 +15,7 @@ Identification of given keywords in historical documents written by George Washi
 - calculation of precision and recall
 - graphical representation
 
-[Result file]
+[Result file - so far containing top hit only](src/main/py/kws/data/main_dtw.out)
 
 
 
