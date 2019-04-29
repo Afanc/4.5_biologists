@@ -1,0 +1,41 @@
+Scanning 1293 words for 7 keywords with 58 word features and DTW threshold 6.00
+- not spotted	 [Letters]		 at [300-02-02],	 d: 6.3410 as [Letters]
+- not spotted	 [Alexandria]		 at [300-12-01],	 d: 7.8824 as [Alexandria]
+scanned  100 words
+- not spotted	 [Letters]		 at [300-21-04],	 d: 6.7311 as [Letters]
+scanned  200 words
+- not spotted	 [Letters]		 at [301-03-01],	 d: 6.2889 as [Letters]
+* spotted	 [Captain]		 at [301-07-06],	 d: 5.1547
+scanned  300 words
+scanned  400 words
+- not spotted	 [Colonel]		 at [301-29-06],	 d: 7.2555 as [Captain]
+* spotted	 [Letters]		 at [302-01-02],	 d: 5.7473
+scanned  500 words
+- not spotted	 [Major]		 at [302-06-09],	 d: 7.0783 as [Major]
+! mis-spotted	 [Major]	 as [necessaries]	 at [302-15-04],	 d: 5.9867
+scanned  600 words
+scanned  700 words
+* spotted	 [Letters]		 at [303-02-01],	 d: 4.0286
+scanned  800 words
+- not spotted	 [Major]		 at [303-10-05],	 d: 7.7939 as [Major]
+* spotted	 [Captain]		 at [303-14-01],	 d: 5.8652
+* spotted	 [Captain]		 at [303-16-06],	 d: 4.8976
+- not spotted	 [Captain]		 at [303-16-09],	 d: 6.3443 as [Captain]
+- not spotted	 [Colonel]		 at [303-19-03],	 d: 7.1005 as [Captain]
+scanned  900 words
+scanned  1000 words
+! mis-spotted	 [Captain]	 as [Regiments]	 at [303-35-03],	 d: 5.7174
+* spotted	 [Letters]		 at [304-01-02],	 d: 5.4481
+- not spotted	 [Alexandria]		 at [304-09-01],	 d: 8.0893 as [Alexandria]
+scanned  1100 words
+* spotted	 [Captain]		 at [304-12-03],	 d: 5.6418
+! mis-spotted	 [Captain]	 as [before]	 at [304-17-02],	 d: 5.6731
+- not spotted	 [Letters]		 at [304-21-05],	 d: 6.4212 as [Letters]
+scanned  1200 words
+FINAL STATS:
+	 Good spots TP: 7
+	 Bad spots FP: 3
+	 Missed spots FN: 11
+	 Total scanned words: 1293
+	 Stats:
+	 Recall: 0.3888888888888889	 Precision: 0.7	 Accuracy: 0.9891724671307038	 F1score 0.5
