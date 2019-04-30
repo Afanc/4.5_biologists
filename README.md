@@ -15,7 +15,7 @@ Identification of given keywords in historical documents written by George Washi
 - calculation of precision and recall
 - graphical representation
 
-[Result file - so far containing top hit only](src/main/py/kws/data/main_dtw.out)
+[Sample result file - containing top hit only thresholded with 6.0 dtw distance (Euclidean)](src/main/py/kws/data/main_dtw.out)
 
 Interpretation of the Recall-Precision curve only on top hits at all validation set locations and thresholded stepwise in the range from 4.0 to 9.0 dtw distance (Euclidean). Either the plot is wrongly generated or we have a problem with False-Positive values or both.
 
