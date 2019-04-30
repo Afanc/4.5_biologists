@@ -17,7 +17,12 @@ Identification of given keywords in historical documents written by George Washi
 
 [Result file - so far containing top hit only](src/main/py/kws/data/main_dtw.out)
 
-[Result report file](/src/main/py/kws/data/spotting_results.txt)
+Interpretation of the Recall-Precision curve only on top hits at all validation set locations and thresholded stepwise in the range from 4.0 to 9.0 dtw distance (Euclidean). Either the plot is wrongly generated or we have a problem with False-Positive values or both.
+
+![Recall-Precision best hits](src/main/py/kws/data/best_spotted_RP_plot.png)
+
+
+[Result keywords DTW distance matrix at all validation set locations](/src/main/py/kws/data/spotting_results.txt)
 
 
 
