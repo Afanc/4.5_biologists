@@ -17,6 +17,8 @@ Identification of given keywords in historical documents written by George Washi
 
 [Result file - so far containing top hit only](src/main/py/kws/data/main_dtw.out)
 
+[Result report file](/src/main/py/kws/data/spotting_results.txt)
+
 
 
 ***************************************************
