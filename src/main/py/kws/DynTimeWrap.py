@@ -124,7 +124,16 @@ class DynTimeWrap:
 
         return self.spotted_keywords_dtw
 
-    def save_spotted_keywords(self, file_name):
+    def dump_spotted_keywords_dtw(self, file_name):
+        with open(file_name, 'wb') as f:
+            pickle.dump(self.spotted_keywords_dtw, f)
+
+    def load_spotted_keywords_dtw(self, file_name):
+        with open(file_name, 'rb') as f:
+            self.spotted_keywords_dtw = pickle.load(f)
+        return self.spotted_keywords_dtw
+
+    def report_spotted_keywords(self, file_name):
         """ Save all spotted keywords in the required format:
             - one line per keyword: locations sorted by dtw distance
                 <keyword>,<location_1>,<dist_1>,<location_2><dist_2>...

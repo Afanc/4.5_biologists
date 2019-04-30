@@ -14,5 +14,5 @@ csv_results.txt
 features.txt
 train_features.txt
 src/main/py/kws/__pycache__
-spotting_results.txt
+*.dump
 valid_features.txt

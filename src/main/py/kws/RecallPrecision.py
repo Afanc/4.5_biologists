@@ -118,7 +118,7 @@ class RecallPrecision:
         # MY WAY (wrong):
         plt.plot(self.recalls, self.precisions, 'ro')
         plt.title('Recall-Precision Curve')
-        plt.show()
+        # plt.show()
 
         # FANCY WAY source: https://scikit-learn.org/stable/auto_examples/model_selection/plot_precision_recall.html
         # not working
@@ -134,12 +134,12 @@ class RecallPrecision:
         #          where='post')
         # plt.fill_between(recall, precision, alpha=0.2, color='b', **step_kwargs)
         #
-        # plt.xlabel('Recall')
-        # plt.ylabel('Precision')
-        # plt.ylim([0.0, 1.05])
-        # plt.xlim([0.0, 1.0])
+        plt.xlabel('Recall')
+        plt.ylabel('Precision')
+        plt.ylim([0.0, 1.05])
+        plt.xlim([0.0, 1.05])
         # plt.title('2-class Precision-Recall curve: AP={0:0.2f}'.format(average_precision))
-        #
+
         if filename != '':
             plt.savefig(filename)
         plt.show()

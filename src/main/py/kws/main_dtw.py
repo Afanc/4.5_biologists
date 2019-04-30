@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import os
+import numpy as np
 import platform
 import argparse
 
@@ -25,7 +26,9 @@ paths = {"resized_word_images":     os.path.join('data', 'resized_word_images'),
          "keywords.txt":            os.path.join('data', 'task', 'keywords.txt'),
          "train_features.txt":      os.path.join('data', 'train_features.txt'),
          "valid_features.txt":      os.path.join('data', 'valid_features.txt'),
-         "spotting_results.txt":    os.path.join('data', 'spotting_results.txt')
+         "spotting_results.txt":    os.path.join('data', 'spotting_results.txt'),
+         "spotted_keywords_dtw.dump": os.path.join('data', 'spotted_keywords_dtw.dump'),
+         "best_spotted_RP_plot.png": os.path.join('data', 'best_spotted_RP_plot.png')
          }
 
 dtw = DynTimeWrap(paths=paths, numb_f=args.numb_f)
@@ -45,7 +48,8 @@ if platform.system() == "Windows":
 # and create directories if these don't exist
 
 for k in paths:
-    if not os.path.exists(paths[k]) and paths[k][-4:] != ".txt":
+    ext = os.path.splitext(paths[k])[1]
+    if not os.path.exists(paths[k]) and len(ext) == 0:
         os.makedirs(paths[k])
 
 # ----- features extraction ----#
@@ -83,18 +87,22 @@ if args.dtw:
     # or do it now
     # spotted = dtw.spot_keywords_in_pages([300], keywords)
 
-    dtw.save_spotted_keywords(paths['spotting_results.txt'])
+    dtw.dump_spotted_keywords_dtw(paths['spotted_keywords_dtw.dump'])   # could be used for later plots
+    dtw.report_spotted_keywords(paths['spotting_results.txt'])
 
-    d_threshold = 6.0
-    best_spotted = dtw.best_spotted_keywords(d_threshold=d_threshold)
-
+    d_threshold = 6.0  # so far best found
     rp = RecallPrecision(keywords)
-    print('Best spotted with d_threshold %.4f :' % d_threshold)
-    print('location,\t keyword,\t true_word,\t distance' % d_threshold)
-    for (loc, d, keyword, true_word) in best_spotted:
-        print('%s,\t%s,\t%s,\t%.4f' % (loc, keyword, true_word, d))
-        rp.add(keyword, true_word, True)  # they are all calls
+    for d_threshold in np.arange(4.0, 9.0, 0.2):
+        best_spotted = dtw.best_spotted_keywords(d_threshold=d_threshold)
 
-    print("Stats: \n\t %s " % rp.stats())
+        print('Found %d best spotted words with d_threshold %.4f :' % (len(best_spotted), d_threshold))
+        #print('location,\t keyword,\t true_word,\t distance' % d_threshold)
+        for (loc, d, keyword, true_word) in best_spotted:
+            rp.add(keyword, true_word, True)  # they are all calls
+            #if keyword.lower() != true_word.lower():   # interested only in mis-matches
+            #    print('%s,\t%s,\t%s,\t%.4f' % (loc, keyword, true_word, d))
+        print("Stats: \n\t %s " % rp.stats())
 
+        rp.add_plot_point()
 
+    rp.plot(paths['best_spotted_RP_plot.png'])
