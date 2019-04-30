@@ -10,10 +10,8 @@ from sklearn.utils.fixes import signature
 
 class RecallPrecision:
 
-    keywords = []
-
-    def __init__(self, name):
-        self.name = name
+    def __init__(self, keywords):
+        self.keywords = keywords
         self.TP_total = 0
         self.TN_total = 0
         self.FP_total = 0
@@ -41,22 +39,22 @@ class RecallPrecision:
     # Sensitivity also True Positive Rate (TPR)
     @staticmethod
     def recall(tp, fn):
-        return tp / (tp + fn + (sys.float_info.epsilon if tp == fn else 0))
+        return tp / (tp + fn + (sys.float_info.epsilon if (tp + fn) == 0 else 0))
 
     # Positive Predictive Value (PPV)
     @staticmethod
     def precision(tp, fp):
-        return tp / (tp + fp + (sys.float_info.epsilon if tp == fp else 0))
+        return tp / (tp + fp + (sys.float_info.epsilon if (tp + fp) == 0 else 0))
 
     @staticmethod
     def accuracy(tp, tn, fp, fn):
-        return (tp + tn) / (tp + tn + fp + fn)
+        return (tp + tn) / (tp + tn + fp + fn + (sys.float_info.epsilon if (tp + tn + fp + fn) == 0 else 0))
 
     @staticmethod
     def f1score(tp, fp, fn):
         r = RecallPrecision.recall(tp, fn)
         p = RecallPrecision.precision(tp, fp)
-        return 2 * (p * r) / (p + r + (sys.float_info.epsilon if r == p else 0))
+        return 2 * (p * r) / (p + r + (sys.float_info.epsilon if (p + r) == 0 else 0))
 
     def factor(self, word):
         if word in self.word_dict:
@@ -111,7 +109,8 @@ class RecallPrecision:
         precision = self.precision(self.TP_total, self.FP_total)
         accuracy = self.accuracy(self.TP_total, self.TN_total, self.FP_total, self.FN_total)
         f1score = self.f1score(self.TP_total, self.FP_total, self.FN_total)
-        return str('\t Recall: {}\t Precision: {}\t Accuracy: {}\t F1score {}'.format(recall, precision, accuracy, f1score))
+        return str('\t Recall: {:.4f}\t Precision: {:.4f}\t Accuracy: {:.4f}\t F1score {:.4f}'
+                   .format(recall, precision, accuracy, f1score))
 
     def plot(self, filename=''):
         plt.figure()

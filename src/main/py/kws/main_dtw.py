@@ -5,6 +5,7 @@ import platform
 import argparse
 
 from DynTimeWrap import DynTimeWrap
+from RecallPrecision import RecallPrecision
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--feature_extr', default=False, type=bool)
@@ -61,22 +62,39 @@ if args.dtw:
 
     print("time for dynamic time warping...")
 
-    def load_keywords(self):
+    def load_keywords(clean):
         keywords = []
-        with open(self.paths["keywords.txt"], "r") as pages:
+        with open(paths["keywords.txt"], "r") as pages:
             for line in pages:
-                keyword = line.rstrip("\n\r").replace('-', '').replace('_cm', '').replace('_pt', '') \
-                    .replace('_qo', '').replace('_', ' ')
+                keyword = line.rstrip("\n\r")
+                if clean:
+                    keyword = keyword.replace('-', '').replace('_cm', '').replace('_pt', '')\
+                        .replace('_qo', '').replace('_', ' ')
                 keywords.append(keyword)
         return keywords
 
-    # keywords = ['Alexandria', 'Letters', 'October']
-    keywords = ['Alexandria', 'Captain', 'Colonel', 'Lieutenant', 'Major', 'Letters', 'October']
-    # keywords = load_keywords()
+    # keywords = ['Alexandria', 'Captain', 'Colonel']
+    # keywords = ['Alexandria', 'Captain', 'Colonel', 'Lieutenant', 'Major', 'Letters', 'October']
+    keywords = load_keywords(clean=True)
 
     # used saved valid set: faster
     valid_word_features = dtw.load_word_features(paths['valid_features.txt'])
-    spotted = dtw.spot_keywords(valid_word_features, keywords, paths['spotting_results.txt'])
-
+    spotted = dtw.spot_keywords(valid_word_features, keywords)
     # or do it now
-    # spotted = dtw.spot_keywords(range(300, 305), keywords, paths['spotting_results.txt'])
+    # spotted = dtw.spot_keywords_in_pages([300], keywords)
+
+    dtw.save_spotted_keywords(paths['spotting_results.txt'])
+
+    d_threshold = 6.0
+    best_spotted = dtw.best_spotted_keywords(d_threshold=d_threshold)
+
+    rp = RecallPrecision(keywords)
+    print('Best spotted with d_threshold %.4f :' % d_threshold)
+    print('location,\t keyword,\t true_word,\t distance' % d_threshold)
+    for (loc, d, keyword, true_word) in best_spotted:
+        print('%s,\t%s,\t%s,\t%.4f' % (loc, keyword, true_word, d))
+        rp.add(keyword, true_word, True)  # they are all calls
+
+    print("Stats: \n\t %s " % rp.stats())
+
+

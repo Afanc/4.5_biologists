@@ -1,41 +1,168 @@
-Scanning 1293 words for 7 keywords with 58 training words and DTW threshold 6.00
-- not spotted	 [Letters]		 at [300-02-02],	 d: 6.3410 as [Letters]
-- not spotted	 [Alexandria]		 at [300-12-01],	 d: 7.8824 as [Alexandria]
-scanned  100 words
-- not spotted	 [Letters]		 at [300-21-04],	 d: 6.7311 as [Letters]
-scanned  200 words
-- not spotted	 [Letters]		 at [301-03-01],	 d: 6.2889 as [Letters]
-* spotted	 [Captain]		 at [301-07-06],	 d: 5.1547
-scanned  300 words
-scanned  400 words
-- not spotted	 [Colonel]		 at [301-29-06],	 d: 7.2555 as [Captain]
-* spotted	 [Letters]		 at [302-01-02],	 d: 5.7473
-scanned  500 words
-- not spotted	 [Major]		 at [302-06-09],	 d: 7.0783 as [Major]
-! mis-spotted	 [Major]	 as [necessaries]	 at [302-15-04],	 d: 5.9867
-scanned  600 words
-scanned  700 words
-* spotted	 [Letters]		 at [303-02-01],	 d: 4.0286
-scanned  800 words
-- not spotted	 [Major]		 at [303-10-05],	 d: 7.7939 as [Major]
-* spotted	 [Captain]		 at [303-14-01],	 d: 5.8652
-* spotted	 [Captain]		 at [303-16-06],	 d: 4.8976
-- not spotted	 [Captain]		 at [303-16-09],	 d: 6.3443 as [Captain]
-- not spotted	 [Colonel]		 at [303-19-03],	 d: 7.1005 as [Captain]
-scanned  900 words
-scanned  1000 words
-! mis-spotted	 [Captain]	 as [Regiments]	 at [303-35-03],	 d: 5.7174
-* spotted	 [Letters]		 at [304-01-02],	 d: 5.4481
-- not spotted	 [Alexandria]		 at [304-09-01],	 d: 8.0893 as [Alexandria]
-scanned  1100 words
-* spotted	 [Captain]		 at [304-12-03],	 d: 5.6418
-! mis-spotted	 [Captain]	 as [before]	 at [304-17-02],	 d: 5.6731
-- not spotted	 [Letters]		 at [304-21-05],	 d: 6.4212 as [Letters]
-scanned  1200 words
-FINAL STATS:
-	 Good spots TP: 7
-	 Bad spots FP: 3
-	 Missed spots FN: 11
-	 Total scanned words: 1293
-	 Stats:
-	 Recall: 0.3888888888888889	 Precision: 0.7	 Accuracy: 0.9891724671307038	 F1score 0.5
+Scanning 1293 words for 107 keywords with 318 training words
+Best spotted with d_threshold 6.0000 :
+ location,	 keyword,	 true_word,	 distance
+300-02-03,	Orders,	Orders,	5.8797
+300-04-04,	pay,	any,	5.9561
+300-06-01,	make,	act,	5.7855
+300-07-01,	day,	ing,	5.3954
+300-07-03,	place,	there,	5.7507
+300-09-02,	de,	be,	5.6071
+300-09-06,	de,	it,	5.9189
+300-12-03,	de,	s_3,	5.4485
+300-16-06,	George,	Cap,	5.7857
+300-17-02,	join,	John,	5.9365
+300-17-05,	de,	has,	5.7050
+300-17-07,	left,	to,	5.6299
+300-19-07,	John,	ten,	5.6919
+300-26-04,	place,	place,	5.6786
+300-28-06,	de,	to,	5.6890
+300-28-09,	de,	ar,	5.8803
+300-29-04,	Sergeant,	Vessel,	5.8320
+300-29-08,	join,	from,	5.8379
+300-30-01,	Recruits,	River,	5.8140
+300-30-02,	left,	in,	5.3319
+300-30-07,	left,	up,	5.4905
+300-31-05,	Sergeant,	Vessel,	5.9669
+300-32-02,	ordered,	s_mi,	5.7123
+300-35-02,	pounds,	General,	5.6163
+300-35-06,	Fort,	that,	5.9747
+301-05-01,	day,	lays,	5.7152
+301-05-02,	pay,	may,	5.5280
+301-05-04,	provide,	prove,	5.7037
+301-06-04,	left,	how,	5.8994
+301-06-07,	Fort,	for,	5.1110
+301-07-06,	Captain,	Captain,	5.1547
+301-09-04,	de,	the,	5.7353
+301-09-05,	Virginia,	Virginia,	5.4796
+301-09-06,	Sergeant,	Regiment,	5.7028
+301-10-04,	de,	has,	5.1758
+301-11-02,	left,	by,	5.9555
+301-13-06,	provide,	part,	5.7137
+301-13-09,	left,	too,	5.9352
+301-13-10,	place,	poor,	5.7676
+301-14-04,	Order,	are,	5.5926
+301-14-06,	de,	a,	4.5619
+301-14-07,	left,	loss,	5.8852
+301-17-03,	left,	by,	5.7378
+301-18-06,	care,	are,	5.7319
+301-21-06,	de,	be,	5.7165
+301-21-07,	make,	made,	5.9462
+301-23-05,	Fort,	there,	5.5367
+301-23-06,	de,	is,	5.8229
+301-24-06,	de,	be,	5.1337
+301-26-07,	left,	but,	5.9482
+301-28-03,	join,	great,	5.9320
+301-29-01,	things,	niency,	5.7468
+301-31-08,	de,	to,	5.5128
+301-32-04,	Fort,	be,	5.9686
+301-33-05,	de,	to,	5.3590
+301-33-07,	place,	filled,	5.9275
+301-34-02,	receive,	occasion,	5.8515
+301-35-02,	quantity,	remedy,	5.9707
+301-35-08,	carry,	things,	5.9905
+301-37-03,	quantity,	greatly,	5.3436
+302-01-02,	Letters,	Letters,	5.7473
+302-01-03,	Orders,	Orders,	5.0587
+302-03-08,	men,	are,	5.9254
+302-04-03,	left,	We,	5.5933
+302-05-03,	march,	much,	4.8794
+302-05-04,	Fort,	for,	5.6348
+302-06-06,	provide,	parts,	5.8444
+302-07-06,	Guard,	furnish,	5.9573
+302-08-04,	de,	off,	5.8203
+302-09-03,	send,	and,	5.7080
+302-09-06,	men,	more,	5.5744
+302-10-06,	place,	glad,	5.6242
+302-11-06,	de,	be,	5.9664
+302-12-06,	de,	be,	5.9547
+302-13-05,	send,	send,	5.7662
+302-15-03,	join,	get,	5.7833
+302-15-04,	Major,	necessaries,	5.9867
+302-15-07,	Regiment,	Regiment,	4.8007
+302-16-06,	pay,	they,	5.4288
+302-17-03,	de,	be,	4.9220
+302-19-05,	men,	on,	5.6692
+302-20-04,	carry,	being,	5.6539
+302-20-06,	day,	day,	5.5279
+302-21-01,	place,	for,	5.2265
+302-21-05,	place,	place,	4.6480
+302-22-04,	carry,	twenty,	5.6077
+302-22-06,	ately,	only,	5.9844
+302-23-01,	ately,	any,	5.7228
+302-23-02,	Orders,	other,	5.8130
+302-24-07,	de,	to,	5.9046
+302-28-03,	de,	the,	5.9389
+302-28-08,	place,	glad,	5.7283
+302-29-03,	join,	you,	5.9451
+302-31-03,	pay,	may,	5.7415
+302-32-02,	de,	I,	5.9326
+302-33-02,	provide,	great,	5.3832
+302-35-02,	pay,	my,	5.5888
+302-35-05,	Fort,	there,	5.6837
+302-35-07,	made,	not,	5.5836
+303-02-01,	Letters,	Letters,	4.0286
+303-02-02,	Orders,	Orders,	5.8569
+303-04-06,	join,	from,	5.3836
+303-04-07,	place,	place,	5.9584
+303-06-06,	dispatch,	dispatch,	4.3938
+303-07-01,	join,	fore,	5.8686
+303-07-07,	join,	your,	5.7265
+303-10-02,	de,	the,	5.6391
+303-10-03,	Fort,	Fort,	4.4409
+303-11-09,	pay,	long,	5.7605
+303-12-02,	de,	a,	5.8586
+303-13-06,	left,	of,	5.9657
+303-14-01,	Captain,	Captain,	5.8652
+303-14-03,	pay,	pay,	4.8918
+303-14-06,	de,	de,	5.5987
+303-15-07,	join,	glad,	5.6773
+303-16-06,	Captain,	Captain,	4.8976
+303-16-08,	left,	If,	4.9419
+303-19-06,	de,	a,	5.6654
+303-20-07,	de,	the,	5.7744
+303-23-02,	careful,	useful,	5.2855
+303-23-07,	de,	be,	5.7108
+303-24-03,	left,	If,	5.8791
+303-29-03,	day,	very,	5.4800
+303-30-06,	Fort,	than,	5.7582
+303-30-08,	de,	few,	5.6102
+303-32-06,	pay,	way,	5.0974
+303-33-05,	join,	great,	5.9889
+303-35-03,	Captain,	Regiments,	5.7174
+304-01-02,	Letters,	Letters,	5.4481
+304-01-03,	Orders,	Orders,	5.5942
+304-03-05,	left,	If,	4.7113
+304-03-07,	Fort,	Honor,	5.9358
+304-04-07,	de,	to,	5.1731
+304-05-02,	de,	or,	5.0854
+304-05-07,	Regiment,	Regiments,	5.8706
+304-05-08,	de,	s_mi,	5.5878
+304-06-02,	de,	be,	5.4503
+304-06-03,	left,	of,	5.7113
+304-11-05,	Sergeant,	Esquire,	5.4541
+304-12-03,	Captain,	captain,	5.6418
+304-13-08,	de,	his,	5.4920
+304-15-03,	join,	you,	5.9074
+304-17-02,	Captain,	before,	5.6731
+304-19-03,	provide,	greatest,	5.3516
+304-20-04,	de,	to,	5.9272
+304-20-06,	de,	to,	5.9425
+304-23-02,	terms,	and,	5.9331
+304-24-09,	de,	to,	5.1447
+304-25-06,	de,	to,	5.8541
+304-26-06,	place,	place,	5.7596
+304-27-06,	de,	the,	4.9966
+304-28-02,	left,	left,	4.5926
+304-28-05,	day,	days,	5.1926
+304-29-07,	de,	is,	5.4972
+304-30-07,	de,	to,	5.4706
+304-31-01,	Guard,	General,	5.6147
+304-31-05,	Fort,	for,	5.9711
+304-32-02,	Officers,	Officers,	4.1569
+304-32-05,	Regiment,	Regiment,	4.5992
+304-33-02,	send,	much,	5.8068
+304-34-01,	day,	lay,	5.0481
+304-34-04,	Fort,	In,	5.8515
+304-35-03,	de,	to,	5.7276
+Stats:
+	 	 Recall: 1.0000	 Precision: 0.1595	 Accuracy: 0.1595	 F1score 0.2751
