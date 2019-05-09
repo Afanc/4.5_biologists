@@ -36,27 +36,48 @@ class Molecules:
             adjacency_matrix[i][i] = self.node[i]
         return adjacency_matrix
 
+def adj_matrix(folder_of_gxl_files):
+    """
+    :param folder_of_gxl_files: folder which contains the gxl files
+    :return: dictionary with filename as key and adjacency matrix as value
+    Additionally instances for all the gxl files are created
+    example: instance M16 is created for file 16.gxl
+    """
+    # get all .gxl files
+    list_of_molecules = os.listdir(input_path)
+
+    d = {}
+    # iterate over every .gxl file
+    for file in list_of_molecules:
+        file_num = int(file.strip(".gxl"))
+
+        # creats an instance for a molecule
+        # example for file 16.gxl:
+        # globals()["M%s" % file_num] = Molecules(16.gxl) would correspond to M16 = Molecules(16.gxl)
+        globals()["M%s" % file_num] = Molecules(file)
+
+        # add key value pair to dictionary. Key is the filename (e.g. "16.gxl") and the value is the adjacency Matrix for this file
+        d[file] = globals()["M%s" % file_num].get_adj_matrix()
+
+    return d
+
+
 #######################################################################
-# working directory should be "src/main/py/mol"
-input_path = "data/gxl"
-#get all .gxl files
-list_of_molecules = os.listdir(input_path)
+if __name__ == "__main__":
+    # working directory should be "src/main/py/mol"
+    input_path = "data/gxl"
 
-d={}
-# iterate over every .gxl file
-for file in list_of_molecules:
-    file_num = int(file.strip(".gxl"))
+    #apply function to create instances and to get dictionary containing the adjacency matrix
+    d=adj_matrix(input_path)
 
-    # creats an instance for a molecule
-    # example for file 16.gxl:
-    # globals()["M%s" % file_num] = Molecules(16.gxl) would correspond to M16 = Molecules(16.gxl)
-    globals()["M%s" % file_num] = Molecules(file)
+    #print(adjacency matrix for instance M16 (corresponding to file 16.gxl)
+    print("adjacency matrix for 16.gxl")
+    print(M16.get_adj_matrix(), "\n")
 
-    # add key value pair to dictionary. Key is the filename (e.g. "16.gxl") and the value is the adjacency Matrix for this file
-    d[file] = globals()["M%s" % file_num].get_adj_matrix()
-
-# print adjacency matrix for Molecule 9770
-print(d["9770.gxl"])
+    # print adjacency matrix for Molecule 9770
+    print("adjacency matrix for 9770.gxl, nice representation")
+    for i in d["9770.gxl"]:
+        print(i)
 
 
 
