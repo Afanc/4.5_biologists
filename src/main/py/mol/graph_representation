@@ -10,7 +10,7 @@ class Molecules:
 
         self.filename = "data/gxl/" + filename
         self.tree = ET.parse(self.filename) # with ET.parse we can read in the gxl file
-        self.node = [node.text for node in self.tree.findall(".//node/attr/string")] #gets the lable of all the nodes
+        self.node = [node.text.strip(" ") for node in self.tree.findall(".//node/attr/string")] #gets the lable of all the nodes
         self.edge_values = [edge.text for edge in self.tree.findall(".//edge/attr/int")] #gets the value of each edge (corresponding to the number of bonds between two atoms)
 
         # creats a nested list
@@ -78,7 +78,6 @@ if __name__ == "__main__":
     print("adjacency matrix for 9770.gxl, nice representation")
     for i in d["9770.gxl"]:
         print(i)
-
 
 
 
