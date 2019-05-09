@@ -44,7 +44,7 @@ def adj_matrix(folder_of_gxl_files):
     example: instance M16 is created for file 16.gxl
     """
     # get all .gxl files
-    list_of_molecules = os.listdir(input_path)
+    list_of_molecules = os.listdir(folder_of_gxl_files)
 
     d = {}
     # iterate over every .gxl file
