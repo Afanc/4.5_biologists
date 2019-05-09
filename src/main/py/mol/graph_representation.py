@@ -30,7 +30,7 @@ class Molecules:
         for counter, node_pair in enumerate(self.start_end):
             #fills the edge values of the corresponding node pairs into the adjacency matrix
             adjacency_matrix[node_pair[0]][node_pair[1]] = int(self.edge_values[counter])
-
+            adjacency_matrix[node_pair[1]][node_pair[0]] = int(self.edge_values[counter])
         # inserts the node lables into the diagonal of the adjacency matrix
         for i in range(len(self.node)):
             adjacency_matrix[i][i] = self.node[i]
