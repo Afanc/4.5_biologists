@@ -1,0 +1,64 @@
+#!/usr/bin/python
+import xml.etree.ElementTree as ET
+import os
+
+# working directory should be "src/main/py/mol"
+
+
+class Molecules:
+    def __init__(self, filename):
+
+        self.filename = "data/gxl/" + filename
+        self.tree = ET.parse(self.filename) # with ET.parse we can read in the gxl file
+        self.node = [node.text for node in self.tree.findall(".//node/attr/string")] #gets the lable of all the nodes
+        self.edge_values = [edge.text for edge in self.tree.findall(".//edge/attr/int")] #gets the value of each edge (corresponding to the number of bonds between two atoms)
+
+        # creats a nested list
+        # for each edge the two corresponding nodes will be extracted from the file saved in a nested list.
+        # e.g [[0,2],[0,5],[0,7].....]   --> means node 0 is connected with node 2, 5, and 7
+        # we subtract by -1 because we want to use the nodes as indices later--> e.g.  the first node should be node 0
+        self.start_end = [[int(edge.get('from').strip("_"))-1, int(edge.get('to').strip("_"))-1] for edge in self.tree.findall(".//edge")] #
+
+
+    def get_adj_matrix(self):
+
+        # creats an empty adjacency matrix in form of a nested list
+        # size of the matrix is equal to the number of nodes --> len(self.node)
+        adjacency_matrix = [[0 for i in range(len(self.node))] for j in range(len(self.node))]
+
+        # iterates over the node pairs connected by edges
+        for counter, node_pair in enumerate(self.start_end):
+            #fills the edge values of the corresponding node pairs into the adjacency matrix
+            adjacency_matrix[node_pair[0]][node_pair[1]] = int(self.edge_values[counter])
+
+        # inserts the node lables into the diagonal of the adjacency matrix
+        for i in range(len(self.node)):
+            adjacency_matrix[i][i] = self.node[i]
+        return adjacency_matrix
+
+#######################################################################
+# working directory should be "src/main/py/mol"
+input_path = "data/gxl"
+#get all .gxl files
+list_of_molecules = os.listdir(input_path)
+
+d={}
+# iterate over every .gxl file
+for file in list_of_molecules:
+    file_num = int(file.strip(".gxl"))
+
+    # creats an instance for a molecule
+    # example for file 16.gxl:
+    # globals()["M%s" % file_num] = Molecules(16.gxl) would correspond to M16 = Molecules(16.gxl)
+    globals()["M%s" % file_num] = Molecules(file)
+
+    # add key value pair to dictionary. Key is the filename (e.g. "16.gxl") and the value is the adjacency Matrix for this file
+    d[file] = globals()["M%s" % file_num].get_adj_matrix()
+
+# print adjacency matrix for Molecule 9770
+print(d["9770.gxl"])
+
+
+
+
+
