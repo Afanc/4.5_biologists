@@ -4,6 +4,18 @@ import os
 
 # working directory should be "src/main/py/mol"
 
+class Molecule_object:
+    def __init__(self, name, label, adj_matrix) :
+        self.name = name
+        self.label = label 
+        self.adj_matrix = adj_matrix
+    
+    def get_name(self):
+        return self.name
+    def get_label(self):
+        return self.label
+    def get_matrix(self):
+        return self.adj_matrix
 
 class Molecules:
     def __init__(self, filename):
@@ -78,7 +90,5 @@ if __name__ == "__main__":
     print("adjacency matrix for 9770.gxl, nice representation")
     for i in d["9770.gxl"]:
         print(i)
-
-
 
 
