@@ -1,6 +1,13 @@
 #!/usr/bin/python
 import xml.etree.ElementTree as ET
 import os
+import random
+
+# implementation of the Hungarian algorithm
+# https://docs.scipy.org/doc/scipy-1.2.1/reference/generated/scipy.optimize.linear_sum_assignment.html
+from scipy.optimize import linear_sum_assignment
+# OR
+# from munkres import Munkres, print_matrix   # http://software.clapper.org/munkres/
 
 # working directory should be "src/main/py/mol"
 
@@ -72,6 +79,12 @@ def adj_matrix(folder_of_gxl_files):
         d[file] = globals()["M%s" % file_num].get_adj_matrix()
 
     return d
+
+
+def graph_distance_edit(x, y):
+    # TODO prepare cost matrix for x/y, node substitutions costs (atoms dissimilarity, covalent-bonds dissimilarity)
+    # TODO run Hungarian algorithm to estimate the cost (= graph distance edit(x,y))
+    return random.uniform(0., 1.)
 
 
 #######################################################################
