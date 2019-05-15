@@ -2,6 +2,8 @@
 import xml.etree.ElementTree as ET
 import os
 import random
+import numpy as np
+import pandas as pd
 
 # implementation of the Hungarian algorithm
 # https://docs.scipy.org/doc/scipy-1.2.1/reference/generated/scipy.optimize.linear_sum_assignment.html
@@ -10,6 +12,9 @@ from scipy.optimize import linear_sum_assignment
 # from munkres import Munkres, print_matrix   # http://software.clapper.org/munkres/
 
 # working directory should be "src/main/py/mol"
+
+cost_subst = 3
+cost_indel = 3
 
 class Molecule_object:
     def __init__(self, name, label, adj_matrix) :
@@ -55,6 +60,15 @@ class Molecules:
             adjacency_matrix[i][i] = self.node[i]
         return adjacency_matrix
 
+    def get_bipartite(self):
+        adjm = self.get_adj_matrix()
+        bplen = adjm.shape[0]
+        bp = np.array((bplen, 2))
+        for i in range(bplen):
+            bp[i, 0] = adjm[i, i]   # nodes: atoms
+            bp[i, 1] = sum(np.apply_along_axis(int, 0, adjm[i]))   # edges: covalent bonds
+
+
 def adj_matrix(folder_of_gxl_files):
     """
     :param folder_of_gxl_files: folder which contains the gxl files
@@ -81,9 +95,25 @@ def adj_matrix(folder_of_gxl_files):
     return d
 
 
-def graph_distance_edit(x, y):
+def calc_cost_matrix(mol1, mol2):
+    bp1 = mol1.get_bipartite()
+    bp2 = mol2.get_bipartite()
+    c_size = len(bp1) + len(bp2)
+    cost_matrix = np.zeros((2*c_size, 2*c_size))
+    for (i, j), e in np.ndenumerate(cost_matrix):
+        if i < c_size or j < c_size:
+            cost_matrix[i, j] = cost_subst if bp1[i, 0] != bp2[j, 0] else 0
+            cost_matrix[i, j] += np.abs(bp2[i, 1] != bp2[j, 1])
+        elif (i-c_size) == j or i == (j-c_size):
+            cost_matrix[i, j] = cost_indel
+    return cost_matrix
+
+
+def graph_distance_edit(mol1, mol2):
     # TODO prepare cost matrix for x/y, node substitutions costs (atoms dissimilarity, covalent-bonds dissimilarity)
     # TODO run Hungarian algorithm to estimate the cost (= graph distance edit(x,y))
+    cost_matrix = calc_cost_matrix(mol1, mol2)
+    d = linear_sum_assignment(cost_matrix)
     return random.uniform(0., 1.)
 
 
