@@ -83,7 +83,7 @@ def bp_edit_distance(mol1_id, mol2_id):   # not clear why here are coming floats
 
 
 # ------ training ---------------------------------------
-
+# https://kevinzakka.github.io/2016/07/13/k-nearest-neighbor/
 train_ids = []
 train_labels = []
 for id, label in train_dic.items():
