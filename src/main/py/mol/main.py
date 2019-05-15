@@ -2,10 +2,11 @@
 
 import graph_representation as g_r
 
-from sklearn.model_selection import train_test_split
-from sklearn.neighbors import KNeighborsClassifier, NearestNeighbors
+import os
 import numpy as np
-import csv
+from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score
 
 # implementation of the Hungarian algorithm
 # https://docs.scipy.org/doc/scipy-1.2.1/reference/generated/scipy.optimize.linear_sum_assignment.html
@@ -22,66 +23,27 @@ valid_list = [line.rstrip('\n') for line in open('./data/valid.txt')]
 train_list = [i.split() for i in train_list]
 valid_list = [i.split() for i in valid_list]
 
-train_dic = {obj[0] : obj[1] for i, obj in enumerate(train_list)}
-valid_dic = {obj[0] : obj[1] for i, obj in enumerate(valid_list)}
+train_dic = {obj[0]: obj[1] for i, obj in enumerate(train_list)}
+valid_dic = {obj[0]: obj[1] for i, obj in enumerate(valid_list)}
 
-input_path = "data/gxl"
+input_path = os.path.join("data", "gxl")
 
-d=g_r.adj_matrix(input_path)
+all_mol_dic = g_r.adj_matrix(input_path)
 
+# so far not needed
 # all_molecules = []
-
-# for k in d.keys() :
+#
+# for k in all_mol_dic.keys() :
 #     if k[:-4] in [x[0] for x in train_list]:
 #         k = str(k)
-#         all_molecules.append(g_r.Molecules(k[:-4], train_dic[k[:-4]], d[k]))
+#         all_molecules.append(g_r.Molecules(k[:-4], train_dic[k[:-4]], all_mol_dic[k]))
 #     else :
 #         k = str(k)
-#         all_molecules.append(g_r.Molecules(k[:-4], valid_dic[k[:-4]], d[k]))
-
+#         all_molecules.append(g_r.Molecules(k[:-4], valid_dic[k[:-4]], all_mol_dic[k]))
+#
 # print(all_molecules[0].get_name())
 # ---------------------------------------------------
 # list of molecule objects
-
-cost_subst = 3
-cost_indel = 3
-
-
-def calc_cost_matrix(mol1, mol2):
-    bp1 = mol1.get_bipartite()
-    bp2 = mol2.get_bipartite()
-    c_size = len(bp1) + len(bp2)
-    cost_matrix = np.zeros((2*c_size, 2*c_size))
-    for (i, j), e in np.ndenumerate(cost_matrix):
-        if i < c_size or j < c_size:
-            cost_matrix[i, j] = cost_subst if bp1[i, 0] != bp2[j, 0] else 0
-            cost_matrix[i, j] += np.abs(bp2[i, 1] != bp2[j, 1])
-        elif (i-c_size) == j or i == (j-c_size):
-            cost_matrix[i, j] = cost_indel
-    return cost_matrix
-
-
-def graph_distance_edit(mol1_id, mol2_id):
-    # TODO prepare cost matrix for x/y, node substitutions costs (atoms dissimilarity, covalent-bonds dissimilarity)
-    # TODO run Hungarian algorithm to estimate the cost (= graph distance edit(x,y))
-    mol1 = globals()["M%s" % mol1_id]
-    mol2 = globals()["M%s" % mol2_id]
-    cost_matrix = calc_cost_matrix(mol1, mol2)
-    row_ind, col_ind = linear_sum_assignment(cost_matrix)
-    return cost_matrix[row_ind, col_ind].sum()
-
-
-all_molecules = g_r.adj_matrix('./data/gxl')
-train_molecules = np.array([])
-train_labels = np.array([])
-for id, label in train_dic.items():
-    mol = all_molecules[id]
-    # or
-    #file = id + '.gxl'
-    #mol = g_r.Molecules(file)  # globals()["M%s" % id]
-    np.append(train_molecules,  np.array([id, id]))
-    np.append(train_labels, label)
-
 
 # a = [i.get_label() for i in all_molecules]
 # list_of_distances = [i.get_matrix() for i in all_molecules]
@@ -89,11 +51,66 @@ for id, label in train_dic.items():
 #
 # list_of_labels = np.array(list_of_labels)
 
-classifier = KNeighborsClassifier(n_neighbors=5, metric=graph_distance_edit)
-classifier.fit(train_molecules, train_labels)
 
-# pred = classifier.predict(test_molecules)
+# ----- Bipartite Graph Matching ----------------------
 
-#  OR
-#classifier = NearestNeighbors(n_neighbors=3, algorithm='ball_tree', metric='pyfunc', func=graph_distance_edit)
-#classifier.fit(train_molecules, train_labels)
+# cost constants
+cost_subst = 3
+cost_indel = 3
+
+
+def calc_cost_matrix(mol1, mol2):
+    bp1 = mol1.get_bipartite()
+    bp2 = mol2.get_bipartite()
+    n = len(bp1)
+    m = len(bp2)
+    c_size = n + m
+    cost_matrix = np.zeros((c_size, c_size))
+    for (i, j), e in np.ndenumerate(cost_matrix):
+        if i < n and j < m:
+            cost_matrix[i, j] = (cost_subst if bp1[i][0] != bp2[j][0] else 0) + np.abs(bp1[i][1] - bp2[j][1])
+        elif (i-n) == j or i == (j-m):
+            cost_matrix[i, j] = cost_indel
+    return cost_matrix
+
+
+def bp_edit_distance(mol1_id, mol2_id):   # not clear why here are comming float
+    mol1 = all_mol_dic[str(int(mol1_id))]   # globals()["M%s" % mol1_id]
+    mol2 = all_mol_dic[str(int(mol2_id))]   # globals()["M%s" % mol2_id]
+    cost_matrix = calc_cost_matrix(mol1, mol2)
+    row_ind, col_ind = linear_sum_assignment(cost_matrix)
+    return cost_matrix[row_ind, col_ind].sum()
+
+
+# ------ training ---------------------------------------
+
+train_ids = []
+train_labels = []
+for id, label in train_dic.items():
+    # still don't need
+    # mol = all_molecules[id]
+    # or
+    # file = id + '.gxl'
+    # mol = g_r.Molecules(file)  # globals()["M%s" % id]
+    train_ids.append([int(id)])
+    train_labels.append(label)
+
+classifier = KNeighborsClassifier(n_neighbors=5, algorithm='brute', metric=bp_edit_distance)
+classifier.fit(train_ids, train_labels)
+
+
+# ----- testing -----------------------------------------
+
+test_ids = []
+test_labels = []
+for id, label in valid_dic.items():
+    test_ids.append([int(id)])
+    test_labels.append(label)
+
+predictions = classifier.predict(test_ids)
+
+
+# ----- accuracy -----------------------------------------
+
+accuracy = accuracy_score(test_labels, predictions) * 100
+print('\nThe accuracy of OUR classifier is %d%%' % accuracy)

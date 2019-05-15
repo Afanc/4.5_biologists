@@ -1,23 +1,24 @@
 #!/usr/bin/python
 import xml.etree.ElementTree as ET
 import os
-import random
 import numpy as np
-import pandas as pd
 
 
 class Molecule_object:
-    def __init__(self, name, label, adj_matrix) :
+    def __init__(self, name, label, adj_matrix):
         self.name = name
         self.label = label 
         self.adj_matrix = adj_matrix
     
     def get_name(self):
         return self.name
+
     def get_label(self):
         return self.label
+
     def get_matrix(self):
         return self.adj_matrix
+
 
 class Molecules:
     def __init__(self, filename):
@@ -33,16 +34,14 @@ class Molecules:
         # we subtract by -1 because we want to use the nodes as indices later--> e.g.  the first node should be node 0
         self.start_end = [[int(edge.get('from').strip("_"))-1, int(edge.get('to').strip("_"))-1] for edge in self.tree.findall(".//edge")] #
 
-
     def get_adj_matrix(self):
-
-        # creats an empty adjacency matrix in form of a nested list
+        # creates an empty adjacency matrix in form of a nested list
         # size of the matrix is equal to the number of nodes --> len(self.node)
         adjacency_matrix = [[0 for i in range(len(self.node))] for j in range(len(self.node))]
 
         # iterates over the node pairs connected by edges
         for counter, node_pair in enumerate(self.start_end):
-            #fills the edge values of the corresponding node pairs into the adjacency matrix
+            # fills the edge values of the corresponding node pairs into the adjacency matrix
             adjacency_matrix[node_pair[0]][node_pair[1]] = int(self.edge_values[counter])
             adjacency_matrix[node_pair[1]][node_pair[0]] = int(self.edge_values[counter])
         # inserts the node lables into the diagonal of the adjacency matrix
@@ -51,12 +50,16 @@ class Molecules:
         return adjacency_matrix
 
     def get_bipartite(self):
+        def _int(si):
+            return si if isinstance(si, int) else int(si) if si.isdigit() else 0
         adjm = self.get_adj_matrix()
-        bplen = adjm.shape[0]
-        bp = np.array((bplen, 2))
+        bplen = len(adjm)
+        bp = []
         for i in range(bplen):
-            bp[i, 0] = adjm[i, i]   # nodes: atoms
-            bp[i, 1] = sum(np.apply_along_axis(int, 0, adjm[i]))   # edges: covalent bonds
+            node = adjm[i][i]   # nodes: atoms
+            edges = sum(np.array([_int(xi) for xi in adjm[i]]))   #  sum(np.apply_along_axis(_int, 0, adjm[i]))   # edges: covalent bonds
+            bp.append([node, edges])
+        return bp
 
 
 def adj_matrix(folder_of_gxl_files):
@@ -92,7 +95,7 @@ if __name__ == "__main__":
     input_path = "data/gxl"
 
     #apply function to create instances and to get dictionary containing the adjacency matrix
-    d=adj_matrix(input_path)
+    d = adj_matrix(input_path)
 
     #print(adjacency matrix for instance M16 (corresponding to file 16.gxl)
     print("adjacency matrix for 16.gxl")
@@ -100,7 +103,7 @@ if __name__ == "__main__":
 
     # print adjacency matrix for Molecule 9770
     print("adjacency matrix for 9770.gxl, nice representation")
-    for i in d["9770.gxl"]:
+    for i in d["9770"].get_adj_matrix():
         print(i)
 
 
