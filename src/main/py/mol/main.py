@@ -74,9 +74,9 @@ def calc_cost_matrix(mol1, mol2):
     return cost_matrix
 
 
-def bp_edit_distance(mol1_id, mol2_id):   # not clear why here are comming float
-    mol1 = all_mol_dic[str(int(mol1_id))]   # globals()["M%s" % mol1_id]
-    mol2 = all_mol_dic[str(int(mol2_id))]   # globals()["M%s" % mol2_id]
+def bp_edit_distance(mol1_id, mol2_id):   # not clear why here are coming floats
+    mol1 = all_mol_dic[str(int(mol1_id))]
+    mol2 = all_mol_dic[str(int(mol2_id))]
     cost_matrix = calc_cost_matrix(mol1, mol2)
     row_ind, col_ind = linear_sum_assignment(cost_matrix)
     return cost_matrix[row_ind, col_ind].sum()
@@ -91,26 +91,30 @@ for id, label in train_dic.items():
     # mol = all_molecules[id]
     # or
     # file = id + '.gxl'
-    # mol = g_r.Molecules(file)  # globals()["M%s" % id]
+    # mol = g_r.Molecules(file)
     train_ids.append([int(id)])
     train_labels.append(label)
+
+print('\nTraining with %d samples ...' % len(train_ids))
 
 classifier = KNeighborsClassifier(n_neighbors=5, algorithm='brute', metric=bp_edit_distance)
 classifier.fit(train_ids, train_labels)
 
 
-# ----- testing -----------------------------------------
+# ----- validating -----------------------------------------
 
-test_ids = []
-test_labels = []
+valid_ids = []
+valid_labels = []
 for id, label in valid_dic.items():
-    test_ids.append([int(id)])
-    test_labels.append(label)
+    valid_ids.append([int(id)])
+    valid_labels.append(label)
 
-predictions = classifier.predict(test_ids)
+print('\nValidating with %d samples ...' % len(valid_ids))
+
+predictions = classifier.predict(valid_ids)
 
 
 # ----- accuracy -----------------------------------------
 
-accuracy = accuracy_score(test_labels, predictions) * 100
+accuracy = accuracy_score(valid_labels, predictions) * 100
 print('\nThe accuracy of OUR classifier is %d%%' % accuracy)
