@@ -5,16 +5,6 @@ import random
 import numpy as np
 import pandas as pd
 
-# implementation of the Hungarian algorithm
-# https://docs.scipy.org/doc/scipy-1.2.1/reference/generated/scipy.optimize.linear_sum_assignment.html
-from scipy.optimize import linear_sum_assignment
-# OR
-# from munkres import Munkres, print_matrix   # http://software.clapper.org/munkres/
-
-# working directory should be "src/main/py/mol"
-
-cost_subst = 3
-cost_indel = 3
 
 class Molecule_object:
     def __init__(self, name, label, adj_matrix) :
@@ -87,34 +77,13 @@ def adj_matrix(folder_of_gxl_files):
         # creats an instance for a molecule
         # example for file 16.gxl:
         # globals()["M%s" % file_num] = Molecules(16.gxl) would correspond to M16 = Molecules(16.gxl)
-        globals()["M%s" % file_num] = Molecules(file)
+        d[str(file_num)] = Molecules(file)
+        globals()["M%s" % file_num] = d[str(file_num)]
 
         # add key value pair to dictionary. Key is the filename (e.g. "16.gxl") and the value is the adjacency Matrix for this file
-        d[file] = globals()["M%s" % file_num].get_adj_matrix()
+        # d[file] = globals()["M%s" % file_num].get_adj_matrix()
 
     return d
-
-
-def calc_cost_matrix(mol1, mol2):
-    bp1 = mol1.get_bipartite()
-    bp2 = mol2.get_bipartite()
-    c_size = len(bp1) + len(bp2)
-    cost_matrix = np.zeros((2*c_size, 2*c_size))
-    for (i, j), e in np.ndenumerate(cost_matrix):
-        if i < c_size or j < c_size:
-            cost_matrix[i, j] = cost_subst if bp1[i, 0] != bp2[j, 0] else 0
-            cost_matrix[i, j] += np.abs(bp2[i, 1] != bp2[j, 1])
-        elif (i-c_size) == j or i == (j-c_size):
-            cost_matrix[i, j] = cost_indel
-    return cost_matrix
-
-
-def graph_distance_edit(mol1, mol2):
-    # TODO prepare cost matrix for x/y, node substitutions costs (atoms dissimilarity, covalent-bonds dissimilarity)
-    # TODO run Hungarian algorithm to estimate the cost (= graph distance edit(x,y))
-    cost_matrix = calc_cost_matrix(mol1, mol2)
-    d = linear_sum_assignment(cost_matrix)
-    return random.uniform(0., 1.)
 
 
 #######################################################################
