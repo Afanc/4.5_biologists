@@ -31,9 +31,9 @@ paths = {"resized_word_images":     os.path.join('data', 'resized_word_images'),
          "spotted_keywords_dtw.dump": os.path.join('data', 'spotted_keywords_dtw.dump'),
          "best_spotted_RP_plot.png": os.path.join('data', 'best_spotted_RP_plot.png'),
          "train_all_features.txt":      os.path.join('data', 'train_all_features.txt'),
-         "test.txt":                os.path.join('test-data', 'task', 'test.txt'),
-         "test_keywords.txt":       os.path.join('test-data', 'task', 'keywords.txt'),
-         "test_features.txt":      os.path.join('test-data', 'test_features.txt'),
+         "test.txt":                os.path.join('data', 'task', 'test.txt'),
+         "test_keywords.txt":       os.path.join('data', 'task', 'test_keywords.txt'),
+         "test_features.txt":      os.path.join('data', 'test_features.txt'),
          "test_spotting_results.txt":    os.path.join('data', 'spotting_results.txt'),
          "test_spotted_keywords_dtw.dump": os.path.join('data', 'spotted_keywords_dtw.dump')
          }
