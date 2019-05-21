@@ -1,16 +1,20 @@
 #!/usr/bin/python
 
 import numpy as np
-from scipy.optimize import linear_sum_assignment
 
+# implementation of the Hungarian algorithm
+# https://docs.scipy.org/doc/scipy-1.2.1/reference/generated/scipy.optimize.linear_sum_assignment.html
+from scipy.optimize import linear_sum_assignment
+# OR
+# from munkres import Munkres, print_matrix   # http://software.clapper.org/munkres/
 
 class BipartiteGraphMatching:
     def __init__(self, all_mol_dic):
         self.all_mol_dic = all_mol_dic
 
     # cost constants
-    cost_subst = 3
-    cost_indel = 3
+    cost_subst = 4  # substitution = 1 del + 1 ins
+    cost_indel = 2
 
     def calc_cost_matrix(self, mol1, mol2):
         bp1 = mol1.get_bipartite()

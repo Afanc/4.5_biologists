@@ -9,12 +9,6 @@ from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score
 
-# implementation of the Hungarian algorithm
-# https://docs.scipy.org/doc/scipy-1.2.1/reference/generated/scipy.optimize.linear_sum_assignment.html
-from scipy.optimize import linear_sum_assignment
-# OR
-# from munkres import Munkres, print_matrix   # http://software.clapper.org/munkres/
-
 # working directory should be "src/main/py/mol"
 
 # --------------------- all this shit could be done in a class - was lazy, didn't want to rewrite the whole thing
