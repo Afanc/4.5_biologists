@@ -10,7 +10,8 @@ from RecallPrecision import RecallPrecision
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--feature_extr', default=False, type=bool)
-parser.add_argument('--dtw', default=True, type=bool)
+parser.add_argument('--dtw', default=False, type=bool)
+parser.add_argument('--test', default=True, type=bool)
 parser.add_argument('--numb_f', default=9, type=int)
 args = parser.parse_args()
 
@@ -28,7 +29,13 @@ paths = {"resized_word_images":     os.path.join('data', 'resized_word_images'),
          "valid_features.txt":      os.path.join('data', 'valid_features.txt'),
          "spotting_results.txt":    os.path.join('data', 'spotting_results.txt'),
          "spotted_keywords_dtw.dump": os.path.join('data', 'spotted_keywords_dtw.dump'),
-         "best_spotted_RP_plot.png": os.path.join('data', 'best_spotted_RP_plot.png')
+         "best_spotted_RP_plot.png": os.path.join('data', 'best_spotted_RP_plot.png'),
+         "train_all_features.txt":      os.path.join('data', 'train_all_features.txt'),
+         "test.txt":                os.path.join('test-data', 'task', 'test.txt'),
+         "test_keywords.txt":       os.path.join('test-data', 'task', 'keywords.txt'),
+         "test_features.txt":      os.path.join('test-data', 'test_features.txt'),
+         "test_spotting_results.txt":    os.path.join('data', 'spotting_results.txt'),
+         "test_spotted_keywords_dtw.dump": os.path.join('data', 'spotted_keywords_dtw.dump')
          }
 
 dtw = DynTimeWrap(paths=paths, numb_f=args.numb_f)
@@ -54,32 +61,37 @@ for k in paths:
 
 # ----- features extraction ----#
 if args.feature_extr or not os.path.isfile(paths["train_features.txt"]):  # first time no way you have to do it
+    dtw.train(train_pages=range(270, 280), save_file_name=paths['train_features.txt'])
+if args.feature_extr or not os.path.isfile(paths["valid_features.txt"]):
     # create also validating word_features to speed up testing
     dtw.train(train_pages=range(300, 305), save_file_name=paths['valid_features.txt'])
-    dtw.train(train_pages=range(270, 280), save_file_name=paths['train_features.txt'])
-else:
-    dtw.train_word_features(paths['train_features.txt'])
+if args.feature_extr or not os.path.isfile(paths["train_all_features.txt"]):
+    dtw.train(train_pages=(list(range(270, 280))+list(range(300, 305))), save_file_name=paths['train_all_features.txt'])
+if args.feature_extr or not os.path.isfile(paths["test_features.txt"]):
+    dtw.train(train_pages=range(305, 309), save_file_name=paths['test_features.txt'])
+
+
+def load_keywords(keywords_file, clean):
+    keywords = []
+    with open(keywords_file, "r") as pages:
+        for line in pages:
+            keyword = line.rstrip("\n\r")
+            if clean:
+                keyword = keyword.replace('-', '').replace('_cm', '').replace('_pt', '')\
+                    .replace('_qo', '').replace('_', ' ')
+            keywords.append(keyword)
+    return keywords
 
 
 # ----- dtw ----#
 if args.dtw:
+    dtw.train_word_features(paths['train_features.txt'])
 
     print("time for dynamic time warping...")
 
-    def load_keywords(clean):
-        keywords = []
-        with open(paths["keywords.txt"], "r") as pages:
-            for line in pages:
-                keyword = line.rstrip("\n\r")
-                if clean:
-                    keyword = keyword.replace('-', '').replace('_cm', '').replace('_pt', '')\
-                        .replace('_qo', '').replace('_', ' ')
-                keywords.append(keyword)
-        return keywords
-
     # keywords = ['Alexandria', 'Captain', 'Colonel']
     # keywords = ['Alexandria', 'Captain', 'Colonel', 'Lieutenant', 'Major', 'Letters', 'October']
-    keywords = load_keywords(clean=True)
+    keywords = load_keywords(paths["keywords.txt"], clean=True)
 
     # used saved valid set: faster
     valid_word_features = dtw.load_word_features(paths['valid_features.txt'])
@@ -106,3 +118,15 @@ if args.dtw:
         rp.add_plot_point()
 
     rp.plot(paths['best_spotted_RP_plot.png'])
+
+# ----- test set ----#
+if args.test:
+    dtw.train_word_features(paths['train_all_features.txt'])
+
+    keywords = load_keywords(paths["test_keywords.txt"], clean=True)
+
+    test_word_features = dtw.load_word_features(paths['test_features.txt'])
+    spotted = dtw.spot_keywords(test_word_features, keywords)
+
+    dtw.dump_spotted_keywords_dtw(paths['test_spotted_keywords_dtw.dump'])   # could be used for later plots
+    dtw.report_spotted_keywords(paths['test_spotting_results.txt'])
