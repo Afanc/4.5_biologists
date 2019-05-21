@@ -19,49 +19,20 @@ from scipy.optimize import linear_sum_assignment
 
 # --------------------- all this shit could be done in a class - was lazy, didn't want to rewrite the whole thing
 train_list = [line.rstrip('\n') for line in open('./data/train.txt')]
-valid_list = [line.rstrip('\n') for line in open('./data/valid.txt')]
-
+train_list += [line.rstrip('\n') for line in open('./data/valid.txt')]
 train_list = [i.split() for i in train_list]
-valid_list = [i.split() for i in valid_list]
 
 train_dic = {obj[0]: obj[1] for i, obj in enumerate(train_list)}
-valid_dic = {obj[0]: obj[1] for i, obj in enumerate(valid_list)}
 
 input_path = os.path.join("data", "gxl")
 
 all_mol_dic = g_r.adj_matrix(input_path)
-
-# so far not needed
-# all_molecules = []
-#
-# for k in all_mol_dic.keys() :
-#     if k[:-4] in [x[0] for x in train_list]:
-#         k = str(k)
-#         all_molecules.append(g_r.Molecules(k[:-4], train_dic[k[:-4]], all_mol_dic[k]))
-#     else :
-#         k = str(k)
-#         all_molecules.append(g_r.Molecules(k[:-4], valid_dic[k[:-4]], all_mol_dic[k]))
-#
-# print(all_molecules[0].get_name())
-# ---------------------------------------------------
-# list of molecule objects
-
-# a = [i.get_label() for i in all_molecules]
-# list_of_distances = [i.get_matrix() for i in all_molecules]
-# list_of_labels = [i.get_label() == 'a' for i in all_molecules]
-#
-# list_of_labels = np.array(list_of_labels)
 
 # ------ training ---------------------------------------
 # https://kevinzakka.github.io/2016/07/13/k-nearest-neighbor/
 train_ids = []
 train_labels = []
 for id, label in train_dic.items():
-    # still don't need
-    # mol = all_molecules[id]
-    # or
-    # file = id + '.gxl'
-    # mol = g_r.Molecules(file)
     train_ids.append([int(id)])
     train_labels.append(label)
 
@@ -73,27 +44,27 @@ classifier = KNeighborsClassifier(n_neighbors=5, algorithm='brute', metric=bpm.b
 classifier.fit(train_ids, train_labels)
 
 
-# ----- validating -----------------------------------------
+# ----- testing -----------------------------------------
 
-valid_ids = []
-valid_labels = []
-for id, label in valid_dic.items():
-    valid_ids.append([int(id)])
-    valid_labels.append(label)
+test_input_path = os.path.join("test-data", "gxl")
 
-print('\nValidating with %d samples ...' % len(valid_ids))
+test_mol_dic = g_r.adj_matrix(test_input_path)
 
-predictions = classifier.predict(valid_ids)
+test_ids = []
+for id in test_mol_dic.keys():
+    test_ids.append([int(id)])
 
+all_mol_dic = {**all_mol_dic, **test_mol_dic}
 
-# ----- accuracy -----------------------------------------
+print('\nTesting with %d samples ...' % len(test_ids))
 
-accuracy = accuracy_score(valid_labels, predictions) * 100
-print('\nThe accuracy of OUR classifier is %d%%' % accuracy)
+predictions = classifier.predict(test_ids)
 
 # ----- save in report format -----------------------------------------
-report_file_name = os.path.join("data", "predicted.txt")
+print('\nReporting predictions ...')
+
+report_file_name = os.path.join("test-data", "predicted.txt")
 
 with open(report_file_name, 'w') as fr:
     for key, predicted_class in np.ndenumerate(predictions):
-        fr.write("{}[{}],{}\n".format(valid_ids[key[0]][0], valid_labels[key[0]], predicted_class))
+        fr.write("{},{}\n".format(test_ids[key[0]][0], predicted_class))

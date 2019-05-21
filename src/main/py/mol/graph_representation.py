@@ -21,10 +21,10 @@ class Molecule_object:
 
 
 class Molecules:
-    def __init__(self, filename):
+    def __init__(self, folder, filename):
 
-        self.filename = "data/gxl/" + filename
-        self.tree = ET.parse(self.filename) # with ET.parse we can read in the gxl file
+        self.filename = os.path.join(folder, filename)
+        self.tree = ET.parse(self.filename)  # with ET.parse we can read in the gxl file
         self.node = [node.text.strip(" ") for node in self.tree.findall(".//node/attr/string")] #gets the lable of all the nodes
         self.edge_values = [edge.text for edge in self.tree.findall(".//edge/attr/int")] #gets the value of each edge (corresponding to the number of bonds between two atoms)
 
@@ -80,7 +80,7 @@ def adj_matrix(folder_of_gxl_files):
         # creats an instance for a molecule
         # example for file 16.gxl:
         # globals()["M%s" % file_num] = Molecules(16.gxl) would correspond to M16 = Molecules(16.gxl)
-        d[str(file_num)] = Molecules(file)
+        d[str(file_num)] = Molecules(folder_of_gxl_files, file)
         globals()["M%s" % file_num] = d[str(file_num)]
 
         # add key value pair to dictionary. Key is the filename (e.g. "16.gxl") and the value is the adjacency Matrix for this file
