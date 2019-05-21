@@ -38,12 +38,6 @@ for id, label in train_dic.items():
 
 print('\nTraining with %d samples ...' % len(train_ids))
 
-bpm = BipartiteGraphMatching(all_mol_dic)
-
-classifier = KNeighborsClassifier(n_neighbors=5, algorithm='brute', metric=bpm.bp_edit_distance)
-classifier.fit(train_ids, train_labels)
-
-
 # ----- testing -----------------------------------------
 
 test_input_path = os.path.join("test-data", "gxl")
@@ -57,6 +51,11 @@ for id in test_mol_dic.keys():
 all_mol_dic = {**all_mol_dic, **test_mol_dic}
 
 print('\nTesting with %d samples ...' % len(test_ids))
+
+bpm = BipartiteGraphMatching(all_mol_dic)
+
+classifier = KNeighborsClassifier(n_neighbors=5, algorithm='brute', metric=bpm.bp_edit_distance)
+classifier.fit(train_ids, train_labels)
 
 predictions = classifier.predict(test_ids)
 
