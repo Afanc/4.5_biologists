@@ -26,19 +26,19 @@ def read_transcription(file_name = "transcription.txt", output = "ID_dict"):
                 else:
                     word = line.rstrip("\n")
                     ID = counter
-                word_no_special_char = re.sub("s_s-", "s-", word)  # special case: replaces the strong "s" (s_s-s) with s-s
-                word_no_special_char = re.sub("-s_.*$", "", word_no_special_char)  # removes trailing special characters
-                word_literal = ''.join(re.split("-", word_no_special_char))  # the literal word, without hyphens
+                # word_no_special_char = re.sub("s_s-", "s-", word)  # special case: replaces the strong "s" (s_s-s) with s-s
+                # word_no_special_char = re.sub("-s_.*$", "", word_no_special_char)  # removes trailing special characters
+                # word_literal = ''.join(re.split("-", word_no_special_char))  # the literal word, without hyphens
                 if output == "ID_dict":
-                    word_dict[ID] = word, word_no_special_char, word_literal
+                    word_dict[ID] = word # , word_no_special_char, word_literal
                 elif output == "word_dict":
-                    new_entry = tuple([ID, word, word_no_special_char])  # tuple
-                    if word_literal not in word_dict:  # new word
-                        word_dict[word_literal] = [new_entry]  # list containing tuple
+                    new_entry = tuple([ID, word])  # , word_no_special_char])  # tuple
+                    if word not in word_dict:  # new word: old: word_literal
+                        word_dict[word] = [new_entry]  # list containing tuple
                     else:  # word is already in dictionary
-                        existing_entry = word_dict.pop(word_literal)
+                        existing_entry = word_dict.pop(word)
                         existing_entry.append(new_entry)
-                        word_dict[word_literal] = existing_entry
+                        word_dict[word] = existing_entry
                 counter += 1
         return word_dict
     else:  # output specification invalid

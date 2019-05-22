@@ -93,6 +93,7 @@ if args.preprocessing:
     # --- get median word width and height (for resizing) --- #
     base = os.getcwd()
     list_of_wordimages = sorted(os.listdir(paths["word_images"]))
+    list_of_wordimages = [word for word in list_of_wordimages if not word.startswith('.')]  # ignore special files starting with '.'
     os.chdir(paths["word_images"])
     median_word_width, median_word_height = resize.median_wh(list_of_wordimages) #    word_lengths = [len(word) for word in word_dict]
     os.chdir(base)
