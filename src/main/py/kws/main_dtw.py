@@ -13,6 +13,7 @@ parser.add_argument('--feature_extr', default=False, type=bool)
 parser.add_argument('--dtw', default=False, type=bool)
 parser.add_argument('--test', default=True, type=bool)
 parser.add_argument('--numb_f', default=9, type=int)
+parser.add_argument('--clean_word', default=False, type=bool)
 args = parser.parse_args()
 
 # ----- paths and folders and shit ----#
@@ -91,7 +92,7 @@ if args.dtw:
 
     # keywords = ['Alexandria', 'Captain', 'Colonel']
     # keywords = ['Alexandria', 'Captain', 'Colonel', 'Lieutenant', 'Major', 'Letters', 'October']
-    keywords = load_keywords(paths["keywords.txt"], clean=True)
+    keywords = load_keywords(paths["keywords.txt"], clean=args.clean_word)
 
     # used saved valid set: faster
     valid_word_features = dtw.load_word_features(paths['valid_features.txt'])
@@ -123,7 +124,7 @@ if args.dtw:
 if args.test:
     dtw.train_word_features(paths['train_all_features.txt'])
 
-    keywords = load_keywords(paths["test_keywords.txt"], clean=True)
+    keywords = load_keywords(paths["test_keywords.txt"], clean=args.clean_word)
 
     test_word_features = dtw.load_word_features(paths['test_features.txt'])
     spotted = dtw.spot_keywords(test_word_features, keywords)
