@@ -11,11 +11,12 @@ import binarization as binary
 # import feature_extraction as features
 # import scan_image_features as scan
 from matplotlib import pyplot as plt
-from PIL import Image
-from skimage.filters import threshold_otsu
+
 parser = argparse.ArgumentParser()
 parser.add_argument('--preprocessing', default=True, type=bool)
 parser.add_argument('--id_linking', default=True, type=bool)
+parser.add_argument('--word_width', default=212, type=int)
+parser.add_argument('--word_height', default=94, type=int)
 args = parser.parse_args()
 
 # ----- paths and folders ----#
@@ -23,11 +24,6 @@ work_dir = os.getcwd()
 if (work_dir[-14:] != "4.5_biologists" and work_dir[-3:] != "kws"):
     print("get back to main directory, or cd into src/main/py/kws, sucker !")
     exit()
-
-import PIL
-if PIL.__version__ != '5.3.0':
-    print("you don'thave PIL 5.3.0 but I hope we'll make it ")
-#    exit()
 
 paths = {}
 
@@ -65,7 +61,7 @@ list_of_svg = sorted(os.listdir(paths["svg"]))
 
 # ----- pre-processing ----#
 if args.preprocessing:
-    if not os.listdir(paths["binarized_images"]) or not os.listdir(paths["word_images"]) :
+    if not os.listdir(paths["binarized_images"]) or not os.listdir(paths["word_images"]):
         # ----- ID linking----#
         ID_dict = rt.read_transcription(file_name=paths["transcription.txt"], output="ID_dict")
 
@@ -95,7 +91,7 @@ if args.preprocessing:
     list_of_wordimages = sorted(os.listdir(paths["word_images"]))
     list_of_wordimages = [word for word in list_of_wordimages if not word.startswith('.')]  # ignore special files starting with '.'
     os.chdir(paths["word_images"])
-    median_word_width, median_word_height = resize.median_wh(list_of_wordimages) #    word_lengths = [len(word) for word in word_dict]
+    median_word_width, median_word_height = resize.median_wh(list_of_wordimages)  #    word_lengths = [len(word) for word in word_dict]
     os.chdir(base)
 
 
@@ -106,8 +102,9 @@ if args.preprocessing:
             if i%100 == 0:
                 print("processing word-image ", i+1, " out of ", len(list_of_wordimages))
             file_in = os.path.join(paths["word_images"], file)
-            resize.resize_image(file_in, height_new=median_word_height, width_new = median_word_width, output_path=paths["resized_word_images"])
+            resize.resize_image(file_in, height_new=args.word_height, width_new=args.word_width, output_path=paths["resized_word_images"])
 
             i += 1
 
-    print("Binary images of individual words extracted and rescaled to", median_word_width, "x", median_word_height, "pixel (width x height).")
+    print("Binary images of individual words extracted and rescaled to", args.word_width, "x", args.word_height, "pixel (width x height).")
+    print("Medium is", median_word_width, "x", median_word_height, "pixel (width x height).")

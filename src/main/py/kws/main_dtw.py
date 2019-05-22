@@ -13,6 +13,7 @@ parser.add_argument('--feature_extr', default=False, type=bool)
 parser.add_argument('--dtw', default=False, type=bool)
 parser.add_argument('--test', default=True, type=bool)
 parser.add_argument('--numb_f', default=9, type=int)
+parser.add_argument('--word_width', default=212, type=int)
 parser.add_argument('--clean_word', default=False, type=bool)
 args = parser.parse_args()
 
@@ -39,7 +40,7 @@ paths = {"resized_word_images":     os.path.join('data', 'resized_word_images'),
          "test_spotted_keywords_dtw.dump": os.path.join('data', 'test-spotted_keywords_dtw.dump')
          }
 
-dtw = DynTimeWrap(paths=paths, numb_f=args.numb_f)
+dtw = DynTimeWrap(paths=paths, numb_f=args.numb_f, f_width=args.word_width)
 
 # adapt if run from 4.5_biologists
 if os.getcwd()[-14:] == "4.5_biologists":
@@ -61,15 +62,19 @@ for k in paths:
         os.makedirs(paths[k])
 
 # ----- features extraction ----#
-if args.feature_extr or not os.path.isfile(paths["train_features.txt"]):  # first time no way you have to do it
-    dtw.train(train_pages=range(270, 280), save_file_name=paths['train_features.txt'])
 if args.feature_extr or not os.path.isfile(paths["valid_features.txt"]):
+    print("Extracting word valid_features.txt...")
     # create also validating word_features to speed up testing
     dtw.train(train_pages=range(300, 305), save_file_name=paths['valid_features.txt'])
-if args.feature_extr or not os.path.isfile(paths["train_all_features.txt"]):
-    dtw.train(train_pages=(list(range(270, 280))+list(range(300, 305))), save_file_name=paths['train_all_features.txt'])
+if args.feature_extr or not os.path.isfile(paths["train_features.txt"]):  # first time no way you have to do it
+    print("Extracting word train_features.txt...")
+    dtw.train(train_pages=range(270, 280), save_file_name=paths['train_features.txt'])
 if args.feature_extr or not os.path.isfile(paths["test_features.txt"]):
+    print("Extracting word test_features.txt...")
     dtw.train(train_pages=range(305, 310), save_file_name=paths['test_features.txt'])
+if args.feature_extr or not os.path.isfile(paths["train_all_features.txt"]):
+    print("Extracting word train_all_features.txt...")
+    dtw.train(train_pages=(list(range(270, 280))+list(range(300, 305))), save_file_name=paths['train_all_features.txt'])
 
 
 def load_keywords(keywords_file, clean):

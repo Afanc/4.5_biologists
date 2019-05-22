@@ -1,11 +1,9 @@
 #!/usr/bin/python
 
-import scipy.misc
 import numpy as np
 import os
 import matplotlib.pyplot as plt
 from PIL import Image
-import cv2
 
 
 def resize_image(file, height_new, width_new, output_path = None):
@@ -24,7 +22,6 @@ def resize_image(file, height_new, width_new, output_path = None):
     resized_img.save(file_out)
 
     return
-
 
 
 def median_wh(list_of_wordimages):
