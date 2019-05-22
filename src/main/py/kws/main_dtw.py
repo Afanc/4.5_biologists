@@ -35,8 +35,8 @@ paths = {"resized_word_images":     os.path.join('data', 'resized_word_images'),
          "test.txt":                os.path.join('data', 'task', 'test.txt'),
          "test_keywords.txt":       os.path.join('data', 'task', 'test_keywords.txt'),
          "test_features.txt":      os.path.join('data', 'test_features.txt'),
-         "test_spotting_results.txt":    os.path.join('data', 'spotting_results.txt'),
-         "test_spotted_keywords_dtw.dump": os.path.join('data', 'spotted_keywords_dtw.dump')
+         "test_spotting_results.txt":    os.path.join('data', 'test-spotting_results.txt'),
+         "test_spotted_keywords_dtw.dump": os.path.join('data', 'test-spotted_keywords_dtw.dump')
          }
 
 dtw = DynTimeWrap(paths=paths, numb_f=args.numb_f)
@@ -69,7 +69,7 @@ if args.feature_extr or not os.path.isfile(paths["valid_features.txt"]):
 if args.feature_extr or not os.path.isfile(paths["train_all_features.txt"]):
     dtw.train(train_pages=(list(range(270, 280))+list(range(300, 305))), save_file_name=paths['train_all_features.txt'])
 if args.feature_extr or not os.path.isfile(paths["test_features.txt"]):
-    dtw.train(train_pages=range(305, 309), save_file_name=paths['test_features.txt'])
+    dtw.train(train_pages=range(305, 310), save_file_name=paths['test_features.txt'])
 
 
 def load_keywords(keywords_file, clean):

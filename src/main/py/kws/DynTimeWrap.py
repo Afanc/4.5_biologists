@@ -105,7 +105,7 @@ class DynTimeWrap:
 
         for i, (keyword, keyword_features, kw_location) in enumerate(keywords_features):
             if i > 0 and i % 10 == 0:
-                print('scanned %d training words' % i)
+                print('completed DTW with %d training words' % i)
 
             keyword_dtw = self.spotted_keywords_dtw[keyword] if keyword in self.spotted_keywords_dtw else []
             for j, (true_word, word_features, word_location) in enumerate(validate_word_features):
