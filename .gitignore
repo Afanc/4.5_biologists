@@ -13,7 +13,7 @@ src/main/py/kws/data/binarized_images
 csv_results.txt
 features.txt
 train_features.txt
-train__all_features.txt
+train_all_features.txt
 test_features.txt
 src/main/py/kws/__pycache__
 *.dump
