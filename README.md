@@ -5,7 +5,7 @@
 [Molecules Test results](src/main/py/mol/test-data/predicted.txt)
 
 ### Group Task #4 - Molecules
-Classification of molecules struction into two classes: 'inactive', 'acctive'
+Classification of molecules into two classes: 'inactive', 'acctive'
 
 ##### Approach
 KNN-classifier (k=5) trained on training set
@@ -16,10 +16,10 @@ Solution of biparte graph matching: Munkres assignment algorithm (aka Hungarian 
 [Graph representation with adjacency matrix](src/main/py/mol/graph_representation.py)
 
 ##### Bipartite Graph Matching
-[Bipartite grtaph and Hungarian algorithm to solve assignment cost as disntance](src/main/py/mol/bipartite_graph_matching.py)
+[Bipartite graph and Hungarian algorithm to solve assignment cost as distance](src/main/py/mol/bipartite_graph_matching.py)
 
 ##### Result on the validation set:
-The accuracy of OUR classifier is 99%... :-)
+The accuracy of the KNN-classifier is 99%... :-)
 [Molecules validation results](src/main/py/mol/data/predicted.txt)
 
 
