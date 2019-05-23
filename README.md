@@ -10,8 +10,10 @@ Classification of molecules struction into two classes: 'inactive', 'acctive'
 ##### Approach
 
 ##### Molecule graph presentation
+[Graph representation with adjacency matrix](src/main/py/mol/graph_representation.py)
 
 ##### Bipartite Graph Matching
+[Bpartite grtaph and Hungarian algorithm to solve assignment cost as disntance](src/main/py/mol/bipartite_graph_matching.py)
 
 ##### Result on the validation set: 
 [Molecules validation results](src/main/py/mol/data/predicted.txt)
