@@ -13,6 +13,9 @@ Classification of molecules struction into two classes: 'inactive', 'acctive'
 
 ##### Bipartite Graph Matching
 
+##### Result on the validation set: 
+[Molecules validation results](src/main/py/mol/data/predicted.txt)
+
 
 ### Group Task #3 - Keyword Spotting
 Identification of given keywords in historical documents written by George Washington
