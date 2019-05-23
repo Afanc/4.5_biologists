@@ -32,7 +32,7 @@ for id, label in train_dic.items():
     train_ids.append([int(id)])
     train_labels.append(label)
 
-print('\nTraining with %d samples ...' % len(train_ids))
+print('\nFitting a KNN-classifier with %d samples ...' % len(train_ids))
 
 bpm = BipartiteGraphMatching(all_mol_dic)
 
@@ -56,7 +56,7 @@ predictions = classifier.predict(valid_ids)
 # ----- accuracy -----------------------------------------
 
 accuracy = accuracy_score(valid_labels, predictions) * 100
-print('\nThe accuracy of OUR classifier is %d%%' % accuracy)
+print('\nThe accuracy of the KNN-classifier is %d%%' % accuracy)
 
 # ----- save in report format -----------------------------------------
 report_file_name = os.path.join("data", "predicted.txt")
