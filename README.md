@@ -1,4 +1,4 @@
-### Competition Final Results
+### Competition Test Results
 
 Training on the whole set: train+validation
 [Keyword Spotting Test results](src/main/py/kws/data/test-spotting_results.txt)
