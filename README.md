@@ -1,4 +1,4 @@
-### Competiotion Final Results
+### Competition Final Results
 
 [Keyword Spotting Test results](src/main/py/kws/data/test-spotting_results.txt)
 
@@ -8,14 +8,18 @@
 Classification of molecules struction into two classes: 'inactive', 'acctive'
 
 ##### Approach
+KNN-classifier (k=5) trained on training set
+Distance function: bipartite graph matching (molecule adjacency matrix is used as graph)
+Solution of biparte graph matching: Munkres assignment algorithm (aka Hungarian algorithm)  
 
 ##### Molecule graph presentation
 [Graph representation with adjacency matrix](src/main/py/mol/graph_representation.py)
 
 ##### Bipartite Graph Matching
-[Bpartite grtaph and Hungarian algorithm to solve assignment cost as disntance](src/main/py/mol/bipartite_graph_matching.py)
+[Bipartite grtaph and Hungarian algorithm to solve assignment cost as disntance](src/main/py/mol/bipartite_graph_matching.py)
 
-##### Result on the validation set: 
+##### Result on the validation set:
+The accuracy of OUR classifier is 99%... :-)
 [Molecules validation results](src/main/py/mol/data/predicted.txt)
 
 
