@@ -12,7 +12,7 @@ Classification of molecules into two classes: 'inactive', 'acctive'
 ##### Approach
 KNN-classifier (k=5) trained on training set
 Distance function: bipartite graph matching (molecule adjacency matrix is used as graph)
-Solution of biparte graph matching: Munkres assignment algorithm (aka Hungarian algorithm)  
+Solution of biparte graph matching: Munkres assignment algorithm (aka Hungarian algorithm). For calculating the cost matrix we used substitution cost of 4 (delition+insertion) and indel (insertion or deletion) cost of 2. As edges cost we take the difference of covalent bonds between the compared atoms.
 
 ##### Molecule graph presentation
 [Graph representation with adjacency matrix](src/main/py/mol/graph_representation.py)
