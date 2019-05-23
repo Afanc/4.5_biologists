@@ -23,7 +23,9 @@ Solution of biparte graph matching: Munkres assignment algorithm (aka Hungarian 
 ##### Result on the validation set:
 The accuracy of the KNN-classifier is 99%... :-)
 
-[Molecules validation results: molecule_id\[true\],predicted](src/main/py/mol/data/predicted.txt)
+[Molecules validation results](src/main/py/mol/data/predicted.txt)  
+
+output format: molecule_id\[true class\],predicted class
 
 
 ### Group Task #3 - Keyword Spotting
