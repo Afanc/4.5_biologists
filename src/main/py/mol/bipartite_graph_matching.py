@@ -22,12 +22,14 @@ class BipartiteGraphMatching:
         n = len(bp1)
         m = len(bp2)
         c_size = n + m
-        cost_matrix = np.zeros((c_size, c_size))
+        cost_matrix = np.full((c_size, c_size), 1e6)
         for (i, j), e in np.ndenumerate(cost_matrix):
             if i < n and j < m:
                 cost_matrix[i, j] = (self.cost_subst if bp1[i][0] != bp2[j][0] else 0) + np.abs(bp1[i][1] - bp2[j][1])
             elif (i-n) == j or i == (j-m):
                 cost_matrix[i, j] = self.cost_indel
+            elif n < i and m < j:
+                cost_matrix[i, j] = 0
         return cost_matrix
 
     def bp_edit_distance(self, mol1_id, mol2_id):   # not clear why here are coming floats
