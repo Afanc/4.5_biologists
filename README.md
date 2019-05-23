@@ -9,7 +9,7 @@ Classification of molecules struction into two classes: 'inactive', 'acctive'
 
 ##### Approach
 
-##### Moleciule presentation
+##### Molecule graph presentation
 
 ##### Bipartite Graph Matching
 
