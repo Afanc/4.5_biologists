@@ -1,15 +1,17 @@
 ### Competiotion Final Results
 
 [Keyword Spotting Test results](src/main/py/kws/data/test-spotting_results.txt)
+
 [Molecules Test results](src/main/py/mol/test-data/predicted.txt)
 
 ### Group Task #4 - Molecules
 Classification of molecules struction into two classes: 'inactive', 'acctive'
 
 ##### Approach
-##### Moleciule presentation
-##### Bipartite 
 
+##### Moleciule presentation
+
+##### Bipartite Graph Matching
 
 
 ### Group Task #3 - Keyword Spotting
