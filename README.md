@@ -1,7 +1,9 @@
-### Competition Final Results
+### Competition Test Results
 
+Training on the whole set: train+validation
 [Keyword Spotting Test results](src/main/py/kws/data/test-spotting_results.txt)
 
+Fit classifier on the whole set: train+validation
 [Molecules Test results](src/main/py/mol/test-data/predicted.txt)
 
 ### Group Task #4 - Molecules
@@ -10,7 +12,7 @@ Classification of molecules into two classes: 'inactive', 'acctive'
 ##### Approach
 KNN-classifier (k=5) trained on training set
 Distance function: bipartite graph matching (molecule adjacency matrix is used as graph)
-Solution of biparte graph matching: Munkres assignment algorithm (aka Hungarian algorithm)  
+Solution of biparte graph matching: Munkres assignment algorithm (aka Hungarian algorithm). For calculating the cost matrix we used indel (insertion or deletion) cost of 2 and substitution cost of 4 (deletion+insertion) . As edge assignment cost we take the difference of covalent bonds between the compared atoms.
 
 ##### Molecule graph presentation
 [Graph representation with adjacency matrix](src/main/py/mol/graph_representation.py)
@@ -20,7 +22,10 @@ Solution of biparte graph matching: Munkres assignment algorithm (aka Hungarian 
 
 ##### Result on the validation set:
 The accuracy of the KNN-classifier is 99%... :-)
-[Molecules validation results](src/main/py/mol/data/predicted.txt)
+
+[Molecules validation results](src/main/py/mol/data/predicted.txt)  
+
+output format: molecule_id\[true class\],predicted class
 
 
 ### Group Task #3 - Keyword Spotting
