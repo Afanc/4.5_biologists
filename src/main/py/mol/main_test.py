@@ -30,7 +30,7 @@ for id, label in train_dic.items():
     train_ids.append([int(id)])
     train_labels.append(label)
 
-print('\nFitting a KNN-classifier %d samples ...' % len(train_ids))
+print('\nFitting a KNN-classifier with %d samples ...' % len(train_ids))
 
 # ----- testing -----------------------------------------
 
