@@ -1,7 +1,9 @@
 ### Competition Final Results
 
+Training on the whole set: train+validation
 [Keyword Spotting Test results](src/main/py/kws/data/test-spotting_results.txt)
 
+Fit classifier on the whole set: train+validation
 [Molecules Test results](src/main/py/mol/test-data/predicted.txt)
 
 ### Group Task #4 - Molecules
@@ -20,7 +22,8 @@ Solution of biparte graph matching: Munkres assignment algorithm (aka Hungarian 
 
 ##### Result on the validation set:
 The accuracy of the KNN-classifier is 99%... :-)
-[Molecules validation results](src/main/py/mol/data/predicted.txt)
+
+[Molecules validation results: molecule_id\[true\],predicted](src/main/py/mol/data/predicted.txt)
 
 
 ### Group Task #3 - Keyword Spotting
