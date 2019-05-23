@@ -21,7 +21,10 @@ Solution of biparte graph matching: Munkres assignment algorithm (aka Hungarian 
 [Bipartite graph and Hungarian algorithm to solve assignment cost as distance](src/main/py/mol/bipartite_graph_matching.py)
 
 ##### Result on the validation set:
+run the *main.py* scipt:
+`
 The accuracy of the KNN-classifier is 99%... :-)
+`
 
 [Molecules validation results](src/main/py/mol/data/predicted.txt)  
 
