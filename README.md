@@ -58,7 +58,7 @@ Interpretation of the Recall-Precision curve only on top hits at all validation 
 
 
 ***************************************************
-### Group Task #2 - Machine learning
+### Group Task #2 - Deep learning
 
 [Source Code for task 2a SVM](src/main/py/svm/svm_1.0.py)
 
